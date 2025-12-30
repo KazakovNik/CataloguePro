@@ -7,6 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
   Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ImgList,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Menus, Vcl.ButtonGroup,
+  uMainFacade,
   uHeapController, uSettingsController, uTreeController;
 
 type
@@ -26,7 +27,6 @@ type
     pmTree: TPopupMenu;
     actAddNode1: TMenuItem;
     actAddRootNode1: TMenuItem;
-    actDeleteNode1: TMenuItem;
     actEditNode1: TMenuItem;
     actSaveTreeToFile1: TMenuItem;
     N1: TMenuItem;
@@ -88,14 +88,17 @@ type
     procedure FormShow(Sender: TObject);
     procedure actDeleteNodeUpdate(Sender: TObject);
     procedure actDeleteNodeExecute(Sender: TObject);
+    procedure actAddNodeUpdate(Sender: TObject);
+    procedure actEditNodeUpdate(Sender: TObject);
+    procedure actSaveTreeToFileUpdate(Sender: TObject);
+    procedure actExpandAllExecute(Sender: TObject);
+    procedure actExpandAllUpdate(Sender: TObject);
+    procedure actCollapseAllExecute(Sender: TObject);
+    procedure actCollapseAllUpdate(Sender: TObject);
+    procedure actAboutExecute(Sender: TObject);
+    procedure actSettingsExecute(Sender: TObject);
   private
-    FHeap: THeapController;
-    FSettings: TSettingsController;
-    FTreeController: TTreeController;
-  private
-    procedure DoReturn(Text: string);
-    procedure InitSettings;
-    procedure SaveSettings;
+    FFacade: TMainFacade;
   end;
 
 var
@@ -105,117 +108,123 @@ implementation
 
 {$R *.dfm}
 
+procedure TFormMain.actAboutExecute(Sender: TObject);
+begin
+  FFacade.ShowmAbout;
+end;
+
 procedure TFormMain.actAddNodeExecute(Sender: TObject);
 begin
-  FTreeController.AddNode(TreeView.Selected,
-    InputBox('Новый элемент', 'Название:', Format('Новая элемент (%d)', [TreeView.Items.Count])));
+  FFacade.AddNode();
+end;
+
+procedure TFormMain.actAddNodeUpdate(Sender: TObject);
+begin
+  actAddNode.Enabled := Assigned(TreeView.Selected);
 end;
 
 procedure TFormMain.actAddRootNodeExecute(Sender: TObject);
 begin
-  FTreeController.AddNode(nil,
-    InputBox('Новый элемент', 'Название:', Format('Новая элемент (%d)', [TreeView.Items.Count])));
+  FFacade.AddNodeRoot();
+end;
+
+procedure TFormMain.actCollapseAllExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TFormMain.actCollapseAllUpdate(Sender: TObject);
+begin
+//
 end;
 
 procedure TFormMain.actDeleteNodeExecute(Sender: TObject);
 begin
-  if Assigned(TreeView.Selected) then
-    FTreeController.DeleteNode(TreeView.Selected);
+  FFacade.DeleteCurrentNode();
 end;
 
 procedure TFormMain.actDeleteNodeUpdate(Sender: TObject);
 begin
-  actDeleteNode.Enabled :=
-    (TreeView.Items.Count > 0) and
-    Assigned(TreeView.Selected) and
-    FTreeController.SelectedIsFolder(TreeView.Selected) and
-    (not TreeView.Selected.HasChildren);
+  actDeleteNode.Enabled := FFacade.DeleteNodeEnabled();
 end;
 
 procedure TFormMain.actEditNodeExecute(Sender: TObject);
 begin
-  if Assigned(TreeView.Selected) then
-    FTreeController.EditNode(TreeView.Selected,
-      InputBox('Редактирование', 'Измените название:', TreeView.Selected.Text));
+  FFacade.EditCurrentNode();
+end;
+
+procedure TFormMain.actEditNodeUpdate(Sender: TObject);
+begin
+//
+end;
+
+procedure TFormMain.actExpandAllExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TFormMain.actExpandAllUpdate(Sender: TObject);
+begin
+//
 end;
 
 procedure TFormMain.actInsertDataExecute(Sender: TObject);
 begin
-  FTreeController.InsertItem(lbHeap.Items[lbHeap.ItemIndex]);
-  FHeap.Delete(lbHeap.ItemIndex);
+  FFacade.InsertCurrentItem();
 end;
 
 procedure TFormMain.actInsertDataUpdate(Sender: TObject);
 begin
-  actInsertData.Enabled :=
-    (lbHeap.ItemIndex <> -1) and
-    (TreeView.Items.Count > 0) and
-    Assigned(TreeView.Selected) and
-    FTreeController.SelectedIsFolder(TreeView.Selected);
+  actInsertData.Enabled := FFacade.InsertCurrentItemEnabled();
 end;
 
 procedure TFormMain.actReturnBackUpdate(Sender: TObject);
 begin
-  actReturnBack.Enabled :=
-    (TreeView.Items.Count > 0) and
-    Assigned(TreeView.Selected) and
-    (FTreeController.SelectedIsItem(TreeView.Selected) or
-    (FTreeController.SelectedIsFolder(TreeView.Selected) and
-     TreeView.Selected.HasChildren));
+  actReturnBack.Enabled := FFacade.ReturnBackCurrentItemEnabled();
 end;
 
 procedure TFormMain.actLoadFileExecute(Sender: TObject);
 begin
-  OpenDialog.InitialDir := FSettings.FileOpenDirectory;
-  if not OpenDialog.Execute then
-    Exit;
-
-  FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
-  try
-    FHeap.LoadFile(OpenDialog.FileName);
-  except
-    on E: Exception do
-      ShowMessage(E.Message);
-  end;
+  OpenDialog.InitialDir := FFacade.FileOpenDirectory;
+  if OpenDialog.Execute then
+    FFacade.HeapLoadFile(OpenDialog.FileName);
 end;
 
 procedure TFormMain.actReturnBackExecute(Sender: TObject);
 begin
-  FTreeController.DeleteNode(TreeView.Selected);
+  FFacade.DeleteCurrentNode();
 end;
 
 procedure TFormMain.actSaveTreeToFileExecute(Sender: TObject);
 begin
-  dlgSaveTextFile.InitialDir := FSettings.FileSaveDirectory;
-  if not dlgSaveTextFile.Execute then
-    Exit;
-
-  FSettings.FileSaveDirectory := ExtractFilePath(dlgSaveTextFile.FileName);
-  FTreeController.SaveToFile(ChangeFileExt(dlgSaveTextFile.FileName, '.txt'));
+  dlgSaveTextFile.InitialDir := FFacade.FileSaveDirectory;
+  if dlgSaveTextFile.Execute then
+    FFacade.TreeSaveToFile(dlgSaveTextFile.FileName);
 end;
 
-procedure TFormMain.DoReturn(Text: string);
+procedure TFormMain.actSaveTreeToFileUpdate(Sender: TObject);
 begin
-  lbHeap.Items.Add(Text);
+//
+end;
+
+procedure TFormMain.actSettingsExecute(Sender: TObject);
+begin
+  FFacade.ShowmSettings;
 end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  SaveSettings;
+  FFacade.SaveSettings();
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  FHeap := THeapController.Create(lbHeap);
-  FTreeController := TTreeController.Create(TreeView);
-  FTreeController.OnReturn := DoReturn;
+  FFacade := TMainFacade.Create(TreeView, lbHeap);
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
 begin
-  FHeap.Free;
-  FSettings.Free;
-  FTreeController.Free;
+  FFacade.Free;
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
@@ -225,7 +234,7 @@ end;
 
 procedure TFormMain.FormShow(Sender: TObject);
 begin
-  InitSettings;
+  FFacade.InitSettings();
 end;
 
 procedure TFormMain.lbHeapDragOver(Sender, Source: TObject; X, Y: Integer;
@@ -236,48 +245,15 @@ begin
   Accept := true;
 end;
 
-procedure TFormMain.SaveSettings;
-begin
-  FSettings.MainFormHeight := Self.ClientHeight;
-  FSettings.MainFormWidth := Self.ClientWidth;
-  FSettings.MainFormLeft := Self.Left;
-  FSettings.MainFormTop := Self.Top;
-  FSettings.HeapWidth := lbHeap.Width;
-  FSettings.Save;
-end;
-
-procedure TFormMain.InitSettings;
-var
-  settingsFN: string;
-begin
-  settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
-  FSettings := TSettingsController.Create(settingsFN);
-  Self.ClientHeight := FSettings.MainFormHeight;
-  Self.ClientWidth := FSettings.MainFormWidth;
-  Self.Left := FSettings.MainFormLeft;
-  Self.Top := FSettings.MainFormTop;
-  lbHeap.Width := FSettings.HeapWidth;
-end;
-
 procedure TFormMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-  tmpNode: TTreeNode;
 begin
-  if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
-    Exit;
-
-  tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
-  FTreeController.SelectNode(tmpNode);
-  FTreeController.InsertItem(lbHeap.Items[lbHeap.ItemIndex]);
-  FHeap.Delete(lbHeap.ItemIndex);
+  FFacade.TreeDragDrop(Sender, Source, X, Y);
 end;
 
 procedure TFormMain.TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  if not (Source is TListBox) then
-    Exit;
-  Accept := true;
+  Accept := FFacade.TreeDragOverAccept(Sender, Source, X, Y);
 end;
 
 end.

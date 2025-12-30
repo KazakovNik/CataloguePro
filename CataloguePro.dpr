@@ -8,7 +8,8 @@ uses
   uSettingsModel in 'classes\Settings\uSettingsModel.pas',
   uSettingsController in 'classes\Settings\uSettingsController.pas',
   uTreeController in 'classes\Tree\uTreeController.pas',
-  uNodeModel in 'classes\Tree\uNodeModel.pas';
+  uNodeModel in 'classes\Tree\uNodeModel.pas',
+  uMainFacade in 'classes\uMainFacade.pas';
 
 {$R *.res}
 

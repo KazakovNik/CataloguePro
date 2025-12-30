@@ -88,6 +88,7 @@
       Align = alClient
       DragMode = dmAutomatic
       ItemHeight = 14
+      MultiSelect = True
       TabOrder = 0
       OnDragOver = lbHeapDragOver
     end
@@ -169,6 +170,7 @@
       Caption = #10010' '#1044#1086#1073#1072#1074#1080#1090#1100
       Hint = #1044#1072#1073#1072#1074#1080#1090#1100' '#1075#1088#1091#1087#1087#1091' '#1074' '#1074#1099#1073#1088#1072#1085#1085#1086#1077
       OnExecute = actAddNodeExecute
+      OnUpdate = actAddNodeUpdate
     end
     object actAddRootNode: TAction
       Caption = #55357#56636#10010' '#1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1085#1072#1095#1072#1083#1086
@@ -179,11 +181,13 @@
       Caption = #9999#65039' '#1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
       Hint = #1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
       OnExecute = actEditNodeExecute
+      OnUpdate = actEditNodeUpdate
     end
     object actSaveTreeToFile: TAction
       Caption = #55357#56510' '#1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1092#1072#1081#1083
       Hint = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1076#1077#1088#1077#1074#1086' '#1074' '#1090#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083
       OnExecute = actSaveTreeToFileExecute
+      OnUpdate = actSaveTreeToFileUpdate
     end
     object actInsertData: TAction
       Caption = #10010
@@ -200,23 +204,29 @@
     object actSettings: TAction
       Caption = #9881#65039' '#1053#1072#1089#1090#1088#1086#1081#1082#1080
       Hint = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+      OnExecute = actSettingsExecute
     end
     object actExpandAll: TAction
       Caption = #8594' '#8593' '#1056#1072#1079#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077
       Hint = #1056#1072#1079#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077' '#1076#1077#1088#1077#1074#1086
+      OnExecute = actExpandAllExecute
+      OnUpdate = actExpandAllUpdate
     end
     object actCollapseAll: TAction
       Caption = #8594' '#8595' '#1057#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077
       Hint = #1057#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077' '#1076#1077#1088#1077#1074#1086
+      OnExecute = actCollapseAllExecute
+      OnUpdate = actCollapseAllUpdate
     end
     object actDeleteNode: TAction
       Caption = #10006#65039' '#1059#1076#1072#1083#1080#1090#1100
-      Hint = #1059#1076#1072#1083#1080#1090#1100' '#1087#1091#1089#1090#1091#1102' '#1074#1077#1090#1082#1091
+      Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1099#1073#1088#1072#1085#1085#1086#1077' '#1074' '#1089#1087#1080#1089#1086#1082
       OnExecute = actDeleteNodeExecute
       OnUpdate = actDeleteNodeUpdate
     end
     object actAbout: TAction
       Caption = #55357#56492' '#1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+      OnExecute = actAboutExecute
     end
   end
   object OpenDialog: TOpenDialog
@@ -243,10 +253,6 @@
     object actEditNode1: TMenuItem
       Action = actEditNode
       Caption = #1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
-    end
-    object actDeleteNode1: TMenuItem
-      Action = actReturnBack
-      Caption = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1089#1087#1080#1089#1086#1082
     end
     object N5: TMenuItem
       Action = actDeleteNode
