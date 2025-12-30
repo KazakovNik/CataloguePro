@@ -5,7 +5,7 @@ interface
 uses
   Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls, System.Classes, Vcl.Menus,
   uHeapController, uSettingsController, uTreeController, uRecentFilesController,
-  uLogger, uILogger, uUserInfo;
+  uLogger, uILogger, uUserInfo, uDialogFacade;
 
 type
   TMainFacade = class
@@ -19,6 +19,7 @@ type
     FRecentFilesController: TRecentFilesController;
     FLogger: ILogger;
     FUserInfo: TUserInfo;
+    FDialogFacade: TDialogFacade;
   private
     function GetFileOpenDirectory: string;
     function GetFileSaveDirectory: string;
@@ -67,7 +68,7 @@ implementation
 
 uses
   Vcl.Dialogs, System.SysUtils, Vcl.Forms, System.UITypes,
-  uAboutFacade, uSettingsFacade, uFormInputBox;
+  uAboutFacade, uSettingsFacade;
 
 { TMainFacade }
 
@@ -75,7 +76,7 @@ procedure TMainFacade.AddNode;
 var
   text: string;
 begin
-  if TFormInputBox.Show('Новый элемент', 'Название:',
+  if FDialogFacade.CreateInputDialog('Новый элемент', 'Название:',
     Format('Новая элемент (%d)', [FTreeController.CountNode]), text) then
   begin
     FTreeController.AddNode(FTree.Selected, text);
@@ -87,7 +88,7 @@ procedure TMainFacade.AddNodeRoot;
 var
   text: string;
 begin
-  if TFormInputBox.Show('Новый элемент', 'Название:',
+  if FDialogFacade.CreateInputDialog('Новый элемент', 'Название:',
     Format('Новая элемент (%d)', [FTreeController.CountNode]), text) then
   begin
     FTreeController.AddNode(nil, text);
@@ -130,6 +131,7 @@ begin
   FStatusBar := StatusBar;
 
   FUserInfo := TUserInfo.Create;
+  FDialogFacade := TDialogFacade.Create;
 
   settingsFN := ExtractFilePath(Application.ExeName) + 'settings.ini';
   FSettingsController := TSettingsController.Create(settingsFN);
@@ -162,6 +164,7 @@ begin
 
   FLogger.AddInfo('Закрытие программы');
   FUserInfo.Free;
+  FDialogFacade.Free;
 
   inherited;
 end;
@@ -216,7 +219,7 @@ begin
   if not Assigned(FTree.Selected) then
     Exit;
 
-  if TFormInputBox.Show('Редактирование', 'Измените название:',
+  if FDialogFacade.CreateInputDialog('Редактирование', 'Измените название:',
     FTree.Selected.Text, text) then
   begin
     FTreeController.EditNode(FTree.Selected, text);
@@ -316,9 +319,17 @@ begin
 end;
 
 procedure TMainFacade.TreeSaveToFile(filename: string);
+var
+  fn: string;
 begin
   FSettingsController.FileSaveDirectory := ExtractFilePath(filename);
-  FTreeController.SaveToFile(ChangeFileExt(filename, '.txt'));
+  fn := ChangeFileExt(filename, '.txt');
+  if FileExists(fn)
+    and (not FDialogFacade.MessageInfoDialogOkCancel(
+        'Вы действительно хотите перезаписать файл?', 'Сохранение файла')) then
+      Exit;
+
+  FTreeController.SaveToFile(fn);
   DoUpdateStatus;
 end;
 

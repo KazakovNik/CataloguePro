@@ -21,7 +21,8 @@ uses
   uFormSettings in 'forms\uFormSettings.pas' {FormSettings},
   uSettingsFacade in 'classes\uSettingsFacade.pas',
   uFramePatch in 'forms\uFramePatch.pas' {Frame1: TFrame},
-  uFormInputBox in 'forms\uFormInputBox.pas' {FormInputBox};
+  uFormInputBox in 'forms\uFormInputBox.pas' {FormInputBox},
+  uDialogFacade in 'classes\uDialogFacade.pas';
 
 {$R *.res}
 
