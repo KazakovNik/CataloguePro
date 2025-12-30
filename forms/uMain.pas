@@ -26,8 +26,6 @@ type
     N1: TMenuItem;
     pnlÑenter: TPanel;
     pnlÑenterBtn: TPanel;
-    btnInsert: TButton;
-    btnReturnBack: TButton;
     N2: TMenuItem;
     mniCollapseAll: TMenuItem;
     mniExpandAll: TMenuItem;
@@ -72,7 +70,6 @@ type
     actRecentFiles: TAction;
     mniDeleteAllNode1: TMenuItem;
     actInsertDataRoot: TAction;
-    btnInsertDataRoot: TButton;
     tlb1: TToolBar;
     btnAddNode1: TToolButton;
     tlb11: TToolBar;
@@ -93,6 +90,10 @@ type
     mniInsertDataRoot: TMenuItem;
     mniReturnBack: TMenuItem;
     mniN4: TMenuItem;
+    tlb111: TToolBar;
+    btnactCnPrefixWizard1: TToolButton;
+    btnactCnPrefixWizard2: TToolButton;
+    btnactCnPrefixWizard3: TToolButton;
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
@@ -132,6 +133,7 @@ type
     procedure pmTreePopup(Sender: TObject);
     procedure actInsertDataRootExecute(Sender: TObject);
     procedure actInsertDataRootUpdate(Sender: TObject);
+    procedure actAddRootNodeUpdate(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -163,6 +165,11 @@ begin
   FFacade.AddNodeRoot();
 end;
 
+procedure TFormMain.actAddRootNodeUpdate(Sender: TObject);
+begin
+  actAddRootNode.Enabled := True;
+end;
+
 procedure TFormMain.actCollapseAllExecute(Sender: TObject);
 begin
   FFacade.CollapseAll;
@@ -170,7 +177,7 @@ end;
 
 procedure TFormMain.actCollapseAllUpdate(Sender: TObject);
 begin
-//
+  actCollapseAll.Enabled := TreeView.Items.Count > 0;
 end;
 
 procedure TFormMain.actDeleteAllNodeExecute(Sender: TObject);
@@ -200,7 +207,7 @@ end;
 
 procedure TFormMain.actEditNodeUpdate(Sender: TObject);
 begin
-//
+  actEditNode.Enabled := Assigned(TreeView.Selected);
 end;
 
 procedure TFormMain.actExpandAllExecute(Sender: TObject);
@@ -210,7 +217,7 @@ end;
 
 procedure TFormMain.actExpandAllUpdate(Sender: TObject);
 begin
-//
+  actExpandAll.Enabled := TreeView.Items.Count > 0;
 end;
 
 procedure TFormMain.actInsertDataExecute(Sender: TObject);
@@ -225,7 +232,7 @@ end;
 
 procedure TFormMain.actInsertDataRootUpdate(Sender: TObject);
 begin
-///
+  actInsertDataRoot.Enabled := lbHeap.ItemIndex <> -1;
 end;
 
 procedure TFormMain.actInsertDataUpdate(Sender: TObject);
@@ -276,7 +283,7 @@ end;
 
 procedure TFormMain.actSaveTreeToFileUpdate(Sender: TObject);
 begin
-//
+  actSaveTreeToFile.Enabled := TreeView.Items.Count > 0;
 end;
 
 procedure TFormMain.actSettingsExecute(Sender: TObject);
