@@ -111,6 +111,7 @@ type
     procedure actRecentFilesExecute(Sender: TObject);
     procedure actLoadTreeExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure pmTreePopup(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -289,6 +290,18 @@ end;
 procedure TFormMain.N6Click(Sender: TObject);
 begin
   FFacade.UpdateSubmenuRecentFiles(mmMain, mniRecentFiles);
+end;
+
+procedure TFormMain.pmTreePopup(Sender: TObject);
+var
+  MousePosition, TreePos: TPoint;
+  Node: TTreeNode;
+begin
+  GetCursorPos(MousePosition);
+  TreePos := TreeView.ScreenToClient(MousePosition);
+  Node := TreeView.GetNodeAt(TreePos.X, TreePos.Y);
+  if Assigned(Node) then
+    TreeView.Selected := Node;
 end;
 
 procedure TFormMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);

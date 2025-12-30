@@ -277,6 +277,7 @@
     Top = 104
   end
   object pmTree: TPopupMenu
+    OnPopup = pmTreePopup
     Left = 432
     Top = 200
     object actAddNode1: TMenuItem
