@@ -7,16 +7,21 @@ uses
   Forms, Dialogs, ComCtrls, uNodeModel;
 
 type
+  TReturnEvent = procedure(Text: string) of object;
+
   TTreeController = class(TObject)
   private
     FModel: TNodeModel;
     FTView: TTreeView;
+    FOnReturn: TReturnEvent;
+  private
     procedure OnChange(Sender: TObject; Node: TTreeNode);
     function SaveSelected(Node: TTreeNode): TNodeData;
     procedure RestoreSelected(Node: TTreeNode);
     procedure ExpandAll(Node: TTreeNode);
     procedure CollapseAll(Node: TTreeNode);
     procedure GenerateTreeData(ParentNode: TTreeNode; Stream: TStringStream; path: string);
+    procedure DoReturn(Text: string);
   public
     constructor Create(View: TTreeView);
     destructor Destroy; override;
@@ -28,8 +33,9 @@ type
     procedure SelectNode(Node: TTreeNode);
     function SelectedIsItem(Node: TTreeNode): Boolean;
     function SelectedIsFolder(Node: TTreeNode): Boolean;
-
     procedure SaveToFile(FileName: string);
+
+    property OnReturn: TReturnEvent read FOnReturn write FOnReturn;
   end;
 
 implementation
@@ -48,6 +54,12 @@ begin
   FTView.OnChange := nil;
   FModel.Free;
   inherited;
+end;
+
+procedure TTreeController.DoReturn(Text: string);
+begin
+  if Assigned(OnReturn) then
+    OnReturn(Text);
 end;
 
 function TTreeController.SaveSelected(Node: TTreeNode): TNodeData;
@@ -153,12 +165,29 @@ begin
   nodeData := SaveSelected(NewNode);
   if Assigned(nodeData) then
     nodeData.isFolder := True;
+  FTView.Selected := NewNode;
 end;
 
 procedure TTreeController.DeleteNode(Node: TTreeNode);
+var
+  i: integer;
 begin
-  if Assigned(Node) then
+  if not Assigned(Node) then
+    Exit;
+
+  if not Node.HasChildren then
+  begin
+    DoReturn(Node.Text);
     Node.Free;
+  end
+  else
+  begin
+    for i := Node.Count - 1 downto 0 do
+    begin
+      DeleteNode(Node.Item[i]);
+    end;
+    Node.Free;
+  end;
 end;
 
 procedure TTreeController.EditNode(Node: TTreeNode; NewText: string);

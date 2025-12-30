@@ -51,20 +51,20 @@
     Width = 303
     Height = 327
     Align = alClient
+    HideSelection = False
     Indent = 19
     PopupMenu = pmTree
     TabOrder = 1
-    ExplicitLeft = 335
   end
   object lbHeap: TListBox
     Left = 0
     Top = 24
     Width = 281
     Height = 327
+    Style = lbOwnerDrawFixed
     Align = alLeft
     ItemHeight = 14
     TabOrder = 2
-    ExplicitHeight = 273
   end
   object pnlСenter: TPanel
     Left = 287

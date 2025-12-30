@@ -56,6 +56,8 @@ type
     FFileLoader: TFileContentController;
     FSettings: TSettingsController;
     FTreeController: TTreeController;
+  private
+    procedure DoReturn(Text: string);
   public
     procedure LoadFile(filename: string);
   end;
@@ -93,15 +95,23 @@ begin
 end;
 
 procedure TFormMain.actInsertDataExecute(Sender: TObject);
+var
+  index: integer;
 begin
   FTreeController.InsertNode(lbHeap.Items[lbHeap.ItemIndex]);
+  index := lbHeap.ItemIndex;
   lbHeap.Items.Delete(lbHeap.ItemIndex);
+  if index > 0 then
+    index := index - 1;
+  if index <= lbHeap.Count - 1 then
+    lbHeap.ItemIndex := index;
 end;
 
 procedure TFormMain.actInsertDataUpdate(Sender: TObject);
 begin
   actInsertData.Enabled :=
     (lbHeap.ItemIndex <> -1) and
+    (TreeView.Items.Count > 0) and
     Assigned(TreeView.Selected) and
     FTreeController.SelectedIsFolder(TreeView.Selected);
 end;
@@ -109,8 +119,10 @@ end;
 procedure TFormMain.actReturnBackUpdate(Sender: TObject);
 begin
   actReturnBack.Enabled :=
+    (TreeView.Items.Count > 0) and
     Assigned(TreeView.Selected) and
-    FTreeController.SelectedIsItem(TreeView.Selected);
+    (FTreeController.SelectedIsItem(TreeView.Selected) or
+    (FTreeController.SelectedIsFolder(TreeView.Selected) and TreeView.Selected.HasChildren));
 end;
 
 procedure TFormMain.actLoadFileExecute(Sender: TObject);
@@ -120,12 +132,13 @@ begin
   begin
     FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
     LoadFile(OpenDialog.FileName);
+    if lbHeap.Count > 0 then
+      lbHeap.ItemIndex := 0;
   end;
 end;
 
 procedure TFormMain.actReturnBackExecute(Sender: TObject);
 begin
-  lbHeap.Items.Add(TreeView.Selected.Text);
   FTreeController.DeleteNode(TreeView.Selected);
 end;
 
@@ -137,6 +150,11 @@ begin
     FSettings.FileSaveDirectory := ExtractFilePath(dlgSaveTextFile.FileName);
     FTreeController.SaveToFile(ChangeFileExt(dlgSaveTextFile.FileName, '.txt'));
   end;
+end;
+
+procedure TFormMain.DoReturn(Text: string);
+begin
+  lbHeap.Items.Add(Text);
 end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -155,6 +173,7 @@ var
 begin
   FFileLoader := TFileContentController.Create();
   FTreeController := TTreeController.Create(TreeView);
+  FTreeController.OnReturn := DoReturn;
 
   settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
   FSettings := TSettingsController.Create(settingsFN);
