@@ -38,6 +38,7 @@ type
     pnl—enterBtn: TPanel;
     btnInsert: TButton;
     btnReturnBack: TButton;
+    actSettings: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
