@@ -9,7 +9,9 @@ uses
   uSettingsController in 'classes\Settings\uSettingsController.pas',
   uTreeController in 'classes\Tree\uTreeController.pas',
   uNodeModel in 'classes\Tree\uNodeModel.pas',
-  uMainFacade in 'classes\uMainFacade.pas';
+  uMainFacade in 'classes\uMainFacade.pas',
+  uRecentFilesController in 'classes\RecentFiles\uRecentFilesController.pas',
+  uRecentFilesModel in 'classes\RecentFiles\uRecentFilesModel.pas';
 
 {$R *.res}
 

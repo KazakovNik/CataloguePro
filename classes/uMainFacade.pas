@@ -3,8 +3,8 @@ unit uMainFacade;
 interface
 
 uses
-  Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls,
-  uHeapController, uSettingsController, uTreeController;
+  Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls, System.Classes, Vcl.Menus,
+  uHeapController, uSettingsController, uTreeController, uRecentFilesController;
 
 type
   TMainFacade = class
@@ -14,12 +14,17 @@ type
     FHeapController: THeapController;
     FSettingsController: TSettingsController;
     FTreeController: TTreeController;
+    FRecentFilesController: TRecentFilesController;
   private
     function ShowGialogNewNode: string;
     function ShowGialogEditNode: string;
     function GetFileOpenDirectory: string;
     function GetFileSaveDirectory: string;
     procedure DoReturn(Text: string);
+    procedure DoLoadFile(FileName: string);
+    procedure DoUpdateRecentFiles(History: TStringList);
+    procedure DoUpdateSettings(Sender: TSettingsController);
+    procedure OpenFileFromMenu(Sender: TObject);
   public
     constructor Create(Tree: TTreeView; Heap: TListBox);
     destructor Destroy; override;
@@ -38,6 +43,7 @@ type
     procedure ShowmAbout;
     procedure ShowmSettings;
     procedure TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure UpdateSubmenuRecentFiles(mmMain: TMainMenu; mniRecentFiles: TMenuItem);
 
     function CountNode: integer;
     function DeleteNodeEnabled: Boolean;
@@ -45,6 +51,7 @@ type
     function ReturnBackCurrentItemEnabled: Boolean;
     function TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer): Boolean;
 //    function GetDragControlTree: TControl;
+    function RecentFilesEnabled: Boolean;
   public
     property FileOpenDirectory: string read GetFileOpenDirectory;
     property FileSaveDirectory: string read GetFileSaveDirectory;
@@ -72,6 +79,11 @@ begin
   Result := FTree.Items.Count;
 end;
 
+procedure TMainFacade.DoUpdateSettings(Sender: TSettingsController);
+begin
+  FRecentFilesController.SetMaxCountFile(Sender.MaxCountFileHistopy);
+end;
+
 constructor TMainFacade.Create(Tree: TTreeView; Heap: TListBox);
 var
   settingsFN: string;
@@ -81,8 +93,14 @@ begin
 
   settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
   FSettingsController := TSettingsController.Create(settingsFN);
+  FSettingsController.OnUpdate := DoUpdateSettings;
+
+  FRecentFilesController := TRecentFilesController.Create();
+  FRecentFilesController.OnUpdate := DoUpdateRecentFiles;
+  FRecentFilesController.LoadHistory(FSettingsController.RecentFiles);
 
   FHeapController := THeapController.Create(FHeap);
+  FHeapController.OnLoadFile := DoLoadFile;
   FTreeController := TTreeController.Create(FTree);
   FTreeController.OnReturn := DoReturn;
 end;
@@ -94,6 +112,16 @@ begin
   FTreeController.Free;
 
   inherited;
+end;
+
+procedure TMainFacade.DoUpdateRecentFiles(History: TStringList);
+begin
+  FSettingsController.RecentFiles := StringReplace(History.Text, #13#10, ';', [rfReplaceAll]);
+end;
+
+procedure TMainFacade.DoLoadFile(FileName: string);
+begin
+  FRecentFilesController.OpenFile(FileName);
 end;
 
 procedure TMainFacade.DoReturn(Text: string);
@@ -188,6 +216,11 @@ begin
   FHeapController.Delete(FHeap.ItemIndex);
 end;
 
+function TMainFacade.RecentFilesEnabled: Boolean;
+begin
+  Result := FRecentFilesController.RecentFilesCount() > 0;
+end;
+
 function TMainFacade.ReturnBackCurrentItemEnabled: Boolean;
 begin
   Result :=
@@ -202,6 +235,34 @@ procedure TMainFacade.TreeSaveToFile(filename: string);
 begin
   FSettingsController.FileSaveDirectory := ExtractFilePath(filename);
   FTreeController.SaveToFile(ChangeFileExt(filename, '.txt'));
+end;
+
+procedure TMainFacade.UpdateSubmenuRecentFiles(mmMain: TMainMenu; mniRecentFiles: TMenuItem);
+var
+  i: Integer;
+  item: TMenuItem;
+begin
+  mniRecentFiles.Clear;
+
+  for i := 0 to FRecentFilesController.RecentFilesCount() - 1 do
+  begin
+    item := TMenuItem.Create(Application.MainForm);
+    item.Caption := FRecentFilesController.GetFileHistory(i);
+    item.Visible := True;
+    item.Tag := i;
+    item.AutoCheck := True;
+    item.OnClick := OpenFileFromMenu; // назначаем событие клика
+    mniRecentFiles.Add(item);
+  end;
+end;
+
+procedure TMainFacade.OpenFileFromMenu(Sender: TObject);
+var
+  FileName: string;
+begin
+  FileName := TMenuItem(Sender).Caption;
+  Delete(FileName, 1, 1);
+  HeapLoadFile(FileName);
 end;
 
 procedure TMainFacade.SaveSettings;

@@ -6,17 +6,22 @@ uses
   Vcl.StdCtrls;
 
 type
+  TLoadFileEvent = procedure(FileName: string) of object;
+
   THeapController = class
   private
     FListBox: TListBox;
+    FOnLoadFile: TLoadFileEvent;
   private
-
+    procedure DoLoadFile(FileName: string);
   public
     constructor Create(ListBox: TListBox);
     destructor Destroy(); override;
 
     procedure LoadFile(filename: string);
     procedure Delete(itemIndex: integer);
+
+    property OnLoadFile: TLoadFileEvent read FOnLoadFile write FOnLoadFile;
   end;
 
 implementation
@@ -48,6 +53,12 @@ begin
   inherited;
 end;
 
+procedure THeapController.DoLoadFile(FileName: string);
+begin
+  if Assigned(FOnLoadFile) then
+    FOnLoadFile(FileName);
+end;
+
 procedure THeapController.LoadFile(filename: string);
 var
   sl: TStringList;
@@ -71,6 +82,7 @@ begin
   finally
     sl.Free;
   end;
+  DoLoadFile(filename);
 end;
 
 end.

@@ -249,6 +249,12 @@
       OnExecute = actDeleteAllNodeExecute
       OnUpdate = actDeleteAllNodeUpdate
     end
+    object actRecentFiles: TAction
+      Caption = #1053#1077#1076#1072#1074#1085#1080#1077' '#1092#1072#1081#1083#1099
+      Hint = #1053#1077#1076#1072#1074#1085#1086' '#1086#1090#1082#1088#1099#1090#1099#1077' '#1092#1072#1081#1083#1099
+      OnExecute = actRecentFilesExecute
+      OnUpdate = actRecentFilesUpdate
+    end
   end
   object OpenDialog: TOpenDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
@@ -307,8 +313,12 @@
     Top = 216
     object N6: TMenuItem
       Caption = #1060#1072#1081#1083
+      OnClick = N6Click
       object N7: TMenuItem
         Action = actLoadFile
+      end
+      object mniRecentFiles: TMenuItem
+        Action = actRecentFiles
       end
     end
     object N8: TMenuItem

@@ -6,11 +6,15 @@ uses
   StdCtrls, uSettingsModel, SysUtils, Vcl.Forms, System.Classes;
 
 type
+  TSettingsController = class;
+  TUpdateEvent = procedure(Sender: TSettingsController) of object;
+
   TSettingsController = class(TObject)
   private
     FModel: TSettings;
     FFilePath: string;
-
+    FOnUpdate: TUpdateEvent;
+  private
     function GetMainFormHeight: integer;
     function GetMainFormLeft: integer;
     function GetMainFormTop: integer;
@@ -25,11 +29,18 @@ type
     procedure SetFileOpenDirectory(const Value: string);
     function GetFileSaveDirectory: string;
     procedure SetFileSaveDirectory(const Value: string);
+    function GetRecentFiles: string;
+    procedure SetRecentFiles(const Value: string);
+    procedure SetMaxCountFileHistopy(const Value: integer);
+    function GetMaxCountFileHistopy: integer;
+    procedure DoUpdate;
   public
     constructor Create(const AFilePath: string);
     destructor Destroy; override;
 
     procedure Save;
+
+    property OnUpdate: TUpdateEvent read FOnUpdate write FOnUpdate;
 
     property MainFormLeft: integer read GetMainFormLeft write SetMainFormLeft;
     property MainFormTop: integer read GetMainFormTop write SetMainFormTop;
@@ -38,6 +49,8 @@ type
     property HeapWidth: integer read GetHeapWidth write SetHeapWidth;
     property FileOpenDirectory: string read GetFileOpenDirectory write SetFileOpenDirectory;
     property FileSaveDirectory: string read GetFileSaveDirectory write SetFileSaveDirectory;
+    property RecentFiles: string read GetRecentFiles write SetRecentFiles;
+    property MaxCountFileHistopy: integer read GetMaxCountFileHistopy write SetMaxCountFileHistopy;
   end;
 
 implementation
@@ -60,6 +73,12 @@ destructor TSettingsController.Destroy;
 begin
   FreeAndNil(FModel);
   inherited Destroy;
+end;
+
+procedure TSettingsController.DoUpdate;
+begin
+  if Assigned(FOnUpdate) then
+    FOnUpdate(Self);
 end;
 
 function TSettingsController.GetFileOpenDirectory: string;
@@ -101,6 +120,16 @@ begin
   Result := FModel.MainFormWidth;
 end;
 
+function TSettingsController.GetMaxCountFileHistopy: integer;
+begin
+  Result := FModel.MaxCountFileHistopy;
+end;
+
+function TSettingsController.GetRecentFiles: string;
+begin
+  Result := FModel.RecentFiles;
+end;
+
 procedure TSettingsController.SetFileOpenDirectory(const Value: string);
 begin
   FModel.FileOpenDirectory := Value;
@@ -134,6 +163,17 @@ end;
 procedure TSettingsController.SetMainFormWidth(const Value: integer);
 begin
   FModel.MainFormWidth := Value;
+end;
+
+procedure TSettingsController.SetMaxCountFileHistopy(const Value: integer);
+begin
+  FModel.MaxCountFileHistopy := Value;
+  DoUpdate;
+end;
+
+procedure TSettingsController.SetRecentFiles(const Value: string);
+begin
+  FModel.RecentFiles := Value;
 end;
 
 procedure TSettingsController.Save;

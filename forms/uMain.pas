@@ -70,6 +70,8 @@ type
     actDeleteAllNode: TAction;
     N22: TMenuItem;
     statStatusBar: TStatusBar;
+    mniRecentFiles: TMenuItem;
+    actRecentFiles: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
@@ -103,6 +105,9 @@ type
     procedure TreeViewStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure actDeleteAllNodeUpdate(Sender: TObject);
     procedure actDeleteAllNodeExecute(Sender: TObject);
+    procedure actRecentFilesUpdate(Sender: TObject);
+    procedure N6Click(Sender: TObject);
+    procedure actRecentFilesExecute(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -206,6 +211,16 @@ begin
     FFacade.HeapLoadFile(OpenDialog.FileName);
 end;
 
+procedure TFormMain.actRecentFilesExecute(Sender: TObject);
+begin
+  // заглушка для ActionManager
+end;
+
+procedure TFormMain.actRecentFilesUpdate(Sender: TObject);
+begin
+  actRecentFiles.Enabled := FFacade.RecentFilesEnabled();
+end;
+
 procedure TFormMain.actReturnBackExecute(Sender: TObject);
 begin
   FFacade.DeleteCurrentNode();
@@ -259,6 +274,11 @@ begin
   if not ((Sender is TTreeView) and (Source is TListBox)) then
     Exit;
   Accept := true;
+end;
+
+procedure TFormMain.N6Click(Sender: TObject);
+begin
+  FFacade.UpdateSubmenuRecentFiles(mmMain, mniRecentFiles);
 end;
 
 procedure TFormMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);

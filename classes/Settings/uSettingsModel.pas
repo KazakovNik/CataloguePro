@@ -19,6 +19,8 @@ type
     FHeapWidth: integer;
     FFileSaveDirectory: string;
     FFileOpenDirectory: string;
+    FRecentFiles: string;
+    FMaxCountFileHistopy: Integer;
   public
     constructor Create(const FilePath: string); overload;
     procedure Save();
@@ -30,6 +32,8 @@ type
     property HeapWidth: integer read FHeapWidth write FHeapWidth;
     property FileOpenDirectory: string read FFileOpenDirectory write FFileOpenDirectory;
     property FileSaveDirectory: string read FFileSaveDirectory write FFileSaveDirectory;
+    property RecentFiles: string read FRecentFiles write FRecentFiles;
+    property MaxCountFileHistopy: Integer read FMaxCountFileHistopy write FMaxCountFileHistopy;
   end;
 
 implementation
@@ -61,6 +65,8 @@ begin
     HeapWidth := IniFile.ReadInteger('Settings', 'HeapWidth', 300);
     FileOpenDirectory := IniFile.ReadString('Settings', 'FileOpenDirectory', EmptyStr);
     FileSaveDirectory := IniFile.ReadString('Settings', 'FileSaveDirectory', EmptyStr);
+    RecentFiles := IniFile.ReadString('Settings', 'RecentFiles', EmptyStr);
+    MaxCountFileHistopy := IniFile.ReadInteger('Settings', 'MaxCountFileHistopy', 10);
   finally
     FreeAndNil(IniFile);
   end;
@@ -79,6 +85,8 @@ begin
     IniFile.WriteInteger('Settings', 'HeapWidth', HeapWidth);
     IniFile.WriteString('Settings', 'FileOpenDirectory', FileOpenDirectory);
     IniFile.WriteString('Settings', 'FileSaveDirectory', FileSaveDirectory);
+    IniFile.WriteString('Settings', 'RecentFiles', RecentFiles);
+    IniFile.WriteInteger('Settings', 'MaxCountFileHistopy', MaxCountFileHistopy);
   finally
     FreeAndNil(IniFile);
   end;
