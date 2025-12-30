@@ -103,6 +103,8 @@
 			<DCCReference Include="classes\FileLoader\uFileContentController.pas"/>
 			<DCCReference Include="classes\Settings\uSettingsModel.pas"/>
 			<DCCReference Include="classes\Settings\uSettingsController.pas"/>
+			<DCCReference Include="classes\Tree\uTreeController.pas"/>
+			<DCCReference Include="classes\Tree\uNodeModel.pas"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

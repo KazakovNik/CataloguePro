@@ -15,7 +15,6 @@ object FormMain: TFormMain
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   PixelsPerInch = 106
   TextHeight = 14
   object Splitter1: TSplitter
@@ -51,11 +50,8 @@ object FormMain: TFormMain
     Height = 273
     Align = alClient
     Indent = 19
+    PopupMenu = pmTree
     TabOrder = 1
-    ExplicitLeft = 432
-    ExplicitTop = 88
-    ExplicitWidth = 121
-    ExplicitHeight = 97
   end
   object lbHeap: TListBox
     Left = 0
@@ -79,6 +75,10 @@ object FormMain: TFormMain
           item
             Action = actLoadFile
             Caption = '&actLoadFile'
+          end
+          item
+            Action = actAddNode
+            Caption = 'a&ctAddNode'
           end>
         ActionBar = ActionToolBar1
       end>
@@ -89,10 +89,57 @@ object FormMain: TFormMain
       Caption = 'actLoadFile'
       OnExecute = actLoadFileExecute
     end
+    object actAddNode: TAction
+      Caption = 'actAddNode'
+      OnExecute = actAddNodeExecute
+    end
+    object actAddRootNode: TAction
+      Caption = 'actAddRootNode'
+      OnExecute = actAddRootNodeExecute
+    end
+    object actEditNode: TAction
+      Caption = 'actEditNode'
+      OnExecute = actEditNodeExecute
+    end
+    object actDeleteNode: TAction
+      Caption = 'actDeleteNode'
+      OnExecute = actDeleteNodeExecute
+    end
+    object actSaveTreeToFile: TAction
+      Caption = 'actSaveTreeToFile'
+      OnExecute = actSaveTreeToFileExecute
+    end
   end
   object OpenDialog: TOpenDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
     Left = 128
     Top = 32
+  end
+  object dlgSaveTextFile: TSaveDialog
+    Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
+    Left = 136
+    Top = 104
+  end
+  object pmTree: TPopupMenu
+    Left = 344
+    Top = 136
+    object actAddNode1: TMenuItem
+      Action = actAddNode
+    end
+    object actAddRootNode1: TMenuItem
+      Action = actAddRootNode
+    end
+    object actEditNode1: TMenuItem
+      Action = actEditNode
+    end
+    object actDeleteNode1: TMenuItem
+      Action = actDeleteNode
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object actSaveTreeToFile1: TMenuItem
+      Action = actSaveTreeToFile
+    end
   end
 end

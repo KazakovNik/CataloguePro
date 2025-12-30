@@ -7,7 +7,9 @@ uses
   uFileContentModel in 'classes\FileLoader\uFileContentModel.pas',
   uFileContentController in 'classes\FileLoader\uFileContentController.pas',
   uSettingsModel in 'classes\Settings\uSettingsModel.pas',
-  uSettingsController in 'classes\Settings\uSettingsController.pas';
+  uSettingsController in 'classes\Settings\uSettingsController.pas',
+  uTreeController in 'classes\Tree\uTreeController.pas',
+  uNodeModel in 'classes\Tree\uNodeModel.pas';
 
 {$R *.res}
 
