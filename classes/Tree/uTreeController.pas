@@ -22,6 +22,9 @@ type
     function GetNodeFromParentByName(Parent: TTreeNode;
       const NameNode: string): TTreeNode;
     procedure Expand(Node: TTreeNode);
+    function AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;
+    procedure FreeNode(var Node: TTreeNode);
+    function AddFolder(ParentNode: TTreeNode; Text: string): TTreeNode;
   public
     constructor Create(View: TTreeView; Logger: ILogger);
     destructor Destroy; override;
@@ -147,8 +150,9 @@ begin
     end;
   end;
 
-  NewNode := FTView.Items.AddChild(Node, nodeList[nodeList.Count - 1]);
-  NewNode.Data := TModelItem.Create();
+//  NewNode := FTView.Items.AddChild(Node, nodeList[nodeList.Count - 1]);
+//  NewNode.Data := TModelItem.Create();
+  AddItem(Node, nodeList[nodeList.Count - 1]);
 end;
 
 procedure TTreeController.SaveToFile(FileName: string);
@@ -202,7 +206,7 @@ end;
 
 procedure TTreeController.InsertItem(Text: string);
 var
-  NewNode, ParentNode: TTreeNode;
+  ParentNode: TTreeNode;
 begin
   ParentNode := FTView.Selected;
   if Assigned(ParentNode) then
@@ -210,8 +214,26 @@ begin
   else
     FLogger.AddInfo('Добавили в дерево эелемент: ' + Text);
 
-  NewNode := FTView.Items.AddChild(ParentNode, Text);
-  NewNode.Data := TModelItem.Create();
+  AddItem(ParentNode, Text);
+end;
+
+function TTreeController.AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;
+begin
+  Result := FTView.Items.AddChild(ParentNode, Text);
+  Result.Data := TModelItem.Create();
+  Result.ImageIndex := TModelBase(Result.Data).ImageIndex;
+  Result.SelectedIndex := Result.ImageIndex;
+
+  Expand(ParentNode);
+end;
+
+function TTreeController.AddFolder(ParentNode: TTreeNode; Text: string): TTreeNode;
+begin
+  Result := FTView.Items.AddChild(ParentNode, Text);
+  Result.Data := TModelDir.Create();
+  Result.ImageIndex := TModelBase(Result.Data).ImageIndex;
+  Result.SelectedIndex := Result.ImageIndex;
+
   Expand(ParentNode);
 end;
 
@@ -224,11 +246,15 @@ begin
   else
     FLogger.AddInfo('Добавили в дерево группу: ' + Text);
 
-  NewNode := FTView.Items.AddChild(ParentNode, Text);
-  NewNode.Data := TModelDir.Create();
-  Expand(ParentNode);
+  NewNode := AddFolder(ParentNode, Text);
   FTView.Selected := NewNode;
   Result := NewNode;
+end;
+
+procedure TTreeController.FreeNode(var Node: TTreeNode);
+begin
+  TObject(Node.Data).Free;
+  Node.Free;
 end;
 
 procedure TTreeController.DeleteNode(Node: TTreeNode);
@@ -242,7 +268,7 @@ begin
   begin
     if Assigned(Node) then
       FLogger.AddInfo('Удалили каталог: ' + Node.Text);
-    Node.Free;
+    FreeNode(Node);
     Exit;
   end;
 
@@ -251,7 +277,7 @@ begin
     if Assigned(Node) then
       FLogger.AddInfo('Удалили элемент: ' + Node.Text);
     DoReturn(Node.Text);
-    Node.Free;
+    FreeNode(Node);
   end
   else
   begin
@@ -259,7 +285,7 @@ begin
       FLogger.AddInfo('Удалили каталог: ' + Node.Text);
     for i := Node.Count - 1 downto 0 do
       DeleteNode(Node.Item[i]);
-    Node.Free;
+    FreeNode(Node);
   end;
 end;
 

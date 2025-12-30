@@ -304,6 +304,8 @@ begin
     item.Tag := i;
     item.AutoCheck := True;
     item.OnClick := OpenFileFromMenu;
+    item.ImageIndex := 13;
+
     mniRecentFiles.Add(item);
   end;
 end;

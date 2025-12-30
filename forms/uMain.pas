@@ -74,6 +74,8 @@ type
     actDeleteAllNode: TAction;
     actRecentFiles: TAction;
     mniDeleteAllNode1: TMenuItem;
+    actInsertDataRoot: TAction;
+    btnInsertDataRoot: TButton;
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
@@ -111,6 +113,8 @@ type
     procedure actLoadTreeExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure pmTreePopup(Sender: TObject);
+    procedure actInsertDataRootExecute(Sender: TObject);
+    procedure actInsertDataRootUpdate(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -195,6 +199,16 @@ end;
 procedure TFormMain.actInsertDataExecute(Sender: TObject);
 begin
   FFacade.InsertCurrentItem();
+end;
+
+procedure TFormMain.actInsertDataRootExecute(Sender: TObject);
+begin
+///
+end;
+
+procedure TFormMain.actInsertDataRootUpdate(Sender: TObject);
+begin
+///
 end;
 
 procedure TFormMain.actInsertDataUpdate(Sender: TObject);
