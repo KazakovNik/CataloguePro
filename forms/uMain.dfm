@@ -16,6 +16,7 @@
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  OnShow = FormShow
   PixelsPerInch = 106
   TextHeight = 14
   object Splitter: TSplitter
@@ -55,6 +56,10 @@
     Indent = 19
     PopupMenu = pmTree
     TabOrder = 1
+    OnDragDrop = TreeViewDragDrop
+    OnDragOver = TreeViewDragOver
+    ExplicitLeft = 329
+    ExplicitTop = 30
   end
   object lbHeap: TListBox
     Left = 0
@@ -63,8 +68,10 @@
     Height = 327
     Style = lbOwnerDrawFixed
     Align = alLeft
+    DragMode = dmAutomatic
     ItemHeight = 14
     TabOrder = 2
+    OnDragOver = lbHeapDragOver
   end
   object pnlСenter: TPanel
     Left = 287

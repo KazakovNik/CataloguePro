@@ -215,6 +215,7 @@ end;
 
 procedure TTreeController.SelectNode(Node: TTreeNode);
 begin
+  FTView.Selected := Node;
   RestoreSelected(Node);
 end;
 

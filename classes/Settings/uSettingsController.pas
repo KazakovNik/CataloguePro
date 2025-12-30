@@ -46,6 +46,14 @@ constructor TSettingsController.Create(const AFilePath: string);
 begin
   FFilePath := AFilePath;
   FModel := TSettings.Create(FFilePath);
+  if not FileExists(FFilePath) then
+  begin
+    MainFormHeight := Round(Screen.Height / 100 * 50);
+    MainFormWidth := Round(Screen.Width / 100 * 50);
+    MainFormLeft := (Screen.Width div 2) - (Application.MainForm.ClientWidth div 2);
+    MainFormTop := (Screen.Height div 2) - (Application.MainForm.ClientHeight div 2);
+    HeapWidth := 300;
+  end;
 end;
 
 destructor TSettingsController.Destroy;

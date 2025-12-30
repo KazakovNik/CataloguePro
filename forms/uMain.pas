@@ -53,12 +53,20 @@ type
     procedure actInsertDataExecute(Sender: TObject);
     procedure actReturnBackExecute(Sender: TObject);
     procedure actReturnBackUpdate(Sender: TObject);
+    procedure lbHeapDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FormShow(Sender: TObject);
   private
     FFileLoader: TFileContentController;
     FSettings: TSettingsController;
     FTreeController: TTreeController;
   private
     procedure DoReturn(Text: string);
+    procedure InitSettings;
+    procedure SaveSettings;
   public
     procedure LoadFile(filename: string);
   end;
@@ -160,39 +168,14 @@ end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  FSettings.MainFormHeight := Self.ClientHeight;
-  FSettings.MainFormWidth := Self.ClientWidth;
-  FSettings.MainFormLeft := Self.Left;
-  FSettings.MainFormTop := Self.Top;
-  FSettings.HeapWidth := lbHeap.Width;
-  FSettings.Save;
+  SaveSettings;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
-var
-  settingsFN: string;
 begin
   FFileLoader := TFileContentController.Create();
   FTreeController := TTreeController.Create(TreeView);
   FTreeController.OnReturn := DoReturn;
-
-  settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
-  FSettings := TSettingsController.Create(settingsFN);
-  if not FileExists(settingsFN) then
-  begin
-    Self.Position := poDesktopCenter;
-    Self.ClientHeight := Round(Screen.Height / 100 * 50);
-    Self.ClientWidth := Round(Screen.Width / 100 * 50);
-  end
-  else
-  begin
-    Self.Position := poDefault;
-    Self.ClientHeight := FSettings.MainFormHeight;
-    Self.ClientWidth := FSettings.MainFormWidth;
-    Self.Left := FSettings.MainFormLeft;
-    Self.Top := FSettings.MainFormTop;
-    lbHeap.Width := FSettings.HeapWidth;
-  end;
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
@@ -205,6 +188,19 @@ end;
 procedure TFormMain.FormResize(Sender: TObject);
 begin
   pnlÑenterBtn.Top := (pnlÑenter.Height - pnlÑenterBtn.Height) div 2;
+end;
+
+procedure TFormMain.FormShow(Sender: TObject);
+begin
+  InitSettings;
+end;
+
+procedure TFormMain.lbHeapDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  if not ((Sender is TTreeView) and (Source is TListBox)) then
+    Exit;
+  Accept := true;
 end;
 
 procedure TFormMain.LoadFile(filename: string);
@@ -222,6 +218,57 @@ begin
   finally
     lbHeap.Items.EndUpdate;
   end;
+end;
+
+procedure TFormMain.SaveSettings;
+begin
+  FSettings.MainFormHeight := Self.ClientHeight;
+  FSettings.MainFormWidth := Self.ClientWidth;
+  FSettings.MainFormLeft := Self.Left;
+  FSettings.MainFormTop := Self.Top;
+  FSettings.HeapWidth := lbHeap.Width;
+  FSettings.Save;
+end;
+
+procedure TFormMain.InitSettings;
+var
+  settingsFN: string;
+begin
+  settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
+  FSettings := TSettingsController.Create(settingsFN);
+  Self.ClientHeight := FSettings.MainFormHeight;
+  Self.ClientWidth := FSettings.MainFormWidth;
+  Self.Left := FSettings.MainFormLeft;
+  Self.Top := FSettings.MainFormTop;
+  lbHeap.Width := FSettings.HeapWidth;
+end;
+
+procedure TFormMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  index: integer;
+  tmpNode: TTreeNode;
+begin
+  if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
+    Exit;
+  tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
+
+  FTreeController.SelectNode(tmpNode);
+  FTreeController.InsertNode(lbHeap.Items[lbHeap.ItemIndex]);
+
+  index := lbHeap.ItemIndex;
+  lbHeap.Items.Delete(lbHeap.ItemIndex);
+  if index > 0 then
+    index := index - 1;
+  if index <= lbHeap.Count - 1 then
+    lbHeap.ItemIndex := index;
+end;
+
+procedure TFormMain.TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  if not (Source is TListBox) then
+    Exit;
+  Accept := true;
 end;
 
 end.
