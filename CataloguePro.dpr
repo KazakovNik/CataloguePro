@@ -13,20 +13,12 @@ uses
 
 {$R *.res}
 
-//var
-//  Settings: TSettingsController;
 begin
+  {$IFDEF DEBUG}
+  ReportMemoryLeaksOnShutdown := True;
+  {$ENDIF}
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-
-//
-//  if Settings.MainForm = EmptyStr then
-//
-//  else
-//  begin
-//    StringToComponentProc(Settings.MainForm);
-//  end;
-
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.

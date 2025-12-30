@@ -125,12 +125,14 @@
       Width = 484
       Height = 459
       Align = alClient
+      DragMode = dmAutomatic
       HideSelection = False
       Indent = 19
       PopupMenu = pmTree
       TabOrder = 0
       OnDragDrop = TreeViewDragDrop
       OnDragOver = TreeViewDragOver
+      OnStartDrag = TreeViewStartDrag
     end
     object pnlTreeUnils: TPanel
       Left = 0
@@ -228,6 +230,12 @@
       Caption = #55357#56492' '#1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
       OnExecute = actAboutExecute
     end
+    object actDeleteAllNode: TAction
+      Caption = #10006#65039' '#1059#1076#1072#1083#1080#1090#1100' '#1074#1089#1077
+      Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1089#1077' '#1074' '#1089#1087#1080#1089#1086#1082
+      OnExecute = actDeleteAllNodeExecute
+      OnUpdate = actDeleteAllNodeUpdate
+    end
   end
   object OpenDialog: TOpenDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
@@ -257,6 +265,10 @@
     object N5: TMenuItem
       Action = actDeleteNode
       Caption = #1059#1076#1072#1083#1080#1090#1100
+    end
+    object N22: TMenuItem
+      Action = actDeleteAllNode
+      Caption = #1059#1076#1072#1083#1080#1090#1100' '#1074#1089#1077
     end
     object N2: TMenuItem
       Caption = '-'

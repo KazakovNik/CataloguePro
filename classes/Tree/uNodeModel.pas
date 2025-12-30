@@ -3,7 +3,7 @@ unit uNodeModel;
 interface
 
 uses
-  Classes, Generics.Collections, System.SysUtils;
+  Vcl.Controls, Vcl.ComCtrls;
 
 type
   TModelItem = class
@@ -13,6 +13,13 @@ type
   TModelDir = class
 
   end;
+
+//  TModeDragNode = class(TControl)
+//  private
+//    FNode: TTreeNode;
+//  public
+//    property Node: TTreeNode read FNode write FNode;
+//  end;
 
 implementation
 

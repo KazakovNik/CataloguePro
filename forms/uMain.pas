@@ -67,6 +67,8 @@ type
     N20: TMenuItem;
     actAbout: TAction;
     N21: TMenuItem;
+    actDeleteAllNode: TAction;
+    N22: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
@@ -97,6 +99,9 @@ type
     procedure actCollapseAllUpdate(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);
     procedure actSettingsExecute(Sender: TObject);
+    procedure TreeViewStartDrag(Sender: TObject; var DragObject: TDragObject);
+    procedure actDeleteAllNodeUpdate(Sender: TObject);
+    procedure actDeleteAllNodeExecute(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -136,6 +141,16 @@ end;
 procedure TFormMain.actCollapseAllUpdate(Sender: TObject);
 begin
 //
+end;
+
+procedure TFormMain.actDeleteAllNodeExecute(Sender: TObject);
+begin
+  FFacade.DeleteAllNode();
+end;
+
+procedure TFormMain.actDeleteAllNodeUpdate(Sender: TObject);
+begin
+  actDeleteAllNode.Enabled := FFacade.DeleteNodeEnabled();
 end;
 
 procedure TFormMain.actDeleteNodeExecute(Sender: TObject);
@@ -254,6 +269,12 @@ procedure TFormMain.TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := FFacade.TreeDragOverAccept(Sender, Source, X, Y);
+end;
+
+procedure TFormMain.TreeViewStartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+//  DragObject := TDragControlObject.Create(FFacade.GetDragControlTree());
 end;
 
 end.

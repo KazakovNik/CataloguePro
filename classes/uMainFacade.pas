@@ -3,7 +3,7 @@ unit uMainFacade;
 interface
 
 uses
-  Vcl.ComCtrls, Vcl.StdCtrls,
+  Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls,
   uHeapController, uSettingsController, uTreeController;
 
 type
@@ -15,8 +15,6 @@ type
     FSettingsController: TSettingsController;
     FTreeController: TTreeController;
   private
-    FFileSaveDirectory: string;
-
     function ShowGialogNewNode: string;
     function ShowGialogEditNode: string;
     function GetFileOpenDirectory: string;
@@ -29,6 +27,7 @@ type
     procedure AddNode;
     procedure AddNodeRoot;
     procedure DeleteCurrentNode;
+    procedure DeleteAllNode;
     procedure EditCurrentNode;
     procedure InsertCurrentItem;
     procedure HeapLoadFile(filename: string);
@@ -45,6 +44,7 @@ type
     function InsertCurrentItemEnabled: Boolean;
     function ReturnBackCurrentItemEnabled: Boolean;
     function TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer): Boolean;
+//    function GetDragControlTree: TControl;
   public
     property FileOpenDirectory: string read GetFileOpenDirectory;
     property FileSaveDirectory: string read GetFileSaveDirectory;
@@ -53,7 +53,7 @@ type
 implementation
 
 uses
-  Vcl.Dialogs, System.SysUtils, Vcl.Forms;
+  Vcl.Dialogs, System.SysUtils, Vcl.Forms, uNodeModel;
 
 { TMainFacade }
 
@@ -101,6 +101,19 @@ begin
   FHeap.Items.Add(Text);
 end;
 
+procedure TMainFacade.DeleteAllNode;
+var
+  I: Integer;
+  RootNode: TTreeNode;
+begin
+  for I := FTree.Items.Count - 1 downto 0 do
+  begin
+    RootNode := FTree.Items[I];
+    if not Assigned(RootNode.Parent) then
+      FTreeController.DeleteNode(RootNode);
+  end;
+end;
+
 procedure TMainFacade.DeleteCurrentNode;
 begin
   if Assigned(FTree.Selected) then
@@ -117,6 +130,11 @@ begin
   if Assigned(FTree.Selected) then
     FTreeController.EditNode(FTree.Selected, ShowGialogEditNode());
 end;
+
+//function TMainFacade.GetDragControlTree: TControl;
+//begin
+//  Result := FTreeController.GetDragControlTree();
+//end;
 
 function TMainFacade.GetFileOpenDirectory: string;
 begin
@@ -180,18 +198,6 @@ begin
      FTree.Selected.HasChildren));
 end;
 
-procedure TMainFacade.TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-  tmpNode: TTreeNode;
-begin
-  if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
-    Exit;
-
-  tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
-  if Assigned(tmpNode) then
-    InsertTextIntoNode(tmpNode);
-end;
-
 procedure TMainFacade.TreeSaveToFile(filename: string);
 begin
   FSettingsController.FileSaveDirectory := ExtractFilePath(filename);
@@ -212,12 +218,56 @@ function TMainFacade.TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer):
 var
   tmpNode: TTreeNode;
 begin
-  if not (Source is TListBox) then
-    Exit;
+//  if (Source is TDragControlObject)
+//    and ((Source as TDragControlObject).Control.ClassName = 'TModeDragNode') then
+//      Exit(True);
+
+  if not ((Source is TListBox) and (Sender is TTreeView)) then
+    Exit(False);
   tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
 
   Result := Assigned(tmpNode) and FTreeController.SelectedIsFolder(tmpNode);
 end;
+
+procedure TMainFacade.TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  DstNode: TTreeNode;
+//  modelcontrol: TControl;
+//  model: TModeDragNode;
+//SrcNode: TTreeNode;
+begin
+//  if (Source is TDragControlObject)
+//    and ((Source as TDragControlObject).Control.ClassName = 'TModeDragNode') then
+//  begin
+//    modelcontrol := (Source as TDragControlObject).Control;
+//    try
+//      model := TModeDragNode(modelcontrol);
+//      SrcNode := model.Node;
+//      DstNode := (Sender as TTreeView).GetNodeAt(X, Y);
+//
+//      if DstNode = nil then
+//        SrcNode.MoveTo(nil, naAdd)
+//      else
+//      begin
+//        if FTreeController.SelectedIsFolder(DstNode) then
+//          SrcNode.MoveTo(DstNode, naAdd)
+//        else
+//          SrcNode.MoveTo(DstNode.Parent, naAdd);
+//      end;
+//    finally
+//      modelcontrol.Free;
+//      Source.Free;
+//    end;
+//    Exit;
+//  end;
+
+  if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
+    Exit;
+  DstNode := (Sender as TTreeView).GetNodeAt(X, Y);
+  if Assigned(DstNode) then
+    InsertTextIntoNode(DstNode);
+end;
+
 
 function TMainFacade.ShowGialogEditNode: string;
 begin

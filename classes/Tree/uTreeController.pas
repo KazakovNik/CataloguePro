@@ -30,6 +30,7 @@ type
 
     function SelectedIsItem(Node: TTreeNode): Boolean;
     function SelectedIsFolder(Node: TTreeNode): Boolean;
+    //function GetDragControlTree: TControl;
 
     procedure ExpandAll;
     procedure CollapseAll;
@@ -104,6 +105,15 @@ begin
   end;
 end;
 
+//function TTreeController.GetDragControlTree: TControl;
+//var
+//  model: TModeDragNode;
+//begin
+//  model := TModeDragNode.Create(nil);
+//  model.Node := FTView.Selected;
+//  Result := model;
+//end;
+
 procedure TTreeController.InsertItem(Text: string);
 var
   NewNode, ParentNode: TTreeNode;
@@ -163,7 +173,7 @@ end;
 
 function TTreeController.SelectedIsItem(Node: TTreeNode): Boolean;
 begin
-  Result := Assigned(Node.Data) and (TObject(Node.Data).ClassName = 'TModelItem');
+  Result := Assigned(Node) and Assigned(Node.Data) and (TObject(Node.Data).ClassName = 'TModelItem');
 end;
 
 procedure TTreeController.SelectNode(Node: TTreeNode);
