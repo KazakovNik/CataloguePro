@@ -260,7 +260,7 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  FFacade := TMainFacade.Create(TreeView, lbHeap);
+  FFacade := TMainFacade.Create(TreeView, lbHeap, statStatusBar);
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);

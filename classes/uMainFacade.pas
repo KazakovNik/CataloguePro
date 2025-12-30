@@ -12,6 +12,7 @@ type
   private
     FTree: TTreeView;
     FHeap: TListBox;
+    FStatusBar: TStatusBar;
     FHeapController: THeapController;
     FSettingsController: TSettingsController;
     FTreeController: TTreeController;
@@ -27,9 +28,10 @@ type
     procedure DoLoadFile(FileName: string);
     procedure DoUpdateRecentFiles(History: TStringList);
     procedure DoUpdateSettings(Sender: TSettingsController);
+    procedure DoUpdateStatus;
     procedure OpenFileFromMenu(Sender: TObject);
   public
-    constructor Create(Tree: TTreeView; Heap: TListBox);
+    constructor Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
     destructor Destroy; override;
 
     procedure AddNode;
@@ -49,7 +51,6 @@ type
     procedure TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure UpdateSubmenuRecentFiles(mmMain: TMainMenu; mniRecentFiles: TMenuItem);
 
-    function CountNode: integer;
     function DeleteNodeEnabled: Boolean;
     function InsertCurrentItemEnabled: Boolean;
     function ReturnBackCurrentItemEnabled: Boolean;
@@ -71,16 +72,13 @@ uses
 procedure TMainFacade.AddNode;
 begin
   FTreeController.AddNode(FTree.Selected, ShowGialogNewNode);
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.AddNodeRoot;
 begin
   FTreeController.AddNode(nil, ShowGialogNewNode);
-end;
-
-function TMainFacade.CountNode: integer;
-begin
-  Result := FTree.Items.Count;
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.DoUpdateSettings(Sender: TSettingsController);
@@ -88,12 +86,29 @@ begin
   FRecentFilesController.SetMaxCountFile(Sender.MaxCountFileHistopy);
 end;
 
-constructor TMainFacade.Create(Tree: TTreeView; Heap: TListBox);
+procedure TMainFacade.DoUpdateStatus;
+begin
+  FStatusBar.Panels[0].Text := FUserInfo.UserName;
+  FStatusBar.Panels[1].Text := FUserInfo.ComputerName;
+  if (FHeap.Items.Count = 0) and (FTreeController.CountNode = 0) then
+  begin
+    FStatusBar.Panels[2].Text := '';
+    FStatusBar.Panels[3].Text := '';
+  end
+  else
+  begin
+    FStatusBar.Panels[2].Text := 'Строк в куче: ' + IntToStr(FHeap.Items.Count);
+    FStatusBar.Panels[3].Text := 'Записей в дереве: ' + IntToStr(FTreeController.CountNode);
+  end;
+end;
+
+constructor TMainFacade.Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
 var
   settingsFN: string;
 begin
   FTree := Tree;
   FHeap := Heap;
+  FStatusBar := StatusBar;
 
   FUserInfo := TUserInfo.Create;
 
@@ -111,6 +126,8 @@ begin
   FHeapController := THeapController.Create(FHeap, FLogger);
   FTreeController := TTreeController.Create(FTree, FLogger);
   FTreeController.OnReturn := DoReturn;
+
+  DoUpdateStatus;
 end;
 
 destructor TMainFacade.Destroy;
@@ -139,11 +156,13 @@ end;
 procedure TMainFacade.DoLoadFile(FileName: string);
 begin
   FRecentFilesController.OpenFile(FileName);
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.DoReturn(Text: string);
 begin
   FHeapController.Add(Text);
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.DeleteAllNode;
@@ -157,12 +176,14 @@ begin
     if not Assigned(RootNode.Parent) then
       FTreeController.DeleteNode(RootNode);
   end;
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.DeleteCurrentNode;
 begin
   if Assigned(FTree.Selected) then
     FTreeController.DeleteNode(FTree.Selected);
+  DoUpdateStatus;
 end;
 
 function TMainFacade.DeleteNodeEnabled: Boolean;
@@ -174,6 +195,7 @@ procedure TMainFacade.EditCurrentNode;
 begin
   if Assigned(FTree.Selected) then
     FTreeController.EditNode(FTree.Selected, ShowGialogEditNode());
+  DoUpdateStatus;
 end;
 
 //function TMainFacade.GetDragControlTree: TControl;
@@ -201,6 +223,7 @@ begin
     on E: Exception do
       ShowMessage(E.Message);
   end;
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.InitSettings;
@@ -217,6 +240,7 @@ begin
   FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
   FTreeController.InsertItem(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
+  DoUpdateStatus;
 end;
 
 function TMainFacade.InsertCurrentItemEnabled: Boolean;
@@ -234,6 +258,7 @@ begin
   FTreeController.SelectNode(Node);
   FTreeController.InsertItem(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.LoadTreeFile(filename: string);
@@ -247,6 +272,7 @@ begin
     on E: Exception do
       ShowMessage(E.Message);
   end;
+  DoUpdateStatus;
 end;
 
 function TMainFacade.RecentFilesEnabled: Boolean;
@@ -268,6 +294,7 @@ procedure TMainFacade.TreeSaveToFile(filename: string);
 begin
   FSettingsController.FileSaveDirectory := ExtractFilePath(filename);
   FTreeController.SaveToFile(ChangeFileExt(filename, '.txt'));
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.UpdateSubmenuRecentFiles(mmMain: TMainMenu;
@@ -362,8 +389,8 @@ begin
   DstNode := (Sender as TTreeView).GetNodeAt(X, Y);
   if Assigned(DstNode) then
     InsertTextIntoNode(DstNode);
+  DoUpdateStatus;
 end;
-
 
 function TMainFacade.ShowGialogEditNode: string;
 begin
@@ -374,7 +401,7 @@ function TMainFacade.ShowGialogNewNode: string;
 begin
   Result :=
     InputBox('Новый элемент', 'Название:',
-      Format('Новая элемент (%d)', [CountNode]));
+      Format('Новая элемент (%d)', [FTreeController.CountNode]));
 end;
 
 procedure TMainFacade.ShowmAbout;

@@ -39,6 +39,7 @@ type
     function SelectedIsFolder(Node: TTreeNode): Boolean;
     //function GetDragControlTree: TControl;
     function AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
+    function CountNode: integer;
 
     property OnReturn: TReturnEvent read FOnReturn write FOnReturn;
   end;
@@ -62,6 +63,11 @@ begin
       TObject(FTView.Items[i].Data).Free;
 
   inherited;
+end;
+
+function TTreeController.CountNode: integer;
+begin
+  Result := FTView.Items.Count;
 end;
 
 procedure TTreeController.DoReturn(Text: string);

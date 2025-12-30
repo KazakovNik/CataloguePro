@@ -44,7 +44,6 @@
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 459
     object pnlСenterBtn: TPanel
       Left = 0
       Top = 0
@@ -80,7 +79,6 @@
     BevelOuter = bvNone
     Caption = 'pnlHeap'
     TabOrder = 1
-    ExplicitHeight = 500
     object lbHeap: TListBox
       Left = 0
       Top = 41
@@ -93,7 +91,6 @@
       MultiSelect = True
       TabOrder = 0
       OnDragOver = lbHeapDragOver
-      ExplicitHeight = 459
     end
     object pnlHeaputils: TPanel
       Left = 0
@@ -122,7 +119,6 @@
     BevelOuter = bvNone
     Caption = 'pnlTree'
     TabOrder = 2
-    ExplicitHeight = 500
     object TreeView: TTreeView
       Left = 0
       Top = 41
@@ -137,7 +133,6 @@
       OnDragDrop = TreeViewDragDrop
       OnDragOver = TreeViewDragOver
       OnStartDrag = TreeViewStartDrag
-      ExplicitHeight = 459
     end
     object pnlTreeUnils: TPanel
       Left = 0
@@ -154,8 +149,19 @@
     Top = 481
     Width = 800
     Height = 19
-    Panels = <>
-    ExplicitWidth = 484
+    Panels = <
+      item
+        Width = 100
+      end
+      item
+        Width = 150
+      end
+      item
+        Width = 150
+      end
+      item
+        Width = 100
+      end>
   end
   object ImageList1: TImageList
     Height = 24
