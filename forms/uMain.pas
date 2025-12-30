@@ -122,7 +122,6 @@ type
     procedure actCollapseAllUpdate(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);
     procedure actSettingsExecute(Sender: TObject);
-    procedure TreeViewStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure actDeleteAllNodeUpdate(Sender: TObject);
     procedure actDeleteAllNodeExecute(Sender: TObject);
     procedure actRecentFilesUpdate(Sender: TObject);
@@ -346,12 +345,6 @@ procedure TFormMain.TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := FFacade.TreeDragOverAccept(Sender, Source, X, Y);
-end;
-
-procedure TFormMain.TreeViewStartDrag(Sender: TObject;
-  var DragObject: TDragObject);
-begin
-//  DragObject := TDragControlObject.Create(FFacade.GetDragControlTree());
 end;
 
 end.

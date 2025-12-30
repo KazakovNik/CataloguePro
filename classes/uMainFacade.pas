@@ -28,6 +28,7 @@ type
     procedure DoUpdateSettings(Sender: TSettingsController);
     procedure DoUpdateStatus;
     procedure OpenFileFromMenu(Sender: TObject);
+    procedure MoveNode(TargetNode, SourceNode: TTreeNode);
   public
     constructor Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
     destructor Destroy; override;
@@ -56,7 +57,6 @@ type
     function InsertCurrentItemEnabled: Boolean;
     function ReturnBackCurrentItemEnabled: Boolean;
     function TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer): Boolean;
-//    function GetDragControlTree: TControl;
     function RecentFilesEnabled: Boolean;
   public
     property FileOpenDirectory: string read GetFileOpenDirectory;
@@ -229,11 +229,6 @@ begin
   FTreeController.ExpandAll;
 end;
 
-//function TMainFacade.GetDragControlTree: TControl;
-//begin
-//  Result := FTreeController.GetDragControlTree();
-//end;
-
 function TMainFacade.GetFileOpenDirectory: string;
 begin
   Result := FSettingsController.FileOpenDirectory;
@@ -384,9 +379,8 @@ function TMainFacade.TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer):
 var
   tmpNode: TTreeNode;
 begin
-//  if (Source is TDragControlObject)
-//    and ((Source as TDragControlObject).Control.ClassName = 'TModeDragNode') then
-//      Exit(True);
+  if (Source is TTreeView) then
+    Exit(True);
 
   if not ((Source is TListBox) and (Sender is TTreeView)) then
     Exit(False);
@@ -395,37 +389,46 @@ begin
   Result := Assigned(tmpNode) and FTreeController.SelectedIsFolder(tmpNode);
 end;
 
+procedure TMainFacade.MoveNode(TargetNode, SourceNode : TTreeNode);
+var
+  nodeTmp : TTreeNode;
+  i : Integer;
+begin
+  with FTree do
+  begin
+    nodeTmp := FTreeController.CloneItem(SourceNode, TargetNode);
+
+    for i := 0 to SourceNode.Count - 1 do
+      MoveNode(nodeTmp, SourceNode.Item[i]);
+  end;
+end;
+
 procedure TMainFacade.TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   DstNode: TTreeNode;
-//  modelcontrol: TControl;
-//  model: TModeDragNode;
-//SrcNode: TTreeNode;
+var
+  TargetNode, SourceNode : TTreeNode;
 begin
-//  if (Source is TDragControlObject)
-//    and ((Source as TDragControlObject).Control.ClassName = 'TModeDragNode') then
-//  begin
-//    modelcontrol := (Source as TDragControlObject).Control;
-//    try
-//      model := TModeDragNode(modelcontrol);
-//      SrcNode := model.Node;
-//      DstNode := (Sender as TTreeView).GetNodeAt(X, Y);
-//
-//      if DstNode = nil then
-//        SrcNode.MoveTo(nil, naAdd)
-//      else
-//      begin
-//        if FTreeController.SelectedIsFolder(DstNode) then
-//          SrcNode.MoveTo(DstNode, naAdd)
-//        else
-//          SrcNode.MoveTo(DstNode.Parent, naAdd);
-//      end;
-//    finally
-//      modelcontrol.Free;
-//      Source.Free;
-//    end;
-//    Exit;
-//  end;
+  if (Source is TTreeView) then
+  begin
+    with FTree do
+    begin
+      TargetNode := GetNodeAt(X, Y);
+
+      if FTreeController.SelectedIsItem(TargetNode) then
+      begin
+        if TargetNode.Parent = nil then
+          TargetNode := nil
+        else
+          TargetNode := TargetNode.Parent;
+      end;
+
+      SourceNode := Selected;
+      MoveNode(TargetNode, SourceNode);
+      SourceNode.Free;
+    end;
+    Exit;
+  end;
 
   if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
     Exit;

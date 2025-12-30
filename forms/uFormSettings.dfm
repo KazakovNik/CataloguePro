@@ -5,7 +5,7 @@ inherited FormSettings: TFormSettings
   PixelsPerInch = 106
   TextHeight = 14
   inherited pnlBtnPanel: TPanel
-    Top = 303
+    Top = 300
     ExplicitTop = 303
   end
   inline frmLastOpen: TFrame1

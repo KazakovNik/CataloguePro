@@ -30,6 +30,7 @@ type
     destructor Destroy; override;
 
     procedure InsertItem(Text: string);
+    function CloneItem(SourceNode, ParentNode: TTreeNode): TTreeNode;
     procedure InsertItemToRoot(Text: string);
     procedure DeleteNode(Node: TTreeNode);
     procedure EditNode(Node: TTreeNode; NewText: string);
@@ -41,7 +42,6 @@ type
 
     function SelectedIsItem(Node: TTreeNode): Boolean;
     function SelectedIsFolder(Node: TTreeNode): Boolean;
-    //function GetDragControlTree: TControl;
     function AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
     function CountNode: integer;
 
@@ -112,7 +112,7 @@ end;
 function TTreeController.GetNodeFromParentByName(Parent: TTreeNode;
   const NameNode: string): TTreeNode;
 var
-  I, j: Integer;
+  I: Integer;
 begin
   Result := nil;
   for I := 0 to FTView.Items.Count - 1 do
@@ -129,7 +129,7 @@ procedure TTreeController.ForceNode(nodeList: TStringList);
 var
   i: integer;
   Node: TTreeNode;
-  NewNode, ParentNode: TTreeNode;
+  ParentNode: TTreeNode;
 begin
   Node := nil;
   for i := 0 to nodeList.Count - 1 do
@@ -151,8 +151,6 @@ begin
     end;
   end;
 
-//  NewNode := FTView.Items.AddChild(Node, nodeList[nodeList.Count - 1]);
-//  NewNode.Data := TModelItem.Create();
   AddItem(Node, nodeList[nodeList.Count - 1]);
 end;
 
@@ -179,7 +177,6 @@ procedure TTreeController.GenerateTreeData(ParentNode: TTreeNode; Stream: TStrin
 var
   I: Integer;
   Node: TTreeNode;
-  Indentation: string;
 begin
   if path <> EmptyStr then
     path := path + '\';
@@ -195,15 +192,6 @@ begin
       Stream.WriteString(path + '\' + Node.Text + #13#10);
   end;
 end;
-
-//function TTreeController.GetDragControlTree: TControl;
-//var
-//  model: TModeDragNode;
-//begin
-//  model := TModeDragNode.Create(nil);
-//  model.Node := FTView.Selected;
-//  Result := model;
-//end;
 
 procedure TTreeController.InsertItem(Text: string);
 var
@@ -341,6 +329,19 @@ begin
   FTView.FullExpand;
   if FTView.Items.Count > 0 then
     FTView.Selected := FTView.Items[0];
+end;
+
+function TTreeController.CloneItem(SourceNode, ParentNode: TTreeNode): TTreeNode;
+begin
+  with FTView do
+  begin
+    Result := Items.AddChild(ParentNode, SourceNode.Text);
+    Result.Data := SourceNode.Data;
+    Result.ImageIndex := TModelBase(Result.Data).ImageIndex;
+    Result.SelectedIndex := Result.ImageIndex;
+
+    Expand(ParentNode);
+  end;
 end;
 
 procedure TTreeController.CollapseAll;

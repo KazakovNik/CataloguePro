@@ -154,7 +154,6 @@
       TabOrder = 0
       OnDragDrop = TreeViewDragDrop
       OnDragOver = TreeViewDragOver
-      OnStartDrag = TreeViewStartDrag
     end
     object tlb1: TToolBar
       AlignWithMargins = True
