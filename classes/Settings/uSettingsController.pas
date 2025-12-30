@@ -3,7 +3,7 @@ unit uSettingsController;
 interface
 
 uses
-  StdCtrls, uSettingsModel, SysUtils, Vcl.Forms, System.Classes;
+  uSettingsModel, SysUtils, Vcl.Forms;
 
 type
   TSettingsController = class;

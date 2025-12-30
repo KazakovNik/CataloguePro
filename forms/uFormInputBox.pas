@@ -3,9 +3,8 @@ unit uFormInputBox;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormDialogBase, Vcl.StdCtrls,
-  Vcl.ExtCtrls;
+  System.Classes, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls,
+  uFormDialogBase;
 
 type
   TFormInputBox = class(TFormDialogBase)

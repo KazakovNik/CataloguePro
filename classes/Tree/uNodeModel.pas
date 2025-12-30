@@ -2,9 +2,6 @@ unit uNodeModel;
 
 interface
 
-uses
-  Vcl.Controls, Vcl.ComCtrls;
-
 type
   TModelBase = class
   private
@@ -21,13 +18,6 @@ type
   TModelDir = class(TModelBase)
     constructor Create();
   end;
-
-//  TModeDragNode = class(TControl)
-//  private
-//    FNode: TTreeNode;
-//  public
-//    property Node: TTreeNode read FNode write FNode;
-//  end;
 
 implementation
 

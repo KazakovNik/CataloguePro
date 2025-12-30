@@ -3,7 +3,7 @@ unit uLogger;
 interface
 
 uses
-  Classes, SysUtils, System.IOUtils,
+  SysUtils, System.IOUtils,
   uILogger, uUserInfo;
 
 type

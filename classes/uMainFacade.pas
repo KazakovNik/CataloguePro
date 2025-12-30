@@ -67,7 +67,7 @@ implementation
 
 uses
   Vcl.Dialogs, System.SysUtils, Vcl.Forms, System.UITypes,
-  uNodeModel, uAboutFacade, uSettingsFacade, uFormInputBox;
+  uAboutFacade, uSettingsFacade, uFormInputBox;
 
 { TMainFacade }
 

@@ -3,8 +3,8 @@ unit uTreeController;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
-  Forms, Dialogs, ComCtrls, uNodeModel, uILogger;
+  SysUtils, Classes,
+  ComCtrls, uNodeModel, uILogger;
 
 type
   TReturnEvent = procedure(Text: string) of object;

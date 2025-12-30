@@ -3,7 +3,7 @@ unit uSettingsModel;
 interface
 
 uses
-  Classes, SysUtils;
+  SysUtils;
 
 type
   TSettings = class(TObject)
