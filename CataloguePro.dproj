@@ -110,6 +110,25 @@
 			<DCCReference Include="classes\Log\uLogger.pas"/>
 			<DCCReference Include="classes\Log\uILogger.pas"/>
 			<DCCReference Include="classes\uUserInfo.pas"/>
+			<DCCReference Include="forms\uFormAbout.pas">
+				<Form>FormAbout</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
+			<DCCReference Include="classes\uAboutFacade.pas"/>
+			<DCCReference Include="forms\uFormDialogBase.pas">
+				<Form>FormDialogBase</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
+			<DCCReference Include="forms\uFormSettings.pas">
+				<Form>FormSettings</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
+			<DCCReference Include="classes\uSettingsFacade.pas"/>
+			<DCCReference Include="forms\uFramePatch.pas">
+				<Form>Frame1</Form>
+				<FormType>dfm</FormType>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

@@ -14,7 +14,13 @@ uses
   uRecentFilesModel in 'classes\RecentFiles\uRecentFilesModel.pas',
   uLogger in 'classes\Log\uLogger.pas',
   uILogger in 'classes\Log\uILogger.pas',
-  uUserInfo in 'classes\uUserInfo.pas';
+  uUserInfo in 'classes\uUserInfo.pas',
+  uFormAbout in 'forms\uFormAbout.pas' {FormAbout},
+  uAboutFacade in 'classes\uAboutFacade.pas',
+  uFormDialogBase in 'forms\uFormDialogBase.pas' {FormDialogBase},
+  uFormSettings in 'forms\uFormSettings.pas' {FormSettings},
+  uSettingsFacade in 'classes\uSettingsFacade.pas',
+  uFramePatch in 'forms\uFramePatch.pas' {Frame1: TFrame};
 
 {$R *.res}
 
@@ -25,5 +31,8 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFormMain, FormMain);
+  Application.CreateForm(TFormAbout, FormAbout);
+  Application.CreateForm(TFormDialogBase, FormDialogBase);
+  Application.CreateForm(TFormSettings, FormSettings);
   Application.Run;
 end.

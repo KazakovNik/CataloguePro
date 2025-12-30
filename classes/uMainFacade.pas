@@ -66,7 +66,7 @@ implementation
 
 uses
   Vcl.Dialogs, System.SysUtils, Vcl.Forms, System.UITypes,
-  uNodeModel;
+  uNodeModel, uAboutFacade, uSettingsFacade;
 
 { TMainFacade }
 
@@ -143,7 +143,6 @@ begin
   FRecentFilesController.Free;
 
   FLogger.AddInfo('Закрытие программы');
-
   FUserInfo.Free;
 
   inherited;
@@ -339,11 +338,8 @@ begin
         FSettingsController.MainFormLeft := Application.MainForm.Left;
         FSettingsController.MainFormTop := Application.MainForm.Top;
       end;
-    wsMaximized:
-      begin
-        FSettingsController.WindowState := Ord(Application.MainForm.WindowState);
-      end;
   end;
+  FSettingsController.WindowState := Ord(Application.MainForm.WindowState);
   FSettingsController.HeapWidth := FHeap.Width;
   FSettingsController.Save;
 end;
@@ -416,13 +412,27 @@ begin
 end;
 
 procedure TMainFacade.ShowmAbout;
+var
+  Facade: TAboutFacade;
 begin
-
+  Facade := TAboutFacade.Create;
+  try
+    Facade.ShowModal;
+  finally
+    Facade.Free;
+  end;
 end;
 
 procedure TMainFacade.ShowmSettings;
+var
+  Facade: TSettingsFacade;
 begin
-
+  Facade := TSettingsFacade.Create(FSettingsController);
+  try
+    Facade.ShowModal;
+  finally
+    Facade.Free;
+  end;
 end;
 
 end.
