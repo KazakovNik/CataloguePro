@@ -69,6 +69,7 @@ type
     N21: TMenuItem;
     actDeleteAllNode: TAction;
     N22: TMenuItem;
+    statStatusBar: TStatusBar;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
