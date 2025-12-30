@@ -34,6 +34,7 @@ class function TFormInputBox.Show(const ACaption, APrompt,
 var
   Form: TFormInputBox;
 begin
+  Result := False;
   Text := ADefault;
   Form := TFormInputBox.Create(nil);
   try
