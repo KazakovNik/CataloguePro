@@ -157,15 +157,19 @@ end;
 procedure TTreeController.SaveToFile(FileName: string);
 var
   StrStream: TStringStream;
-  I: Integer;
+  i: Integer;
 begin
   FLogger.AddInfo('Сохраняем дерево в файл: ' + filename);
   StrStream := TStringStream.Create('');
   try
-    for I := 0 to FTView.Items.Count - 1 do
+    for i := 0 to FTView.Items.Count - 1 do
     begin
       if not Assigned(FTView.Items[i].Parent) then
-        GenerateTreeData(FTView.Items[I], StrStream, EmptyStr);
+        GenerateTreeData(FTView.Items[I], StrStream, EmptyStr)
+      else
+      begin
+        StrStream.WriteString(FTView.Items[i].Text + #13#10);
+      end;
     end;
     StrStream.SaveToFile(FileName);
   finally
