@@ -87,6 +87,12 @@ type
     btnAddNode9: TToolButton;
     btnAddNode10: TToolButton;
     btnAddNode11: TToolButton;
+    mniLoadTree1: TMenuItem;
+    mniN3: TMenuItem;
+    mniInsertData: TMenuItem;
+    mniInsertDataRoot: TMenuItem;
+    mniReturnBack: TMenuItem;
+    mniN4: TMenuItem;
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);

@@ -1817,10 +1817,31 @@
       object mniDeleteAllNode1: TMenuItem
         Action = actDeleteAllNode
       end
+      object mniN3: TMenuItem
+        Caption = '-'
+      end
       object mniSaveTreeToFile1: TMenuItem
         Action = actSaveTreeToFile
       end
+      object mniLoadTree1: TMenuItem
+        Action = actLoadTree
+      end
       object N15: TMenuItem
+        Caption = '-'
+      end
+      object mniInsertData: TMenuItem
+        Action = actInsertData
+        Caption = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1076#1077#1088#1077#1074#1086
+      end
+      object mniInsertDataRoot: TMenuItem
+        Action = actInsertDataRoot
+        Caption = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1082#1086#1088#1077#1085#1100' '#1076#1077#1088#1077#1074#1072
+      end
+      object mniReturnBack: TMenuItem
+        Action = actReturnBack
+        Caption = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1099#1073#1088#1072#1085#1085#1086#1077' '#1074' '#1089#1087#1080#1089#1086#1082
+      end
+      object mniN4: TMenuItem
         Caption = '-'
       end
       object mniCollapseAll1: TMenuItem
@@ -1851,12 +1872,14 @@
       Caption = #1054#1090#1082#1088#1099#1090#1100' '#1092#1072#1081#1083
       Hint = #1054#1090#1082#1088#1099#1090#1100' '#1092#1072#1081#1083' '#1089' '#1085#1077' '#1086#1073#1088#1072#1073#1086#1090#1072#1085#1099#1084' '#1089#1087#1080#1089#1082#1086#1084
       ImageIndex = 0
+      ShortCut = 16463
       OnExecute = actLoadFileExecute
     end
     object actAddNode: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       Hint = #1044#1072#1073#1072#1074#1080#1090#1100' '#1075#1088#1091#1087#1087#1091' '#1074' '#1074#1099#1073#1088#1072#1085#1085#1086#1077
       ImageIndex = 17
+      ShortCut = 118
       OnExecute = actAddNodeExecute
       OnUpdate = actAddNodeUpdate
     end
@@ -1864,12 +1887,14 @@
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1085#1072#1095#1072#1083#1086
       Hint = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1085#1072#1095#1072#1083#1086
       ImageIndex = 2
+      ShortCut = 16502
       OnExecute = actAddRootNodeExecute
     end
     object actEditNode: TAction
       Caption = #1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
       Hint = #1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
       ImageIndex = 3
+      ShortCut = 113
       OnExecute = actEditNodeExecute
       OnUpdate = actEditNodeUpdate
     end
@@ -1877,6 +1902,7 @@
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1092#1072#1081#1083
       Hint = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1076#1077#1088#1077#1074#1086' '#1074' '#1090#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083
       ImageIndex = 4
+      ShortCut = 24659
       OnExecute = actSaveTreeToFileExecute
       OnUpdate = actSaveTreeToFileUpdate
     end
@@ -1884,23 +1910,27 @@
       Caption = #1054#1090#1082#1088#1099#1090#1100
       Hint = #1054#1090#1082#1088#1099#1090#1100' '#1076#1077#1088#1077#1074#1086' '#1080#1079' '#1074' '#1090#1077#1082#1089#1090#1086#1074#1086#1075#1086' '#1092#1072#1081#1083#1072
       ImageIndex = 0
+      ShortCut = 24655
       OnExecute = actLoadTreeExecute
     end
     object actInsertData: TAction
       Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1076#1077#1088#1077#1074#1086
       ImageIndex = 5
+      ShortCut = 45
       OnExecute = actInsertDataExecute
       OnUpdate = actInsertDataUpdate
     end
     object actReturnBack: TAction
       Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1099#1073#1088#1072#1085#1085#1086#1077' '#1074' '#1089#1087#1080#1089#1086#1082
       ImageIndex = 6
+      ShortCut = 8238
       OnExecute = actReturnBackExecute
       OnUpdate = actReturnBackUpdate
     end
     object actInsertDataRoot: TAction
       Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1082#1086#1088#1077#1085#1100' '#1076#1077#1088#1077#1074#1072
       ImageIndex = 15
+      ShortCut = 16429
       OnExecute = actInsertDataRootExecute
       OnUpdate = actInsertDataRootUpdate
     end
@@ -1922,6 +1952,7 @@
       Caption = #1059#1076#1072#1083#1080#1090#1100
       Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1099#1073#1088#1072#1085#1085#1086#1077' '#1074' '#1089#1087#1080#1089#1086#1082
       ImageIndex = 10
+      ShortCut = 46
       OnExecute = actDeleteNodeExecute
       OnUpdate = actDeleteNodeUpdate
     end
@@ -1929,6 +1960,7 @@
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1074#1089#1077
       Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1089#1077' '#1074' '#1089#1087#1080#1089#1086#1082
       ImageIndex = 16
+      ShortCut = 16430
       OnExecute = actDeleteAllNodeExecute
       OnUpdate = actDeleteAllNodeUpdate
     end
@@ -1942,6 +1974,7 @@
     object actAbout: TAction
       Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
       ImageIndex = 12
+      ShortCut = 112
       OnExecute = actAboutExecute
     end
     object actSettings: TAction
