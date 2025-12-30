@@ -272,7 +272,7 @@ end;
 procedure TMainFacade.InsertCurrentItemToRoot;
 begin
   FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
-  FTreeController.InsertItem(FHeapController.GetCurrentItem());
+  FTreeController.InsertItemToRoot(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
   DoUpdateStatus;
 end;
