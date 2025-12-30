@@ -65,7 +65,8 @@ type
 implementation
 
 uses
-  Vcl.Dialogs, System.SysUtils, Vcl.Forms, uNodeModel;
+  Vcl.Dialogs, System.SysUtils, Vcl.Forms, System.UITypes,
+  uNodeModel;
 
 { TMainFacade }
 
@@ -226,15 +227,6 @@ begin
   DoUpdateStatus;
 end;
 
-procedure TMainFacade.InitSettings;
-begin
-  Application.MainForm.ClientHeight := FSettingsController.MainFormHeight;
-  Application.MainForm.ClientWidth := FSettingsController.MainFormWidth;
-  Application.MainForm.Left := FSettingsController.MainFormLeft;
-  Application.MainForm.Top := FSettingsController.MainFormTop;
-  FHeap.Width := FSettingsController.HeapWidth;
-end;
-
 procedure TMainFacade.InsertCurrentItem;
 begin
   FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
@@ -327,12 +319,31 @@ begin
   HeapLoadFile(FileName);
 end;
 
+procedure TMainFacade.InitSettings;
+begin
+  Application.MainForm.ClientHeight := FSettingsController.MainFormHeight;
+  Application.MainForm.ClientWidth := FSettingsController.MainFormWidth;
+  Application.MainForm.Left := FSettingsController.MainFormLeft;
+  Application.MainForm.Top := FSettingsController.MainFormTop;
+  FHeap.Width := FSettingsController.HeapWidth;
+  Application.MainForm.WindowState := TWindowState(FSettingsController.WindowState);
+end;
+
 procedure TMainFacade.SaveSettings;
 begin
-  FSettingsController.MainFormHeight := Application.MainForm.ClientHeight;
-  FSettingsController.MainFormWidth := Application.MainForm.ClientWidth;
-  FSettingsController.MainFormLeft := Application.MainForm.Left;
-  FSettingsController.MainFormTop := Application.MainForm.Top;
+  case Application.MainForm.WindowState of
+    wsNormal:
+      begin
+        FSettingsController.MainFormHeight := Application.MainForm.ClientHeight;
+        FSettingsController.MainFormWidth := Application.MainForm.ClientWidth;
+        FSettingsController.MainFormLeft := Application.MainForm.Left;
+        FSettingsController.MainFormTop := Application.MainForm.Top;
+      end;
+    wsMaximized:
+      begin
+        FSettingsController.WindowState := Ord(Application.MainForm.WindowState);
+      end;
+  end;
   FSettingsController.HeapWidth := FHeap.Width;
   FSettingsController.Save;
 end;

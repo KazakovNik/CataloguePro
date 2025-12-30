@@ -21,6 +21,7 @@ type
     FFileOpenDirectory: string;
     FRecentFiles: string;
     FMaxCountFileHistopy: Integer;
+    FWindowState: Integer;
   public
     constructor Create(const FilePath: string); overload;
     procedure Save();
@@ -34,6 +35,7 @@ type
     property FileSaveDirectory: string read FFileSaveDirectory write FFileSaveDirectory;
     property RecentFiles: string read FRecentFiles write FRecentFiles;
     property MaxCountFileHistopy: Integer read FMaxCountFileHistopy write FMaxCountFileHistopy;
+    property WindowState: Integer read FWindowState write FWindowState;
   end;
 
 implementation
@@ -67,6 +69,7 @@ begin
     FileSaveDirectory := IniFile.ReadString('Settings', 'FileSaveDirectory', EmptyStr);
     RecentFiles := IniFile.ReadString('Settings', 'RecentFiles', EmptyStr);
     MaxCountFileHistopy := IniFile.ReadInteger('Settings', 'MaxCountFileHistopy', 10);
+    FWindowState := IniFile.ReadInteger('Settings', 'FWindowState', 0);
   finally
     FreeAndNil(IniFile);
   end;
@@ -87,6 +90,7 @@ begin
     IniFile.WriteString('Settings', 'FileSaveDirectory', FileSaveDirectory);
     IniFile.WriteString('Settings', 'RecentFiles', RecentFiles);
     IniFile.WriteInteger('Settings', 'MaxCountFileHistopy', MaxCountFileHistopy);
+    IniFile.WriteInteger('Settings', 'FWindowState', FWindowState);
   finally
     FreeAndNil(IniFile);
   end;

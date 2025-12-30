@@ -35,6 +35,8 @@ type
     function GetMaxCountFileHistopy: integer;
     procedure DoUpdate;
     function GetLoggerFileName: string;
+    function GetWindowState: integer;
+    procedure SetWindowState(const Value: integer);
   public
     constructor Create(const AFilePath: string);
     destructor Destroy; override;
@@ -53,6 +55,7 @@ type
     property RecentFiles: string read GetRecentFiles write SetRecentFiles;
     property MaxCountFileHistopy: integer read GetMaxCountFileHistopy write SetMaxCountFileHistopy;
     property LoggerFileName: string read GetLoggerFileName;
+    property WindowState: integer read GetWindowState write SetWindowState;
   end;
 
 implementation
@@ -68,6 +71,7 @@ begin
     MainFormLeft := (Screen.Width div 2) - (Application.MainForm.ClientWidth div 2);
     MainFormTop := (Screen.Height div 2) - (Application.MainForm.ClientHeight div 2);
     HeapWidth := 300;
+    WindowState := 0; //wsNormal
   end;
 end;
 
@@ -139,6 +143,11 @@ begin
   Result := FModel.RecentFiles;
 end;
 
+function TSettingsController.GetWindowState: integer;
+begin
+  Result := FModel.WindowState;
+end;
+
 procedure TSettingsController.SetFileOpenDirectory(const Value: string);
 begin
   FModel.FileOpenDirectory := Value;
@@ -183,6 +192,11 @@ end;
 procedure TSettingsController.SetRecentFiles(const Value: string);
 begin
   FModel.RecentFiles := Value;
+end;
+
+procedure TSettingsController.SetWindowState(const Value: integer);
+begin
+  FModel.WindowState := Value;
 end;
 
 procedure TSettingsController.Save;
