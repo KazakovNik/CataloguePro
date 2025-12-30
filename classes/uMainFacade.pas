@@ -325,14 +325,14 @@ var
   item: TMenuItem;
 begin
   mniRecentFiles.Clear;
-
   for i := 0 to FRecentFilesController.RecentFilesCount() - 1 do
   begin
     item := TMenuItem.Create(Application.MainForm);
+    item.AutoHotkeys := TMenuItemAutoFlag.maManual;
+    item.ShortCut := 0;
     item.Caption := FRecentFilesController.GetFileHistory(i);
     item.Visible := True;
     item.Tag := i;
-    item.AutoCheck := True;
     item.OnClick := OpenFileFromMenu;
     item.ImageIndex := 13;
 
@@ -341,13 +341,8 @@ begin
 end;
 
 procedure TMainFacade.OpenFileFromMenu(Sender: TObject);
-var
-  FileName: string;
 begin
-  //TODO: невнятная проблема с TMenuItem, в некоторых случаях добавляется лишний символ
-  FileName := TMenuItem(Sender).Caption;
-//  Delete(FileName, 1, 1);
-  HeapLoadFile(FileName);
+  HeapLoadFile(FRecentFilesController.GetFileHistory(TMenuItem(Sender).Tag));
 end;
 
 procedure TMainFacade.InitSettings;
