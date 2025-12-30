@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
-  Forms, Dialogs, ComCtrls, uNodeModel;
+  Forms, Dialogs, ComCtrls, uNodeModel, uILogger;
 
 type
   TReturnEvent = procedure(Text: string) of object;
@@ -13,6 +13,7 @@ type
   private
     FTView: TTreeView;
     FOnReturn: TReturnEvent;
+    FLogger: ILogger;
   private
     procedure GenerateTreeData(ParentNode: TTreeNode;
       Stream: TStringStream; path: string);
@@ -22,7 +23,7 @@ type
       const NameNode: string): TTreeNode;
     procedure Expand(Node: TTreeNode);
   public
-    constructor Create(View: TTreeView);
+    constructor Create(View: TTreeView; Logger: ILogger);
     destructor Destroy; override;
 
     procedure InsertItem(Text: string);
@@ -44,11 +45,12 @@ type
 
 implementation
 
-constructor TTreeController.Create(View: TTreeView);
+constructor TTreeController.Create(View: TTreeView; Logger: ILogger);
 begin
   inherited Create;
 
   FTView := View;
+  FLogger := Logger;
 end;
 
 destructor TTreeController.Destroy;
@@ -74,8 +76,12 @@ var
   slt: TStringList;
   i: Integer;
 begin
+  FLogger.AddInfo('Загружаем файл дерева: ' + filename);
   if not FileExists(filename) then
+  begin
+    FLogger.AddError('Файл не найден:' + filename);
     raise Exception.Create('Файл не найден:'#13#10 + filename);
+  end;
 
   sl := TStringList.Create;
   slt:= TStringList.Create;
@@ -144,6 +150,7 @@ var
   StrStream: TStringStream;
   I: Integer;
 begin
+  FLogger.AddInfo('Сохраняем дерево в файл: ' + filename);
   StrStream := TStringStream.Create('');
   try
     for I := 0 to FTView.Items.Count - 1 do
@@ -192,6 +199,11 @@ var
   NewNode, ParentNode: TTreeNode;
 begin
   ParentNode := FTView.Selected;
+  if Assigned(ParentNode) then
+    FLogger.AddInfo('Добавили в дерево эелемент: ' + ParentNode.Text + '\' + Text)
+  else
+    FLogger.AddInfo('Добавили в дерево эелемент: ' + Text);
+
   NewNode := FTView.Items.AddChild(ParentNode, Text);
   NewNode.Data := TModelItem.Create();
   Expand(ParentNode);
@@ -201,6 +213,11 @@ function TTreeController.AddNode(ParentNode: TTreeNode; Text: string): TTreeNode
 var
   NewNode: TTreeNode;
 begin
+  if Assigned(ParentNode) then
+    FLogger.AddInfo('Добавили в дерево группу: ' + ParentNode.Text + '\' + Text)
+  else
+    FLogger.AddInfo('Добавили в дерево группу: ' + Text);
+
   NewNode := FTView.Items.AddChild(ParentNode, Text);
   NewNode.Data := TModelDir.Create();
   Expand(ParentNode);
@@ -217,17 +234,23 @@ begin
 
   if SelectedIsFolder(Node) and (not Node.HasChildren)  then
   begin
+    if Assigned(Node) then
+      FLogger.AddInfo('Удалили каталог: ' + Node.Text);
     Node.Free;
     Exit;
   end;
 
   if not Node.HasChildren then
   begin
+    if Assigned(Node) then
+      FLogger.AddInfo('Удалили элемент: ' + Node.Text);
     DoReturn(Node.Text);
     Node.Free;
   end
   else
   begin
+    if Assigned(Node) then
+      FLogger.AddInfo('Удалили каталог: ' + Node.Text);
     for i := Node.Count - 1 downto 0 do
       DeleteNode(Node.Item[i]);
     Node.Free;
@@ -235,8 +258,15 @@ begin
 end;
 
 procedure TTreeController.EditNode(Node: TTreeNode; NewText: string);
+var
+  oldText: string;
 begin
-  Node.Text := NewText;
+  if Assigned(Node) then
+  begin
+    oldText := Node.Text;
+    Node.Text := NewText;
+    FLogger.AddInfo(Format('Изменили текст элемента. Было: %s. Cтало: %s', [oldText, Node.Text]));
+  end;
 end;
 
 function TTreeController.SelectedIsFolder(Node: TTreeNode): Boolean;

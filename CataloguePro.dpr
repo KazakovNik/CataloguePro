@@ -11,7 +11,10 @@ uses
   uNodeModel in 'classes\Tree\uNodeModel.pas',
   uMainFacade in 'classes\uMainFacade.pas',
   uRecentFilesController in 'classes\RecentFiles\uRecentFilesController.pas',
-  uRecentFilesModel in 'classes\RecentFiles\uRecentFilesModel.pas';
+  uRecentFilesModel in 'classes\RecentFiles\uRecentFilesModel.pas',
+  uLogger in 'classes\Log\uLogger.pas',
+  uILogger in 'classes\Log\uILogger.pas',
+  uUserInfo in 'classes\uUserInfo.pas';
 
 {$R *.res}
 

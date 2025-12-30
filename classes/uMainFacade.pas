@@ -4,7 +4,8 @@ interface
 
 uses
   Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls, System.Classes, Vcl.Menus,
-  uHeapController, uSettingsController, uTreeController, uRecentFilesController;
+  uHeapController, uSettingsController, uTreeController, uRecentFilesController,
+  uLogger, uILogger, uUserInfo;
 
 type
   TMainFacade = class
@@ -15,6 +16,8 @@ type
     FSettingsController: TSettingsController;
     FTreeController: TTreeController;
     FRecentFilesController: TRecentFilesController;
+    FLogger: ILogger;
+    FUserInfo: TUserInfo;
   private
     function ShowGialogNewNode: string;
     function ShowGialogEditNode: string;
@@ -92,16 +95,21 @@ begin
   FTree := Tree;
   FHeap := Heap;
 
+  FUserInfo := TUserInfo.Create;
+
   settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
   FSettingsController := TSettingsController.Create(settingsFN);
   FSettingsController.OnUpdate := DoUpdateSettings;
 
-  FRecentFilesController := TRecentFilesController.Create();
+  FLogger := TLogger.Create(FSettingsController.LoggerFileName, FUserInfo);
+  FLogger.AddInfo('Открытие программы');
+
+  FRecentFilesController := TRecentFilesController.Create(FLogger);
   FRecentFilesController.OnUpdate := DoUpdateRecentFiles;
   FRecentFilesController.LoadHistory(FSettingsController.RecentFiles);
 
-  FHeapController := THeapController.Create(FHeap);
-  FTreeController := TTreeController.Create(FTree);
+  FHeapController := THeapController.Create(FHeap, FLogger);
+  FTreeController := TTreeController.Create(FTree, FLogger);
   FTreeController.OnReturn := DoReturn;
 end;
 
@@ -115,6 +123,10 @@ begin
   FSettingsController.Free;
   FTreeController.Free;
   FRecentFilesController.Free;
+
+  FLogger.AddInfo('Закрытие программы');
+
+  FUserInfo.Free;
 
   inherited;
 end;
@@ -131,7 +143,7 @@ end;
 
 procedure TMainFacade.DoReturn(Text: string);
 begin
-  FHeap.Items.Add(Text);
+  FHeapController.Add(Text);
 end;
 
 procedure TMainFacade.DeleteAllNode;
@@ -202,8 +214,9 @@ end;
 
 procedure TMainFacade.InsertCurrentItem;
 begin
-  FTreeController.InsertItem(FHeap.Items[FHeap.ItemIndex]);
-  FHeapController.Delete(FHeap.ItemIndex);
+  FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
+  FTreeController.InsertItem(FHeapController.GetCurrentItem());
+  FHeapController.DeleteCurrent;
 end;
 
 function TMainFacade.InsertCurrentItemEnabled: Boolean;
@@ -217,9 +230,10 @@ end;
 
 procedure TMainFacade.InsertTextIntoNode(Node: TTreeNode);
 begin
+  FLogger.AddInfo('Переносим в дерево запись из кучи: ' + Node.Text);
   FTreeController.SelectNode(Node);
-  FTreeController.InsertItem(FHeap.Items[FHeap.ItemIndex]);
-  FHeapController.Delete(FHeap.ItemIndex);
+  FTreeController.InsertItem(FHeapController.GetCurrentItem());
+  FHeapController.DeleteCurrent;
 end;
 
 procedure TMainFacade.LoadTreeFile(filename: string);
@@ -256,7 +270,8 @@ begin
   FTreeController.SaveToFile(ChangeFileExt(filename, '.txt'));
 end;
 
-procedure TMainFacade.UpdateSubmenuRecentFiles(mmMain: TMainMenu; mniRecentFiles: TMenuItem);
+procedure TMainFacade.UpdateSubmenuRecentFiles(mmMain: TMainMenu;
+  mniRecentFiles: TMenuItem);
 var
   i: Integer;
   item: TMenuItem;
@@ -270,7 +285,7 @@ begin
     item.Visible := True;
     item.Tag := i;
     item.AutoCheck := True;
-    item.OnClick := OpenFileFromMenu; // назначаем событие клика
+    item.OnClick := OpenFileFromMenu;
     mniRecentFiles.Add(item);
   end;
 end;
@@ -279,6 +294,7 @@ procedure TMainFacade.OpenFileFromMenu(Sender: TObject);
 var
   FileName: string;
 begin
+  //TODO: невнятная проблема с TMenuItem, в некоторых случаях добавляется лишний символ
   FileName := TMenuItem(Sender).Caption;
 //  Delete(FileName, 1, 1);
   HeapLoadFile(FileName);

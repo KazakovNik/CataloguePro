@@ -3,7 +3,7 @@ unit uRecentFilesController;
 interface
 
 uses
-  System.Classes, uRecentFilesModel;
+  System.Classes, uRecentFilesModel, uILogger;
 
 type
   TUpdateEvent = procedure(History: TStringList) of object;
@@ -12,11 +12,12 @@ type
   private
     FModel: TRecentFilesModel;
     FOnUpdate: TUpdateEvent;
+    FLogger: ILogger;
   private
     procedure DoUpdate(History: TStringList);
 
   public
-    constructor Create();
+    constructor Create(Logger: ILogger);
     destructor Destroy; override;
 
     procedure LoadHistory(History: string);
@@ -35,8 +36,9 @@ uses
 
 { TRecentFilesController }
 
-constructor TRecentFilesController.Create;
+constructor TRecentFilesController.Create(Logger: ILogger);
 begin
+  FLogger := Logger;
   FModel := TRecentFilesModel.Create;
   SetMaxCountFile(10);
 end;

@@ -75,7 +75,6 @@ type
     actLoadTree: TAction;
     mniLoadTree: TMenuItem;
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
@@ -111,6 +110,7 @@ type
     procedure N6Click(Sender: TObject);
     procedure actRecentFilesExecute(Sender: TObject);
     procedure actLoadTreeExecute(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;

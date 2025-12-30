@@ -34,6 +34,7 @@ type
     procedure SetMaxCountFileHistopy(const Value: integer);
     function GetMaxCountFileHistopy: integer;
     procedure DoUpdate;
+    function GetLoggerFileName: string;
   public
     constructor Create(const AFilePath: string);
     destructor Destroy; override;
@@ -51,6 +52,7 @@ type
     property FileSaveDirectory: string read GetFileSaveDirectory write SetFileSaveDirectory;
     property RecentFiles: string read GetRecentFiles write SetRecentFiles;
     property MaxCountFileHistopy: integer read GetMaxCountFileHistopy write SetMaxCountFileHistopy;
+    property LoggerFileName: string read GetLoggerFileName;
   end;
 
 implementation
@@ -98,6 +100,13 @@ end;
 function TSettingsController.GetHeapWidth: integer;
 begin
   Result := FModel.HeapWidth;
+end;
+
+function TSettingsController.GetLoggerFileName: string;
+begin
+  Result :=
+    ExtractFilePath(Application.ExeName)
+     + Format('log_%s.txt', [FormatDateTime('yyyymmdd', Now())]);
 end;
 
 function TSettingsController.GetMainFormHeight: integer;
