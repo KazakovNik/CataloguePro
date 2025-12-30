@@ -227,7 +227,7 @@ end;
 
 procedure TFormMain.actInsertDataRootExecute(Sender: TObject);
 begin
-///
+  FFacade.InsertCurrentItemToRoot();
 end;
 
 procedure TFormMain.actInsertDataRootUpdate(Sender: TObject);

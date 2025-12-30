@@ -30,6 +30,7 @@ type
     destructor Destroy; override;
 
     procedure InsertItem(Text: string);
+    procedure InsertItemToRoot(Text: string);
     procedure DeleteNode(Node: TTreeNode);
     procedure EditNode(Node: TTreeNode; NewText: string);
     procedure SelectNode(Node: TTreeNode);
@@ -215,6 +216,13 @@ begin
     FLogger.AddInfo('Добавили в дерево эелемент: ' + Text);
 
   AddItem(ParentNode, Text);
+end;
+
+procedure TTreeController.InsertItemToRoot(Text: string);
+begin
+  FLogger.AddInfo('Добавили в корень дерева эелемент: ' + Text);
+
+  AddItem(nil, Text);
 end;
 
 function TTreeController.AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;

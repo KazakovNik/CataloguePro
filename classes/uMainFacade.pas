@@ -38,6 +38,7 @@ type
     procedure DeleteAllNode;
     procedure EditCurrentNode;
     procedure InsertCurrentItem;
+    procedure InsertCurrentItemToRoot;
     procedure HeapLoadFile(filename: string);
     procedure LoadTreeFile(filename: string);
     procedure TreeSaveToFile(filename: string);
@@ -271,6 +272,14 @@ begin
     (FTree.Items.Count > 0) and
     Assigned(FTree.Selected) and
     FTreeController.SelectedIsFolder(FTree.Selected);
+end;
+
+procedure TMainFacade.InsertCurrentItemToRoot;
+begin
+  FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
+  FTreeController.InsertItem(FHeapController.GetCurrentItem());
+  FHeapController.DeleteCurrent;
+  DoUpdateStatus;
 end;
 
 procedure TMainFacade.InsertTextIntoNode(Node: TTreeNode);
