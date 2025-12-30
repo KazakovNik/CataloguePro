@@ -107,9 +107,15 @@ end;
 
 destructor TMainFacade.Destroy;
 begin
+  FSettingsController.OnUpdate := nil;
+  FRecentFilesController.OnUpdate := nil;
+  FHeapController.OnLoadFile := nil;
+  FTreeController.OnReturn := nil;
+
   FHeapController.Free;
   FSettingsController.Free;
   FTreeController.Free;
+  FRecentFilesController.Free;
 
   inherited;
 end;
