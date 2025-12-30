@@ -17,6 +17,8 @@ type
     FMainFormTop: integer;
     FMainFormHeight: integer;
     FHeapWidth: integer;
+    FFileSaveDirectory: string;
+    FFileOpenDirectory: string;
   public
     constructor Create(const FilePath: string); overload;
     procedure Save();
@@ -26,6 +28,8 @@ type
     property MainFormHeight: integer read FMainFormHeight write FMainFormHeight;
     property MainFormWidth: integer read FMainFormWidth write FMainFormWidth;
     property HeapWidth: integer read FHeapWidth write FHeapWidth;
+    property FileOpenDirectory: string read FFileOpenDirectory write FFileOpenDirectory;
+    property FileSaveDirectory: string read FFileSaveDirectory write FFileSaveDirectory;
   end;
 
 implementation
@@ -55,6 +59,8 @@ begin
     MainFormHeight := IniFile.ReadInteger('Settings', 'MainFormHeight', 300);
     MainFormWidth := IniFile.ReadInteger('Settings', 'MainFormWidth', 650);
     HeapWidth := IniFile.ReadInteger('Settings', 'HeapWidth', 300);
+    FileOpenDirectory := IniFile.ReadString('Settings', 'FileOpenDirectory', EmptyStr);
+    FileSaveDirectory := IniFile.ReadString('Settings', 'FileSaveDirectory', EmptyStr);
   finally
     FreeAndNil(IniFile);
   end;
@@ -71,6 +77,8 @@ begin
     IniFile.WriteInteger('Settings', 'MainFormHeight', MainFormHeight);
     IniFile.WriteInteger('Settings', 'MainFormWidth', MainFormWidth);
     IniFile.WriteInteger('Settings', 'HeapWidth', HeapWidth);
+    IniFile.WriteString('Settings', 'FileOpenDirectory', FileOpenDirectory);
+    IniFile.WriteString('Settings', 'FileSaveDirectory', FileSaveDirectory);
   finally
     FreeAndNil(IniFile);
   end;

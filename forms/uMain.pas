@@ -16,8 +16,8 @@ type
     ActionToolBar1: TActionToolBar;
     actLoadFile: TAction;
     OpenDialog: TOpenDialog;
-    TreeView1: TTreeView;
-    Splitter1: TSplitter;
+    TreeView: TTreeView;
+    Splitter: TSplitter;
     lbHeap: TListBox;
     actAddNode: TAction;
     actAddRootNode: TAction;
@@ -32,6 +32,12 @@ type
     actEditNode1: TMenuItem;
     actSaveTreeToFile1: TMenuItem;
     N1: TMenuItem;
+    actInsertData: TAction;
+    actReturnBack: TAction;
+    pnlСenter: TPanel;
+    pnlСenterBtn: TPanel;
+    btnInsert: TButton;
+    btnReturnBack: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
@@ -41,6 +47,7 @@ type
     procedure actEditNodeExecute(Sender: TObject);
     procedure actDeleteNodeExecute(Sender: TObject);
     procedure actSaveTreeToFileExecute(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     FFileLoader: TFileContentController;
     FSettings: TSettingsController;
@@ -58,43 +65,45 @@ implementation
 
 procedure TFormMain.actAddNodeExecute(Sender: TObject);
 begin
-  FTreeController.AddNode(TreeView1.Selected,
-    InputBox('Новый элемент', 'Название:', Format('Новая элемент (%d)', [TreeView1.Items.Count])));
+  FTreeController.AddNode(TreeView.Selected,
+    InputBox('Новый элемент', 'Название:', Format('Новая элемент (%d)', [TreeView.Items.Count])));
 end;
 
 procedure TFormMain.actAddRootNodeExecute(Sender: TObject);
 begin
   FTreeController.AddNode(nil,
-    InputBox('Новый элемент', 'Название:', Format('Новая элемент (%d)', [TreeView1.Items.Count])));
+    InputBox('Новый элемент', 'Название:', Format('Новая элемент (%d)', [TreeView.Items.Count])));
 end;
 
 procedure TFormMain.actDeleteNodeExecute(Sender: TObject);
 begin
-  if Assigned(TreeView1.Selected) then
-    FTreeController.DeleteNode(TreeView1.Selected);
+  if Assigned(TreeView.Selected) then
+    FTreeController.DeleteNode(TreeView.Selected);
 end;
 
 procedure TFormMain.actEditNodeExecute(Sender: TObject);
 begin
-  if Assigned(TreeView1.Selected) then
-    FTreeController.EditNode(TreeView1.Selected,
-      InputBox('Редактирование', 'Измените название:', TreeView1.Selected.Text));
+  if Assigned(TreeView.Selected) then
+    FTreeController.EditNode(TreeView.Selected,
+      InputBox('Редактирование', 'Измените название:', TreeView.Selected.Text));
 end;
 
 procedure TFormMain.actLoadFileExecute(Sender: TObject);
 begin
-  OpenDialog.InitialDir := ExtractFilePath(Application.ExeName);
+  OpenDialog.InitialDir := FSettings.FileOpenDirectory;
   if OpenDialog.Execute then
   begin
+    FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
     LoadFile(OpenDialog.FileName);
   end;
 end;
 
 procedure TFormMain.actSaveTreeToFileExecute(Sender: TObject);
 begin
-  dlgSaveTextFile.InitialDir := ExtractFilePath(Application.ExeName);
+  dlgSaveTextFile.InitialDir := FSettings.FileSaveDirectory;
   if dlgSaveTextFile.Execute then
   begin
+    FSettings.FileSaveDirectory := ExtractFilePath(dlgSaveTextFile.FileName);
     FTreeController.SaveToFile(ChangeFileExt(dlgSaveTextFile.FileName, '.txt'));
   end;
 end;
@@ -114,7 +123,7 @@ var
   settingsFN: string;
 begin
   FFileLoader := TFileContentController.Create();
-  FTreeController := TTreeController.Create(TreeView1);
+  FTreeController := TTreeController.Create(TreeView);
 
   settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
   FSettings := TSettingsController.Create(settingsFN);
@@ -140,6 +149,11 @@ begin
   FFileLoader.Free;
   FSettings.Free;
   FTreeController.Free;
+end;
+
+procedure TFormMain.FormResize(Sender: TObject);
+begin
+  pnlСenterBtn.Top := (pnlСenter.Height - pnlСenterBtn.Height) div 2;
 end;
 
 procedure TFormMain.LoadFile(filename: string);
