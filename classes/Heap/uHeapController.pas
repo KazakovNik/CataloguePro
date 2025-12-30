@@ -16,6 +16,7 @@ type
     destructor Destroy(); override;
 
     procedure LoadFile(filename: string);
+    procedure Delete(itemIndex: integer);
   end;
 
 implementation
@@ -28,6 +29,18 @@ begin
   inherited Create();
 
   FListBox := ListBox;
+end;
+
+procedure THeapController.Delete(itemIndex: integer);
+var
+  index: integer;
+begin
+  index := itemIndex;
+  FListBox.Items.Delete(index);
+  if index > 0 then
+    index := index - 1;
+  if index <= FListBox.Count - 1 then
+    FListBox.ItemIndex := index;
 end;
 
 destructor THeapController.Destroy();

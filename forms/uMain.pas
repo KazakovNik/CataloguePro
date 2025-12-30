@@ -140,16 +140,9 @@ begin
 end;
 
 procedure TFormMain.actInsertDataExecute(Sender: TObject);
-var
-  index: integer;
 begin
   FTreeController.InsertItem(lbHeap.Items[lbHeap.ItemIndex]);
-  index := lbHeap.ItemIndex;
-  lbHeap.Items.Delete(lbHeap.ItemIndex);
-  if index > 0 then
-    index := index - 1;
-  if index <= lbHeap.Count - 1 then
-    lbHeap.ItemIndex := index;
+  FHeap.Delete(lbHeap.ItemIndex);
 end;
 
 procedure TFormMain.actInsertDataUpdate(Sender: TObject);
@@ -167,22 +160,22 @@ begin
     (TreeView.Items.Count > 0) and
     Assigned(TreeView.Selected) and
     (FTreeController.SelectedIsItem(TreeView.Selected) or
-    (FTreeController.SelectedIsFolder(TreeView.Selected) and TreeView.Selected.HasChildren));
+    (FTreeController.SelectedIsFolder(TreeView.Selected) and
+     TreeView.Selected.HasChildren));
 end;
 
 procedure TFormMain.actLoadFileExecute(Sender: TObject);
 begin
   OpenDialog.InitialDir := FSettings.FileOpenDirectory;
-  if OpenDialog.Execute then
-  begin
-    FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
+  if not OpenDialog.Execute then
+    Exit;
 
-    try
-      FHeap.LoadFile(OpenDialog.FileName);
-    except
-      on E: Exception do
-        ShowMessage(E.Message);
-    end;
+  FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
+  try
+    FHeap.LoadFile(OpenDialog.FileName);
+  except
+    on E: Exception do
+      ShowMessage(E.Message);
   end;
 end;
 
@@ -194,11 +187,11 @@ end;
 procedure TFormMain.actSaveTreeToFileExecute(Sender: TObject);
 begin
   dlgSaveTextFile.InitialDir := FSettings.FileSaveDirectory;
-  if dlgSaveTextFile.Execute then
-  begin
-    FSettings.FileSaveDirectory := ExtractFilePath(dlgSaveTextFile.FileName);
-    FTreeController.SaveToFile(ChangeFileExt(dlgSaveTextFile.FileName, '.txt'));
-  end;
+  if not dlgSaveTextFile.Execute then
+    Exit;
+
+  FSettings.FileSaveDirectory := ExtractFilePath(dlgSaveTextFile.FileName);
+  FTreeController.SaveToFile(ChangeFileExt(dlgSaveTextFile.FileName, '.txt'));
 end;
 
 procedure TFormMain.DoReturn(Text: string);
@@ -268,22 +261,15 @@ end;
 
 procedure TFormMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
-  index: integer;
   tmpNode: TTreeNode;
 begin
   if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
     Exit;
-  tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
 
+  tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
   FTreeController.SelectNode(tmpNode);
   FTreeController.InsertItem(lbHeap.Items[lbHeap.ItemIndex]);
-
-  index := lbHeap.ItemIndex;
-  lbHeap.Items.Delete(lbHeap.ItemIndex);
-  if index > 0 then
-    index := index - 1;
-  if index <= lbHeap.Count - 1 then
-    lbHeap.ItemIndex := index;
+  FHeap.Delete(lbHeap.ItemIndex);
 end;
 
 procedure TFormMain.TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
