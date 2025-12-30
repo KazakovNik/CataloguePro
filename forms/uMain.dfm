@@ -101,21 +101,21 @@
       TabOrder = 0
       OnDragOver = lbHeapDragOver
     end
-    object pnlHeaputils: TPanel
-      Left = 0
-      Top = 0
-      Width = 265
-      Height = 41
-      Align = alTop
-      BevelOuter = bvNone
+    object tlb11: TToolBar
+      AlignWithMargins = True
+      Left = 3
+      Top = 6
+      Width = 259
+      Margins.Top = 6
+      ButtonHeight = 30
+      ButtonWidth = 31
+      Caption = 'tlb1'
+      Images = ImageList
       TabOrder = 1
-      object btnLoadFile: TButton
-        Left = 8
-        Top = 10
-        Width = 113
-        Height = 25
+      object btnactCnPrefixWizard: TToolButton
+        Left = 0
+        Top = 0
         Action = actLoadFile
-        TabOrder = 0
       end
     end
   end
@@ -144,14 +144,79 @@
       OnDragOver = TreeViewDragOver
       OnStartDrag = TreeViewStartDrag
     end
-    object pnlTreeUnils: TPanel
-      Left = 0
-      Top = 0
-      Width = 484
-      Height = 41
-      Align = alTop
-      BevelOuter = bvNone
+    object tlb1: TToolBar
+      AlignWithMargins = True
+      Left = 3
+      Top = 6
+      Width = 478
+      Margins.Top = 6
+      ButtonHeight = 30
+      ButtonWidth = 31
+      Caption = 'tlb1'
+      Images = ImageList
       TabOrder = 1
+      ExplicitTop = 3
+      object btnAddNode1: TToolButton
+        Left = 0
+        Top = 0
+        Action = actAddNode
+      end
+      object btnAddNode2: TToolButton
+        Left = 31
+        Top = 0
+        Action = actAddRootNode
+      end
+      object btnAddNode4: TToolButton
+        Left = 62
+        Top = 0
+        Action = actEditNode
+      end
+      object btnAddNode8: TToolButton
+        Left = 93
+        Top = 0
+        Action = actDeleteNode
+      end
+      object btnAddNode9: TToolButton
+        Left = 124
+        Top = 0
+        Action = actDeleteAllNode
+      end
+      object btnAddNode3: TToolButton
+        Left = 155
+        Top = 0
+        Width = 8
+        Caption = 'btnAddNode3'
+        ImageIndex = 4
+        Style = tbsSeparator
+      end
+      object btnAddNode5: TToolButton
+        Left = 163
+        Top = 0
+        Action = actLoadTree
+      end
+      object btnAddNode6: TToolButton
+        Left = 194
+        Top = 0
+        Action = actSaveTreeToFile
+      end
+      object btnAddNode7: TToolButton
+        Left = 225
+        Top = 0
+        Width = 8
+        Caption = 'btnAddNode7'
+        ImageIndex = 5
+        Style = tbsSeparator
+      end
+      object btnAddNode11: TToolButton
+        Left = 233
+        Top = 0
+        Action = actCollapseAll
+      end
+      object btnAddNode10: TToolButton
+        Left = 264
+        Top = 0
+        Action = actExpandAll
+      end
     end
   end
   object statStatusBar: TStatusBar

@@ -8,7 +8,7 @@ uses
   Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ImgList,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Menus, Vcl.ButtonGroup,
   uMainFacade,
-  uHeapController, uSettingsController, uTreeController;
+  uHeapController, uSettingsController, uTreeController, Vcl.Buttons;
 
 type
   TFormMain = class(TForm)
@@ -33,9 +33,6 @@ type
     mniExpandAll: TMenuItem;
     pnlHeap: TPanel;
     pnlTree: TPanel;
-    pnlTreeUnils: TPanel;
-    pnlHeaputils: TPanel;
-    btnLoadFile: TButton;
     mniDeleteNode: TMenuItem;
     mmMain: TMainMenu;
     N6: TMenuItem;
@@ -76,6 +73,20 @@ type
     mniDeleteAllNode1: TMenuItem;
     actInsertDataRoot: TAction;
     btnInsertDataRoot: TButton;
+    tlb1: TToolBar;
+    btnAddNode1: TToolButton;
+    tlb11: TToolBar;
+    btnactCnPrefixWizard: TToolButton;
+    btnAddNode2: TToolButton;
+    btnAddNode4: TToolButton;
+    btnAddNode3: TToolButton;
+    btnAddNode5: TToolButton;
+    btnAddNode6: TToolButton;
+    btnAddNode7: TToolButton;
+    btnAddNode8: TToolButton;
+    btnAddNode9: TToolButton;
+    btnAddNode10: TToolButton;
+    btnAddNode11: TToolButton;
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
