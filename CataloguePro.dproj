@@ -99,8 +99,7 @@
 			<DCCReference Include="forms\uMain.pas">
 				<Form>FormMain</Form>
 			</DCCReference>
-			<DCCReference Include="classes\FileLoader\uFileContentModel.pas"/>
-			<DCCReference Include="classes\FileLoader\uFileContentController.pas"/>
+			<DCCReference Include="classes\Heap\uHeapController.pas"/>
 			<DCCReference Include="classes\Settings\uSettingsModel.pas"/>
 			<DCCReference Include="classes\Settings\uSettingsController.pas"/>
 			<DCCReference Include="classes\Tree\uTreeController.pas"/>

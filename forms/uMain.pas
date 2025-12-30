@@ -6,9 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
   Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ImgList,
-  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
-  uFileContentController, uSettingsController, uTreeController, Vcl.Menus,
-  Vcl.ButtonGroup;
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Menus, Vcl.ButtonGroup,
+  uHeapController, uSettingsController, uTreeController;
 
 type
   TFormMain = class(TForm)
@@ -90,15 +89,13 @@ type
     procedure actDeleteNodeUpdate(Sender: TObject);
     procedure actDeleteNodeExecute(Sender: TObject);
   private
-    FFileLoader: TFileContentController;
+    FHeap: THeapController;
     FSettings: TSettingsController;
     FTreeController: TTreeController;
   private
     procedure DoReturn(Text: string);
     procedure InitSettings;
     procedure SaveSettings;
-  public
-    procedure LoadFile(filename: string);
   end;
 
 var
@@ -179,9 +176,13 @@ begin
   if OpenDialog.Execute then
   begin
     FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
-    LoadFile(OpenDialog.FileName);
-    if lbHeap.Count > 0 then
-      lbHeap.ItemIndex := 0;
+
+    try
+      FHeap.LoadFile(OpenDialog.FileName);
+    except
+      on E: Exception do
+        ShowMessage(E.Message);
+    end;
   end;
 end;
 
@@ -212,14 +213,14 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  FFileLoader := TFileContentController.Create();
+  FHeap := THeapController.Create(lbHeap);
   FTreeController := TTreeController.Create(TreeView);
   FTreeController.OnReturn := DoReturn;
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
 begin
-  FFileLoader.Free;
+  FHeap.Free;
   FSettings.Free;
   FTreeController.Free;
 end;
@@ -240,23 +241,6 @@ begin
   if not ((Sender is TTreeView) and (Source is TListBox)) then
     Exit;
   Accept := true;
-end;
-
-procedure TFormMain.LoadFile(filename: string);
-begin
-  FFileLoader.FilePath := filename;
-  lbHeap.Items.BeginUpdate;
-  try
-    lbHeap.Items.Clear;
-    try
-      lbHeap.Items.Text := FFileLoader.Content;
-    except
-      on E: Exception do
-        ShowMessage(E.Message);
-    end;
-  finally
-    lbHeap.Items.EndUpdate;
-  end;
 end;
 
 procedure TFormMain.SaveSettings;

@@ -44,8 +44,6 @@
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 8
-    ExplicitHeight = 343
     object pnlСenterBtn: TPanel
       Left = 0
       Top = 0
@@ -81,7 +79,6 @@
     BevelOuter = bvNone
     Caption = 'pnlHeap'
     TabOrder = 1
-    ExplicitHeight = 351
     object lbHeap: TListBox
       Left = 0
       Top = 41
@@ -93,10 +90,6 @@
       ItemHeight = 14
       TabOrder = 0
       OnDragOver = lbHeapDragOver
-      ExplicitLeft = -96
-      ExplicitTop = 1
-      ExplicitWidth = 281
-      ExplicitHeight = 349
     end
     object pnlHeaputils: TPanel
       Left = 0
@@ -106,9 +99,6 @@
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 96
-      ExplicitTop = 72
-      ExplicitWidth = 185
       object btnLoadFile: TButton
         Left = 8
         Top = 10
@@ -128,10 +118,6 @@
     BevelOuter = bvNone
     Caption = 'pnlTree'
     TabOrder = 2
-    ExplicitLeft = 392
-    ExplicitTop = 112
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object TreeView: TTreeView
       Left = 0
       Top = 41
@@ -144,10 +130,6 @@
       TabOrder = 0
       OnDragDrop = TreeViewDragDrop
       OnDragOver = TreeViewDragOver
-      ExplicitLeft = 316
-      ExplicitTop = 0
-      ExplicitWidth = 319
-      ExplicitHeight = 351
     end
     object pnlTreeUnils: TPanel
       Left = 0
