@@ -20,8 +20,6 @@ type
     FLogger: ILogger;
     FUserInfo: TUserInfo;
   private
-    function ShowGialogNewNode: string;
-    function ShowGialogEditNode: string;
     function GetFileOpenDirectory: string;
     function GetFileSaveDirectory: string;
     procedure DoReturn(Text: string);
@@ -66,20 +64,32 @@ implementation
 
 uses
   Vcl.Dialogs, System.SysUtils, Vcl.Forms, System.UITypes,
-  uNodeModel, uAboutFacade, uSettingsFacade;
+  uNodeModel, uAboutFacade, uSettingsFacade, uFormInputBox;
 
 { TMainFacade }
 
 procedure TMainFacade.AddNode;
+var
+  text: string;
 begin
-  FTreeController.AddNode(FTree.Selected, ShowGialogNewNode);
-  DoUpdateStatus;
+  if TFormInputBox.Show('Новый элемент', 'Название:',
+    Format('Новая элемент (%d)', [FTreeController.CountNode]), text) then
+  begin
+    FTreeController.AddNode(FTree.Selected, text);
+    DoUpdateStatus;
+  end;
 end;
 
 procedure TMainFacade.AddNodeRoot;
+var
+  text: string;
 begin
-  FTreeController.AddNode(nil, ShowGialogNewNode);
-  DoUpdateStatus;
+  if TFormInputBox.Show('Новый элемент', 'Название:',
+    Format('Новая элемент (%d)', [FTreeController.CountNode]), text) then
+  begin
+    FTreeController.AddNode(nil, text);
+    DoUpdateStatus;
+  end;
 end;
 
 procedure TMainFacade.DoUpdateSettings(Sender: TSettingsController);
@@ -192,10 +202,18 @@ begin
 end;
 
 procedure TMainFacade.EditCurrentNode;
+var
+  text: string;
 begin
-  if Assigned(FTree.Selected) then
-    FTreeController.EditNode(FTree.Selected, ShowGialogEditNode());
-  DoUpdateStatus;
+  if not Assigned(FTree.Selected) then
+    Exit;
+
+  if TFormInputBox.Show('Редактирование', 'Измените название:',
+    FTree.Selected.Text, text) then
+  begin
+    FTreeController.EditNode(FTree.Selected, text);
+    DoUpdateStatus;
+  end;
 end;
 
 //function TMainFacade.GetDragControlTree: TControl;
@@ -399,18 +417,6 @@ begin
   if Assigned(DstNode) then
     InsertTextIntoNode(DstNode);
   DoUpdateStatus;
-end;
-
-function TMainFacade.ShowGialogEditNode: string;
-begin
-  Result := InputBox('Редактирование', 'Измените название:', FTree.Selected.Text);
-end;
-
-function TMainFacade.ShowGialogNewNode: string;
-begin
-  Result :=
-    InputBox('Новый элемент', 'Название:',
-      Format('Новая элемент (%d)', [FTreeController.CountNode]));
 end;
 
 procedure TMainFacade.ShowmAbout;

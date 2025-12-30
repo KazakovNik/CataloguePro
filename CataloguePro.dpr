@@ -20,7 +20,8 @@ uses
   uFormDialogBase in 'forms\uFormDialogBase.pas' {FormDialogBase},
   uFormSettings in 'forms\uFormSettings.pas' {FormSettings},
   uSettingsFacade in 'classes\uSettingsFacade.pas',
-  uFramePatch in 'forms\uFramePatch.pas' {Frame1: TFrame};
+  uFramePatch in 'forms\uFramePatch.pas' {Frame1: TFrame},
+  uFormInputBox in 'forms\uFormInputBox.pas' {FormInputBox};
 
 {$R *.res}
 
