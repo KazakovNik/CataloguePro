@@ -48,6 +48,10 @@ type
     procedure actDeleteNodeExecute(Sender: TObject);
     procedure actSaveTreeToFileExecute(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure actInsertDataUpdate(Sender: TObject);
+    procedure actInsertDataExecute(Sender: TObject);
+    procedure actReturnBackExecute(Sender: TObject);
+    procedure actReturnBackUpdate(Sender: TObject);
   private
     FFileLoader: TFileContentController;
     FSettings: TSettingsController;
@@ -88,6 +92,27 @@ begin
       InputBox('Редактирование', 'Измените название:', TreeView.Selected.Text));
 end;
 
+procedure TFormMain.actInsertDataExecute(Sender: TObject);
+begin
+  FTreeController.InsertNode(lbHeap.Items[lbHeap.ItemIndex]);
+  lbHeap.Items.Delete(lbHeap.ItemIndex);
+end;
+
+procedure TFormMain.actInsertDataUpdate(Sender: TObject);
+begin
+  actInsertData.Enabled :=
+    (lbHeap.ItemIndex <> -1) and
+    Assigned(TreeView.Selected) and
+    FTreeController.SelectedIsFolder(TreeView.Selected);
+end;
+
+procedure TFormMain.actReturnBackUpdate(Sender: TObject);
+begin
+  actReturnBack.Enabled :=
+    Assigned(TreeView.Selected) and
+    FTreeController.SelectedIsItem(TreeView.Selected);
+end;
+
 procedure TFormMain.actLoadFileExecute(Sender: TObject);
 begin
   OpenDialog.InitialDir := FSettings.FileOpenDirectory;
@@ -96,6 +121,12 @@ begin
     FSettings.FileOpenDirectory := ExtractFilePath(OpenDialog.FileName);
     LoadFile(OpenDialog.FileName);
   end;
+end;
+
+procedure TFormMain.actReturnBackExecute(Sender: TObject);
+begin
+  lbHeap.Items.Add(TreeView.Selected.Text);
+  FTreeController.DeleteNode(TreeView.Selected);
 end;
 
 procedure TFormMain.actSaveTreeToFileExecute(Sender: TObject);

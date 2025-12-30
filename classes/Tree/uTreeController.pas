@@ -12,7 +12,7 @@ type
     FModel: TNodeModel;
     FTView: TTreeView;
     procedure OnChange(Sender: TObject; Node: TTreeNode);
-    procedure SaveSelected(Node: TTreeNode);
+    function SaveSelected(Node: TTreeNode): TNodeData;
     procedure RestoreSelected(Node: TTreeNode);
     procedure ExpandAll(Node: TTreeNode);
     procedure CollapseAll(Node: TTreeNode);
@@ -22,9 +22,12 @@ type
     destructor Destroy; override;
 
     procedure AddNode(ParentNode: TTreeNode; Text: string);
+    procedure InsertNode(Text: string);
     procedure DeleteNode(Node: TTreeNode);
     procedure EditNode(Node: TTreeNode; NewText: string);
     procedure SelectNode(Node: TTreeNode);
+    function SelectedIsItem(Node: TTreeNode): Boolean;
+    function SelectedIsFolder(Node: TTreeNode): Boolean;
 
     procedure SaveToFile(FileName: string);
   end;
@@ -47,18 +50,20 @@ begin
   inherited;
 end;
 
-procedure TTreeController.SaveSelected(Node: TTreeNode);
+function TTreeController.SaveSelected(Node: TTreeNode): TNodeData;
 var
   Idx, i: Integer;
 begin
+  Result := nil;
   for i := 0 to FTView.Items.Count - 1 do
   begin
     if FTView.Items[i] = Node then
     begin
-      FModel.Nodes[i] := TNodeState.Create;
+      if not Assigned(FModel.Nodes[i]) then
+        FModel.Nodes[i] := TNodeData.Create();
       FModel.Nodes[i].Expanded := Node.Expanded;
       FModel.Nodes[i].Selected := True;
-      Exit;
+      Exit(FModel.Nodes[i]);
     end;
   end;
 end;
@@ -102,6 +107,19 @@ begin
   end;
 end;
 
+procedure TTreeController.InsertNode(Text: string);
+var
+  NewNode, ParentNode: TTreeNode;
+  nodeData: TNodeData;
+begin
+  ParentNode := FTView.Selected;
+  NewNode := FTView.Items.AddChild(ParentNode, Text);
+  ExpandAll(ParentNode);
+  nodeData := SaveSelected(NewNode);
+  if Assigned(nodeData) then
+    nodeData.isFolder := false;
+end;
+
 procedure TTreeController.RestoreSelected(Node: TTreeNode);
 var
   Idx, i: Integer;
@@ -128,10 +146,13 @@ end;
 procedure TTreeController.AddNode(ParentNode: TTreeNode; Text: string);
 var
   NewNode: TTreeNode;
+  nodeData: TNodeData;
 begin
   NewNode := FTView.Items.AddChild(ParentNode, Text);
   ExpandAll(ParentNode);
-  SaveSelected(NewNode);
+  nodeData := SaveSelected(NewNode);
+  if Assigned(nodeData) then
+    nodeData.isFolder := True;
 end;
 
 procedure TTreeController.DeleteNode(Node: TTreeNode);
@@ -144,6 +165,23 @@ procedure TTreeController.EditNode(Node: TTreeNode; NewText: string);
 begin
   Node.Text := NewText;
   SaveSelected(Node);
+end;
+
+function TTreeController.SelectedIsFolder(Node: TTreeNode): Boolean;
+begin
+  Result := not SelectedIsItem(Node);
+end;
+
+function TTreeController.SelectedIsItem(Node: TTreeNode): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 0 to FTView.Items.Count - 1 do
+  begin
+    if FTView.Items[i] = Node then
+      Exit(not FModel.Nodes[i].isFolder);
+  end;
 end;
 
 procedure TTreeController.SelectNode(Node: TTreeNode);

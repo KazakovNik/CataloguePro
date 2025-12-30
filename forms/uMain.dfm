@@ -102,8 +102,8 @@
   object ImageList1: TImageList
     Height = 24
     Width = 24
-    Left = 480
-    Top = 64
+    Left = 136
+    Top = 56
   end
   object ActionManager1: TActionManager
     ActionBars = <
@@ -114,8 +114,8 @@
           end>
         ActionBar = ActionToolBar1
       end>
-    Left = 504
-    Top = 192
+    Left = 136
+    Top = 120
     StyleName = 'Platform Default'
     object actLoadFile: TAction
       Caption = #1054#1090#1082#1088#1099#1090#1100' '#1092#1072#1081#1083
@@ -144,24 +144,28 @@
     end
     object actInsertData: TAction
       Caption = '>>'
+      OnExecute = actInsertDataExecute
+      OnUpdate = actInsertDataUpdate
     end
     object actReturnBack: TAction
       Caption = '<<'
+      OnExecute = actReturnBackExecute
+      OnUpdate = actReturnBackUpdate
     end
   end
   object OpenDialog: TOpenDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
-    Left = 128
-    Top = 32
+    Left = 40
+    Top = 48
   end
   object dlgSaveTextFile: TSaveDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
-    Left = 136
+    Left = 40
     Top = 104
   end
   object pmTree: TPopupMenu
-    Left = 344
-    Top = 136
+    Left = 432
+    Top = 200
     object actAddNode1: TMenuItem
       Action = actAddNode
     end
