@@ -28,7 +28,7 @@ type
     actAddNode1: TMenuItem;
     actAddRootNode1: TMenuItem;
     actEditNode1: TMenuItem;
-    actSaveTreeToFile1: TMenuItem;
+    mniSaveTreeToFile: TMenuItem;
     N1: TMenuItem;
     actInsertData: TAction;
     actReturnBack: TAction;
@@ -72,6 +72,8 @@ type
     statStatusBar: TStatusBar;
     mniRecentFiles: TMenuItem;
     actRecentFiles: TAction;
+    actLoadTree: TAction;
+    mniLoadTree: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
@@ -108,6 +110,7 @@ type
     procedure actRecentFilesUpdate(Sender: TObject);
     procedure N6Click(Sender: TObject);
     procedure actRecentFilesExecute(Sender: TObject);
+    procedure actLoadTreeExecute(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -209,6 +212,13 @@ begin
   OpenDialog.InitialDir := FFacade.FileOpenDirectory;
   if OpenDialog.Execute then
     FFacade.HeapLoadFile(OpenDialog.FileName);
+end;
+
+procedure TFormMain.actLoadTreeExecute(Sender: TObject);
+begin
+  OpenDialog.InitialDir := FFacade.FileOpenDirectory;
+  if OpenDialog.Execute then
+    FFacade.LoadTreeFile(OpenDialog.FileName);
 end;
 
 procedure TFormMain.actRecentFilesExecute(Sender: TObject);

@@ -204,6 +204,10 @@
       OnExecute = actSaveTreeToFileExecute
       OnUpdate = actSaveTreeToFileUpdate
     end
+    object actLoadTree: TAction
+      Caption = #55357#56514' '#1054#1090#1082#1088#1099#1090#1100
+      OnExecute = actLoadTreeExecute
+    end
     object actInsertData: TAction
       Caption = #10010
       Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1076#1077#1088#1077#1074#1086
@@ -303,9 +307,13 @@
     object N1: TMenuItem
       Caption = '-'
     end
-    object actSaveTreeToFile1: TMenuItem
+    object mniSaveTreeToFile: TMenuItem
       Action = actSaveTreeToFile
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1092#1072#1081#1083
+    end
+    object mniLoadTree: TMenuItem
+      Action = actLoadTree
+      Caption = #1054#1090#1082#1088#1099#1090#1100
     end
   end
   object mmMain: TMainMenu

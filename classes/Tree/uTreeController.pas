@@ -14,28 +14,30 @@ type
     FTView: TTreeView;
     FOnReturn: TReturnEvent;
   private
-    procedure GenerateTreeData(ParentNode: TTreeNode; Stream: TStringStream; path: string);
+    procedure GenerateTreeData(ParentNode: TTreeNode;
+      Stream: TStringStream; path: string);
     procedure DoReturn(Text: string);
+    procedure ForceNode(nodeList: TStringList);
+    function GetNodeFromParentByName(Parent: TTreeNode;
+      const NameNode: string): TTreeNode;
     procedure Expand(Node: TTreeNode);
-    procedure Collapse(Node: TTreeNode);
   public
     constructor Create(View: TTreeView);
     destructor Destroy; override;
 
-    procedure AddNode(ParentNode: TTreeNode; Text: string);
     procedure InsertItem(Text: string);
     procedure DeleteNode(Node: TTreeNode);
     procedure EditNode(Node: TTreeNode; NewText: string);
     procedure SelectNode(Node: TTreeNode);
+    procedure ExpandAll;
+    procedure CollapseAll;
+    procedure SaveToFile(FileName: string);
+    procedure LoadTreeFile(filename: string);
 
     function SelectedIsItem(Node: TTreeNode): Boolean;
     function SelectedIsFolder(Node: TTreeNode): Boolean;
     //function GetDragControlTree: TControl;
-
-    procedure ExpandAll;
-    procedure CollapseAll;
-
-    procedure SaveToFile(FileName: string);
+    function AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
 
     property OnReturn: TReturnEvent read FOnReturn write FOnReturn;
   end;
@@ -64,6 +66,77 @@ procedure TTreeController.DoReturn(Text: string);
 begin
   if Assigned(OnReturn) then
     OnReturn(Text);
+end;
+
+procedure TTreeController.LoadTreeFile(filename: string);
+var
+  sl: TStringList;
+  slt: TStringList;
+  i: Integer;
+begin
+  if not FileExists(filename) then
+    raise Exception.Create('Файл не найден:'#13#10 + filename);
+
+  sl := TStringList.Create;
+  slt:= TStringList.Create;
+  try
+    sl.LoadFromFile(filename);
+
+    for i := 0 to sl.Count - 1 do
+    begin
+      slt.Text := StringReplace(sl[i], '\', #13#10, [rfReplaceAll]);
+      ForceNode(slt);
+    end;
+  finally
+    sl.Free;
+    slt.Free;
+  end;
+end;
+
+function TTreeController.GetNodeFromParentByName(Parent: TTreeNode;
+  const NameNode: string): TTreeNode;
+var
+  I, j: Integer;
+begin
+  Result := nil;
+  for I := 0 to FTView.Items.Count - 1 do
+  begin
+    if FTView.Items[I].Parent = Parent then
+    begin
+      if SameText(FTView.Items[I].Text, NameNode) then
+        Exit(FTView.Items[I]);
+    end;
+  end;
+end;
+
+procedure TTreeController.ForceNode(nodeList: TStringList);
+var
+  i: integer;
+  Node: TTreeNode;
+  NewNode, ParentNode: TTreeNode;
+begin
+  Node := nil;
+  for i := 0 to nodeList.Count - 1 do
+  begin
+    ParentNode := Node;
+    if i = nodeList.Count - 1 then
+      Break;
+    if not Assigned(ParentNode) then
+    begin
+      Node := GetNodeFromParentByName(nil, nodeList[i]);
+      if not Assigned(Node) then
+        Node := AddNode(nil, nodeList[i]);
+    end
+    else
+    begin
+      Node := GetNodeFromParentByName(ParentNode, nodeList[i]);
+      if not Assigned(Node) then
+        Node := AddNode(ParentNode, nodeList[i]);
+    end;
+  end;
+
+  NewNode := FTView.Items.AddChild(Node, nodeList[nodeList.Count - 1]);
+  NewNode.Data := TModelItem.Create();
 end;
 
 procedure TTreeController.SaveToFile(FileName: string);
@@ -124,15 +197,15 @@ begin
   Expand(ParentNode);
 end;
 
-procedure TTreeController.AddNode(ParentNode: TTreeNode; Text: string);
+function TTreeController.AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
 var
   NewNode: TTreeNode;
-  vModel: TModelDir;
 begin
   NewNode := FTView.Items.AddChild(ParentNode, Text);
   NewNode.Data := TModelDir.Create();
   Expand(ParentNode);
   FTView.Selected := NewNode;
+  Result := NewNode;
 end;
 
 procedure TTreeController.DeleteNode(Node: TTreeNode);
@@ -193,24 +266,16 @@ begin
   Node.Expanded := True;
 end;
 
-procedure TTreeController.Collapse(Node: TTreeNode);
-var I: integer;
-begin
-  if (not Assigned(Node)) or (not Assigned(Node.GetFirstChild())) then
-    Exit;
-  for I := 0 to Node.Count - 1 do
-    Collapse(Node.Item[I]);
-  Node.Expanded := False;
-end;
-
 procedure TTreeController.ExpandAll;
 begin
-  Expand(nil);
+  FTView.FullExpand;
+  if FTView.Items.Count > 0 then
+    FTView.Selected := FTView.Items[0];
 end;
 
 procedure TTreeController.CollapseAll;
 begin
-  Collapse(nil);
+  FTView.FullCollapse;
 end;
 
 end.

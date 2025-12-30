@@ -36,6 +36,7 @@ type
     procedure EditCurrentNode;
     procedure InsertCurrentItem;
     procedure HeapLoadFile(filename: string);
+    procedure LoadTreeFile(filename: string);
     procedure TreeSaveToFile(filename: string);
     procedure SaveSettings;
     procedure InitSettings;
@@ -100,7 +101,6 @@ begin
   FRecentFilesController.LoadHistory(FSettingsController.RecentFiles);
 
   FHeapController := THeapController.Create(FHeap);
-  FHeapController.OnLoadFile := DoLoadFile;
   FTreeController := TTreeController.Create(FTree);
   FTreeController.OnReturn := DoReturn;
 end;
@@ -109,7 +109,6 @@ destructor TMainFacade.Destroy;
 begin
   FSettingsController.OnUpdate := nil;
   FRecentFilesController.OnUpdate := nil;
-  FHeapController.OnLoadFile := nil;
   FTreeController.OnReturn := nil;
 
   FHeapController.Free;
@@ -185,6 +184,7 @@ begin
   FSettingsController.FileOpenDirectory := ExtractFilePath(filename);
   try
     FHeapController.LoadFile(filename);
+    DoLoadFile(filename);
   except
     on E: Exception do
       ShowMessage(E.Message);
@@ -220,6 +220,19 @@ begin
   FTreeController.SelectNode(Node);
   FTreeController.InsertItem(FHeap.Items[FHeap.ItemIndex]);
   FHeapController.Delete(FHeap.ItemIndex);
+end;
+
+procedure TMainFacade.LoadTreeFile(filename: string);
+begin
+  FSettingsController.FileOpenDirectory := ExtractFilePath(filename);
+  try
+    FTreeController.LoadTreeFile(filename);
+    FTreeController.ExpandAll();
+    DoLoadFile(filename);
+  except
+    on E: Exception do
+      ShowMessage(E.Message);
+  end;
 end;
 
 function TMainFacade.RecentFilesEnabled: Boolean;
@@ -267,7 +280,7 @@ var
   FileName: string;
 begin
   FileName := TMenuItem(Sender).Caption;
-  Delete(FileName, 1, 1);
+//  Delete(FileName, 1, 1);
   HeapLoadFile(FileName);
 end;
 
