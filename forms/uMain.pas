@@ -7,13 +7,13 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnList, Vcl.ToolWin, Vcl.ActnMan,
   Vcl.ActnCtrls, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ImgList,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
-  uFileContentController, uSettingsController, uTreeController, Vcl.Menus;
+  uFileContentController, uSettingsController, uTreeController, Vcl.Menus,
+  Vcl.ButtonGroup;
 
 type
   TFormMain = class(TForm)
     ImageList1: TImageList;
     ActionManager1: TActionManager;
-    ActionToolBar1: TActionToolBar;
     actLoadFile: TAction;
     OpenDialog: TOpenDialog;
     TreeView: TTreeView;
@@ -22,7 +22,6 @@ type
     actAddNode: TAction;
     actAddRootNode: TAction;
     actEditNode: TAction;
-    actDeleteNode: TAction;
     actSaveTreeToFile: TAction;
     dlgSaveTextFile: TSaveDialog;
     pmTree: TPopupMenu;
@@ -39,6 +38,36 @@ type
     btnInsert: TButton;
     btnReturnBack: TButton;
     actSettings: TAction;
+    actExpandAll: TAction;
+    actCollapseAll: TAction;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    N4: TMenuItem;
+    pnlHeap: TPanel;
+    pnlTree: TPanel;
+    pnlTreeUnils: TPanel;
+    pnlHeaputils: TPanel;
+    btnLoadFile: TButton;
+    actDeleteNode: TAction;
+    N5: TMenuItem;
+    mmMain: TMainMenu;
+    N6: TMenuItem;
+    N7: TMenuItem;
+    N8: TMenuItem;
+    N9: TMenuItem;
+    N10: TMenuItem;
+    N11: TMenuItem;
+    N12: TMenuItem;
+    N13: TMenuItem;
+    N14: TMenuItem;
+    N15: TMenuItem;
+    N16: TMenuItem;
+    N17: TMenuItem;
+    N18: TMenuItem;
+    N19: TMenuItem;
+    N20: TMenuItem;
+    actAbout: TAction;
+    N21: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
@@ -46,7 +75,6 @@ type
     procedure actAddNodeExecute(Sender: TObject);
     procedure actAddRootNodeExecute(Sender: TObject);
     procedure actEditNodeExecute(Sender: TObject);
-    procedure actDeleteNodeExecute(Sender: TObject);
     procedure actSaveTreeToFileExecute(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure actInsertDataUpdate(Sender: TObject);
@@ -59,6 +87,8 @@ type
       State: TDragState; var Accept: Boolean);
     procedure TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure FormShow(Sender: TObject);
+    procedure actDeleteNodeUpdate(Sender: TObject);
+    procedure actDeleteNodeExecute(Sender: TObject);
   private
     FFileLoader: TFileContentController;
     FSettings: TSettingsController;
@@ -96,6 +126,15 @@ begin
     FTreeController.DeleteNode(TreeView.Selected);
 end;
 
+procedure TFormMain.actDeleteNodeUpdate(Sender: TObject);
+begin
+  actDeleteNode.Enabled :=
+    (TreeView.Items.Count > 0) and
+    Assigned(TreeView.Selected) and
+    FTreeController.SelectedIsFolder(TreeView.Selected) and
+    (not TreeView.Selected.HasChildren);
+end;
+
 procedure TFormMain.actEditNodeExecute(Sender: TObject);
 begin
   if Assigned(TreeView.Selected) then
@@ -107,7 +146,7 @@ procedure TFormMain.actInsertDataExecute(Sender: TObject);
 var
   index: integer;
 begin
-  FTreeController.InsertNode(lbHeap.Items[lbHeap.ItemIndex]);
+  FTreeController.InsertItem(lbHeap.Items[lbHeap.ItemIndex]);
   index := lbHeap.ItemIndex;
   lbHeap.Items.Delete(lbHeap.ItemIndex);
   if index > 0 then
@@ -253,7 +292,7 @@ begin
   tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
 
   FTreeController.SelectNode(tmpNode);
-  FTreeController.InsertNode(lbHeap.Items[lbHeap.ItemIndex]);
+  FTreeController.InsertItem(lbHeap.Items[lbHeap.ItemIndex]);
 
   index := lbHeap.ItemIndex;
   lbHeap.Items.Delete(lbHeap.ItemIndex);

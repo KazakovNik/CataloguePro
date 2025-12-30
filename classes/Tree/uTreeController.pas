@@ -11,28 +11,29 @@ type
 
   TTreeController = class(TObject)
   private
-    FModel: TNodeModel;
     FTView: TTreeView;
     FOnReturn: TReturnEvent;
   private
-    procedure OnChange(Sender: TObject; Node: TTreeNode);
-    function SaveSelected(Node: TTreeNode): TNodeData;
-    procedure RestoreSelected(Node: TTreeNode);
-    procedure ExpandAll(Node: TTreeNode);
-    procedure CollapseAll(Node: TTreeNode);
     procedure GenerateTreeData(ParentNode: TTreeNode; Stream: TStringStream; path: string);
     procedure DoReturn(Text: string);
+    procedure Expand(Node: TTreeNode);
+    procedure Collapse(Node: TTreeNode);
   public
     constructor Create(View: TTreeView);
     destructor Destroy; override;
 
     procedure AddNode(ParentNode: TTreeNode; Text: string);
-    procedure InsertNode(Text: string);
+    procedure InsertItem(Text: string);
     procedure DeleteNode(Node: TTreeNode);
     procedure EditNode(Node: TTreeNode; NewText: string);
     procedure SelectNode(Node: TTreeNode);
+
     function SelectedIsItem(Node: TTreeNode): Boolean;
     function SelectedIsFolder(Node: TTreeNode): Boolean;
+
+    procedure ExpandAll;
+    procedure CollapseAll;
+
     procedure SaveToFile(FileName: string);
 
     property OnReturn: TReturnEvent read FOnReturn write FOnReturn;
@@ -44,15 +45,17 @@ constructor TTreeController.Create(View: TTreeView);
 begin
   inherited Create;
 
-  FModel := TNodeModel.Create;
   FTView := View;
-  FTView.OnChange := OnChange;
 end;
 
 destructor TTreeController.Destroy;
+var
+  i: Integer;
 begin
-  FTView.OnChange := nil;
-  FModel.Free;
+  for i := 0 to FTView.Items.Count - 1 do
+    if Assigned(FTView.Items[i].Data) then
+      TObject(FTView.Items[i].Data).Free;
+
   inherited;
 end;
 
@@ -60,24 +63,6 @@ procedure TTreeController.DoReturn(Text: string);
 begin
   if Assigned(OnReturn) then
     OnReturn(Text);
-end;
-
-function TTreeController.SaveSelected(Node: TTreeNode): TNodeData;
-var
-  Idx, i: Integer;
-begin
-  Result := nil;
-  for i := 0 to FTView.Items.Count - 1 do
-  begin
-    if FTView.Items[i] = Node then
-    begin
-      if not Assigned(FModel.Nodes[i]) then
-        FModel.Nodes[i] := TNodeData.Create();
-      FModel.Nodes[i].Expanded := Node.Expanded;
-      FModel.Nodes[i].Selected := True;
-      Exit(FModel.Nodes[i]);
-    end;
-  end;
 end;
 
 procedure TTreeController.SaveToFile(FileName: string);
@@ -119,52 +104,24 @@ begin
   end;
 end;
 
-procedure TTreeController.InsertNode(Text: string);
+procedure TTreeController.InsertItem(Text: string);
 var
   NewNode, ParentNode: TTreeNode;
-  nodeData: TNodeData;
 begin
   ParentNode := FTView.Selected;
   NewNode := FTView.Items.AddChild(ParentNode, Text);
-  ExpandAll(ParentNode);
-  nodeData := SaveSelected(NewNode);
-  if Assigned(nodeData) then
-    nodeData.isFolder := false;
-end;
-
-procedure TTreeController.RestoreSelected(Node: TTreeNode);
-var
-  Idx, i: Integer;
-begin
-  for i := 0 to FTView.Items.Count - 1 do
-  begin
-    if FTView.Items[i] = Node then
-    begin
-      FModel.Nodes[i].Expanded := Node.Expanded;
-      FModel.Nodes[i].Selected := True;
-
-      Node.Selected := FModel.Nodes[i].Selected;
-      Node.Expanded := FModel.Nodes[i].Expanded;
-      Exit;
-    end;
-  end;
-end;
-
-procedure TTreeController.OnChange(Sender: TObject; Node: TTreeNode);
-begin
-  SaveSelected(Node);
+  NewNode.Data := TModelItem.Create();
+  Expand(ParentNode);
 end;
 
 procedure TTreeController.AddNode(ParentNode: TTreeNode; Text: string);
 var
   NewNode: TTreeNode;
-  nodeData: TNodeData;
+  vModel: TModelDir;
 begin
   NewNode := FTView.Items.AddChild(ParentNode, Text);
-  ExpandAll(ParentNode);
-  nodeData := SaveSelected(NewNode);
-  if Assigned(nodeData) then
-    nodeData.isFolder := True;
+  NewNode.Data := TModelDir.Create();
+  Expand(ParentNode);
   FTView.Selected := NewNode;
 end;
 
@@ -175,6 +132,12 @@ begin
   if not Assigned(Node) then
     Exit;
 
+  if SelectedIsFolder(Node) and (not Node.HasChildren)  then
+  begin
+    Node.Free;
+    Exit;
+  end;
+
   if not Node.HasChildren then
   begin
     DoReturn(Node.Text);
@@ -183,9 +146,7 @@ begin
   else
   begin
     for i := Node.Count - 1 downto 0 do
-    begin
       DeleteNode(Node.Item[i]);
-    end;
     Node.Free;
   end;
 end;
@@ -193,7 +154,6 @@ end;
 procedure TTreeController.EditNode(Node: TTreeNode; NewText: string);
 begin
   Node.Text := NewText;
-  SaveSelected(Node);
 end;
 
 function TTreeController.SelectedIsFolder(Node: TTreeNode): Boolean;
@@ -202,24 +162,16 @@ begin
 end;
 
 function TTreeController.SelectedIsItem(Node: TTreeNode): Boolean;
-var
-  i: Integer;
 begin
-  Result := False;
-  for i := 0 to FTView.Items.Count - 1 do
-  begin
-    if FTView.Items[i] = Node then
-      Exit(not FModel.Nodes[i].isFolder);
-  end;
+  Result := Assigned(Node.Data) and (TObject(Node.Data).ClassName = 'TModelItem');
 end;
 
 procedure TTreeController.SelectNode(Node: TTreeNode);
 begin
   FTView.Selected := Node;
-  RestoreSelected(Node);
 end;
 
-procedure TTreeController.ExpandAll(Node: TTreeNode);
+procedure TTreeController.Expand(Node: TTreeNode);
 var
   I: integer;
 begin
@@ -227,16 +179,28 @@ begin
     Exit;
 
   for I := 0 to Node.Count - 1 do
-    ExpandAll(Node.Item[I]);
+    Expand(Node.Item[I]);
   Node.Expanded := True;
 end;
 
-procedure TTreeController.CollapseAll(Node: TTreeNode);
+procedure TTreeController.Collapse(Node: TTreeNode);
 var I: integer;
 begin
+  if (not Assigned(Node)) or (not Assigned(Node.GetFirstChild())) then
+    Exit;
   for I := 0 to Node.Count - 1 do
-    CollapseAll(Node.Item[I]);
+    Collapse(Node.Item[I]);
   Node.Expanded := False;
+end;
+
+procedure TTreeController.ExpandAll;
+begin
+  Expand(nil);
+end;
+
+procedure TTreeController.CollapseAll;
+begin
+  Collapse(nil);
 end;
 
 end.

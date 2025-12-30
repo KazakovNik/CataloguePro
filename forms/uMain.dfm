@@ -2,14 +2,17 @@
   Left = 0
   Top = 0
   Caption = 'CataloguePro'
-  ClientHeight = 351
-  ClientWidth = 635
+  ClientHeight = 500
+  ClientWidth = 800
   Color = clBtnFace
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 800
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = mmMain
   OldCreateOrder = False
   Position = poDefault
   OnClose = FormClose
@@ -20,67 +23,29 @@
   PixelsPerInch = 106
   TextHeight = 14
   object Splitter: TSplitter
-    Left = 281
-    Top = 24
+    Left = 265
+    Top = 0
     Width = 6
-    Height = 327
+    Height = 500
+    ExplicitLeft = 281
+    ExplicitTop = 24
     ExplicitHeight = 273
   end
-  object ActionToolBar1: TActionToolBar
-    Left = 0
-    Top = 0
-    Width = 635
-    Height = 24
-    ActionManager = ActionManager1
-    Caption = 'ActionToolBar1'
-    Color = clMenuBar
-    ColorMap.DisabledFontColor = 7171437
-    ColorMap.HighlightColor = clWhite
-    ColorMap.BtnSelectedFont = clBlack
-    ColorMap.UnusedColor = clWhite
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -12
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    Spacing = 0
-  end
-  object TreeView: TTreeView
-    Left = 332
-    Top = 24
-    Width = 303
-    Height = 327
-    Align = alClient
-    HideSelection = False
-    Indent = 19
-    PopupMenu = pmTree
-    TabOrder = 1
-    OnDragDrop = TreeViewDragDrop
-    OnDragOver = TreeViewDragOver
-    ExplicitLeft = 329
-    ExplicitTop = 30
-  end
-  object lbHeap: TListBox
-    Left = 0
-    Top = 24
-    Width = 281
-    Height = 327
-    Style = lbOwnerDrawFixed
-    Align = alLeft
-    DragMode = dmAutomatic
-    ItemHeight = 14
-    TabOrder = 2
-    OnDragOver = lbHeapDragOver
-  end
   object pnlСenter: TPanel
-    Left = 287
-    Top = 24
+    AlignWithMargins = True
+    Left = 271
+    Top = 41
     Width = 45
-    Height = 327
+    Height = 459
+    Margins.Left = 0
+    Margins.Top = 41
+    Margins.Right = 0
+    Margins.Bottom = 0
     Align = alLeft
     BevelOuter = bvNone
-    TabOrder = 3
+    TabOrder = 0
+    ExplicitTop = 8
+    ExplicitHeight = 343
     object pnlСenterBtn: TPanel
       Left = 0
       Top = 0
@@ -102,8 +67,96 @@
         Width = 30
         Height = 25
         Action = actReturnBack
+        Caption = #8617#65039
         TabOrder = 1
       end
+    end
+  end
+  object pnlHeap: TPanel
+    Left = 0
+    Top = 0
+    Width = 265
+    Height = 500
+    Align = alLeft
+    BevelOuter = bvNone
+    Caption = 'pnlHeap'
+    TabOrder = 1
+    ExplicitHeight = 351
+    object lbHeap: TListBox
+      Left = 0
+      Top = 41
+      Width = 265
+      Height = 459
+      Style = lbOwnerDrawFixed
+      Align = alClient
+      DragMode = dmAutomatic
+      ItemHeight = 14
+      TabOrder = 0
+      OnDragOver = lbHeapDragOver
+      ExplicitLeft = -96
+      ExplicitTop = 1
+      ExplicitWidth = 281
+      ExplicitHeight = 349
+    end
+    object pnlHeaputils: TPanel
+      Left = 0
+      Top = 0
+      Width = 265
+      Height = 41
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitLeft = 96
+      ExplicitTop = 72
+      ExplicitWidth = 185
+      object btnLoadFile: TButton
+        Left = 8
+        Top = 10
+        Width = 113
+        Height = 25
+        Action = actLoadFile
+        TabOrder = 0
+      end
+    end
+  end
+  object pnlTree: TPanel
+    Left = 316
+    Top = 0
+    Width = 484
+    Height = 500
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'pnlTree'
+    TabOrder = 2
+    ExplicitLeft = 392
+    ExplicitTop = 112
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object TreeView: TTreeView
+      Left = 0
+      Top = 41
+      Width = 484
+      Height = 459
+      Align = alClient
+      HideSelection = False
+      Indent = 19
+      PopupMenu = pmTree
+      TabOrder = 0
+      OnDragDrop = TreeViewDragDrop
+      OnDragOver = TreeViewDragOver
+      ExplicitLeft = 316
+      ExplicitTop = 0
+      ExplicitWidth = 319
+      ExplicitHeight = 351
+    end
+    object pnlTreeUnils: TPanel
+      Left = 0
+      Top = 0
+      Width = 484
+      Height = 41
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 1
     end
   end
   object ImageList1: TImageList
@@ -119,7 +172,8 @@
           item
             Action = actLoadFile
           end>
-        ActionBar = ActionToolBar1
+      end
+      item
       end>
     Left = 136
     Top = 120
@@ -131,19 +185,18 @@
     end
     object actAddNode: TAction
       Caption = #10010' '#1044#1086#1073#1072#1074#1080#1090#1100
+      Hint = #1044#1072#1073#1072#1074#1080#1090#1100' '#1075#1088#1091#1087#1087#1091' '#1074' '#1074#1099#1073#1088#1072#1085#1085#1086#1077
       OnExecute = actAddNodeExecute
     end
     object actAddRootNode: TAction
       Caption = #55357#56636#10010' '#1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1085#1072#1095#1072#1083#1086
+      Hint = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1085#1072#1095#1072#1083#1086
       OnExecute = actAddRootNodeExecute
     end
     object actEditNode: TAction
       Caption = #9999#65039' '#1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
+      Hint = #1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
       OnExecute = actEditNodeExecute
-    end
-    object actDeleteNode: TAction
-      Caption = #8617#65039' '#1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1089#1087#1080#1089#1086#1082
-      OnExecute = actDeleteNodeExecute
     end
     object actSaveTreeToFile: TAction
       Caption = #55357#56510' '#1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1092#1072#1081#1083
@@ -157,13 +210,31 @@
       OnUpdate = actInsertDataUpdate
     end
     object actReturnBack: TAction
-      Caption = #8617#65039
-      Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1089#1087#1080#1089#1086#1082
+      Caption = #8617#65039' '#1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1089#1087#1080#1089#1086#1082
+      Hint = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074#1099#1073#1088#1072#1085#1085#1086#1077' '#1074' '#1089#1087#1080#1089#1086#1082
       OnExecute = actReturnBackExecute
       OnUpdate = actReturnBackUpdate
     end
     object actSettings: TAction
       Caption = #9881#65039' '#1053#1072#1089#1090#1088#1086#1081#1082#1080
+      Hint = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+    end
+    object actExpandAll: TAction
+      Caption = #8594' '#8593' '#1056#1072#1079#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077
+      Hint = #1056#1072#1079#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077' '#1076#1077#1088#1077#1074#1086
+    end
+    object actCollapseAll: TAction
+      Caption = #8594' '#8595' '#1057#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077
+      Hint = #1057#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077' '#1076#1077#1088#1077#1074#1086
+    end
+    object actDeleteNode: TAction
+      Caption = #10006#65039' '#1059#1076#1072#1083#1080#1090#1100
+      Hint = #1059#1076#1072#1083#1080#1090#1100' '#1087#1091#1089#1090#1091#1102' '#1074#1077#1090#1082#1091
+      OnExecute = actDeleteNodeExecute
+      OnUpdate = actDeleteNodeUpdate
+    end
+    object actAbout: TAction
+      Caption = #55357#56492' '#1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
     end
   end
   object OpenDialog: TOpenDialog
@@ -192,8 +263,23 @@
       Caption = #1056#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1090#1100
     end
     object actDeleteNode1: TMenuItem
-      Action = actDeleteNode
+      Action = actReturnBack
       Caption = #1055#1077#1088#1077#1085#1077#1089#1090#1080' '#1074' '#1089#1087#1080#1089#1086#1082
+    end
+    object N5: TMenuItem
+      Action = actDeleteNode
+      Caption = #1059#1076#1072#1083#1080#1090#1100
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object N3: TMenuItem
+      Action = actCollapseAll
+      Caption = #1057#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077
+    end
+    object N4: TMenuItem
+      Action = actExpandAll
+      Caption = #1056#1072#1079#1074#1077#1088#1085#1091#1090#1100' '#1074#1089#1077
     end
     object N1: TMenuItem
       Caption = '-'
@@ -201,6 +287,58 @@
     object actSaveTreeToFile1: TMenuItem
       Action = actSaveTreeToFile
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1092#1072#1081#1083
+    end
+  end
+  object mmMain: TMainMenu
+    Left = 48
+    Top = 216
+    object N6: TMenuItem
+      Caption = #1060#1072#1081#1083
+      object N7: TMenuItem
+        Action = actLoadFile
+      end
+    end
+    object N8: TMenuItem
+      Caption = #1044#1077#1088#1077#1074#1086
+      object N9: TMenuItem
+        Action = actAddNode
+      end
+      object N10: TMenuItem
+        Action = actAddRootNode
+      end
+      object N11: TMenuItem
+        Action = actEditNode
+      end
+      object N12: TMenuItem
+        Action = actReturnBack
+      end
+      object N13: TMenuItem
+        Action = actDeleteNode
+      end
+      object N14: TMenuItem
+        Action = actSaveTreeToFile
+      end
+      object N15: TMenuItem
+        Caption = '-'
+      end
+      object N16: TMenuItem
+        Action = actExpandAll
+      end
+      object N17: TMenuItem
+        Action = actCollapseAll
+      end
+    end
+    object N18: TMenuItem
+      Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
+      object N19: TMenuItem
+        Action = actSettings
+      end
+    end
+    object N20: TMenuItem
+      Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+      object N21: TMenuItem
+        Action = actAbout
+      end
     end
   end
 end
