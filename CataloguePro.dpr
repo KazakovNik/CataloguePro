@@ -31,8 +31,5 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFormMain, FormMain);
-  Application.CreateForm(TFormAbout, FormAbout);
-  Application.CreateForm(TFormDialogBase, FormDialogBase);
-  Application.CreateForm(TFormSettings, FormSettings);
   Application.Run;
 end.

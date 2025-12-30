@@ -113,7 +113,7 @@ begin
 
   FUserInfo := TUserInfo.Create;
 
-  settingsFN := ExtractFilePath(Application.ExeName) + '\settings.ini';
+  settingsFN := ExtractFilePath(Application.ExeName) + 'settings.ini';
   FSettingsController := TSettingsController.Create(settingsFN);
   FSettingsController.OnUpdate := DoUpdateSettings;
 

@@ -74,7 +74,6 @@ type
     actRecentFiles: TAction;
     actLoadTree: TAction;
     mniLoadTree: TMenuItem;
-    procedure FormCreate(Sender: TObject);
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
@@ -259,11 +258,6 @@ begin
   FFacade.SaveSettings();
 end;
 
-procedure TFormMain.FormCreate(Sender: TObject);
-begin
-  FFacade := TMainFacade.Create(TreeView, lbHeap, statStatusBar);
-end;
-
 procedure TFormMain.FormDestroy(Sender: TObject);
 begin
   FFacade.Free;
@@ -276,6 +270,7 @@ end;
 
 procedure TFormMain.FormShow(Sender: TObject);
 begin
+  FFacade := TMainFacade.Create(TreeView, lbHeap, statStatusBar);
   FFacade.InitSettings();
 end;
 

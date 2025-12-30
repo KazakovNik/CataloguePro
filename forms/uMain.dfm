@@ -16,7 +16,6 @@
   OldCreateOrder = False
   Position = poDefault
   OnClose = FormClose
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow

@@ -41,7 +41,7 @@ begin
   Caption := 'О программе';
   lblProgramName.Caption := Application.MainForm.Caption;
   lblVersion.Caption := 'Версия: 1.0';
-  lblCopyright.Caption := 'Казакон Николай Вадимочик';
+  lblCopyright.Caption := 'Казаков Николай Вадимович';
   lblUrl.Caption := 'https://github.com/KazakovNik/CataloguePro';
 end;
 

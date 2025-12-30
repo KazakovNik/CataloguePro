@@ -68,10 +68,11 @@ begin
   begin
     MainFormHeight := Round(Screen.Height / 100 * 50);
     MainFormWidth := Round(Screen.Width / 100 * 50);
-    MainFormLeft := (Screen.Width div 2) - (Application.MainForm.ClientWidth div 2);
-    MainFormTop := (Screen.Height div 2) - (Application.MainForm.ClientHeight div 2);
+    MainFormLeft := (Screen.Width div 2) - (MainFormWidth div 2);
+    MainFormTop := (Screen.Height div 2) - (MainFormHeight div 2);
     HeapWidth := 300;
     WindowState := 0; //wsNormal
+    MaxCountFileHistopy := 10;
   end;
 end;
 
