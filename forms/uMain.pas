@@ -165,7 +165,7 @@ end;
 
 procedure TFormMain.actCollapseAllExecute(Sender: TObject);
 begin
-//
+  FFacade.CollapseAll;
 end;
 
 procedure TFormMain.actCollapseAllUpdate(Sender: TObject);
@@ -205,7 +205,7 @@ end;
 
 procedure TFormMain.actExpandAllExecute(Sender: TObject);
 begin
-//
+  FFacade.ExpandAll;
 end;
 
 procedure TFormMain.actExpandAllUpdate(Sender: TObject);

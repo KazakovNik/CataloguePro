@@ -48,6 +48,8 @@ type
     procedure ShowmSettings;
     procedure TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure UpdateSubmenuRecentFiles(mmMain: TMainMenu; mniRecentFiles: TMenuItem);
+    procedure ExpandAll;
+    procedure CollapseAll;
 
     function DeleteNodeEnabled: Boolean;
     function InsertCurrentItemEnabled: Boolean;
@@ -111,6 +113,11 @@ begin
     FStatusBar.Panels[2].Text := 'Строк в куче: ' + IntToStr(FHeap.Items.Count);
     FStatusBar.Panels[3].Text := 'Записей в дереве: ' + IntToStr(FTreeController.CountNode);
   end;
+end;
+
+procedure TMainFacade.CollapseAll;
+begin
+  FTreeController.CollapseAll;
 end;
 
 constructor TMainFacade.Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
@@ -214,6 +221,11 @@ begin
     FTreeController.EditNode(FTree.Selected, text);
     DoUpdateStatus;
   end;
+end;
+
+procedure TMainFacade.ExpandAll;
+begin
+  FTreeController.ExpandAll;
 end;
 
 //function TMainFacade.GetDragControlTree: TControl;
