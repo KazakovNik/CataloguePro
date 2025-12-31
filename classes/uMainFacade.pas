@@ -61,6 +61,11 @@ type
     function ReturnBackCurrentItemEnabled: Boolean;
     function TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer): Boolean;
     function RecentFilesEnabled: Boolean;
+
+    function ClearTreeEnabled: Boolean;
+    function ClearHeapEnabled: Boolean;
+    procedure ClearHeap;
+    procedure ClearTree;
   public
     property FileOpenDirectory: string read GetFileOpenDirectory;
     property FileSaveDirectory: string read GetFileSaveDirectory;
@@ -117,6 +122,27 @@ begin
     FStatusBar.Panels[2].Text := 'Строк в куче: ' + IntToStr(FHeap.Items.Count);
     FStatusBar.Panels[3].Text := 'Записей в дереве: ' + IntToStr(FTreeController.CountNode);
   end;
+end;
+
+procedure TMainFacade.ClearHeap;
+begin
+  FHeapController.Clear;
+end;
+
+procedure TMainFacade.ClearTree;
+begin
+  if FDialogFacade.MessageInfoDialogOkCancel('Вы уверены что хотите цдалить все записи без переноса в кучу?', 'Очистить дерево') then
+    FTreeController.Clear;
+end;
+
+function TMainFacade.ClearHeapEnabled: Boolean;
+begin
+  Result := not FHeapController.IsEmpty;
+end;
+
+function TMainFacade.ClearTreeEnabled: Boolean;
+begin
+  Result := not FTreeController.IsEmpty;
 end;
 
 procedure TMainFacade.CollapseAll;

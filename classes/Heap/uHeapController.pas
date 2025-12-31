@@ -17,8 +17,11 @@ type
     procedure LoadFile(filename: string);
     procedure Delete(itemIndex: integer);
     procedure Add(text: string);
-    function GetCurrentItem: string;
     procedure DeleteCurrent;
+    procedure Clear;
+
+    function GetCurrentItem: string;
+    function IsEmpty: Boolean;
   end;
 
 implementation
@@ -30,6 +33,13 @@ procedure THeapController.Add(text: string);
 begin
   FListBox.Items.Add(Text);
   FLogger.AddInfo('Добавили запись в кучу: ' + text);
+end;
+
+procedure THeapController.Clear;
+begin
+  FLogger.AddInfo('Очистка кучи');
+
+  FListBox.Items.Clear;
 end;
 
 constructor THeapController.Create(ListBox: TListBox; Logger: ILogger);
@@ -67,6 +77,11 @@ end;
 function THeapController.GetCurrentItem: string;
 begin
   Result:= FListBox.Items[FListBox.ItemIndex];
+end;
+
+function THeapController.IsEmpty: Boolean;
+begin
+  Result := FListBox.Items.Count = 0;
 end;
 
 procedure THeapController.LoadFile(filename: string);

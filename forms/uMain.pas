@@ -91,6 +91,11 @@ type
     btnactCnPrefixWizard1: TToolButton;
     btnactCnPrefixWizard2: TToolButton;
     btnactCnPrefixWizard3: TToolButton;
+    actClearTree: TAction;
+    btn1: TToolButton;
+    btnClearTree: TToolButton;
+    actClearHeap: TAction;
+    btnClearHeap: TToolButton;
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
@@ -130,6 +135,10 @@ type
     procedure actInsertDataRootExecute(Sender: TObject);
     procedure actInsertDataRootUpdate(Sender: TObject);
     procedure actAddRootNodeUpdate(Sender: TObject);
+    procedure actClearHeapUpdate(Sender: TObject);
+    procedure actClearHeapExecute(Sender: TObject);
+    procedure actClearTreeExecute(Sender: TObject);
+    procedure actClearTreeUpdate(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -164,6 +173,26 @@ end;
 procedure TFormMain.actAddRootNodeUpdate(Sender: TObject);
 begin
   actAddRootNode.Enabled := True;
+end;
+
+procedure TFormMain.actClearHeapExecute(Sender: TObject);
+begin
+  FFacade.ClearHeap();
+end;
+
+procedure TFormMain.actClearHeapUpdate(Sender: TObject);
+begin
+  actClearHeap.Enabled := FFacade.ClearHeapEnabled();
+end;
+
+procedure TFormMain.actClearTreeExecute(Sender: TObject);
+begin
+  FFacade.ClearTree();
+end;
+
+procedure TFormMain.actClearTreeUpdate(Sender: TObject);
+begin
+  actClearTree.Enabled := FFacade.ClearTreeEnabled();
 end;
 
 procedure TFormMain.actCollapseAllExecute(Sender: TObject);

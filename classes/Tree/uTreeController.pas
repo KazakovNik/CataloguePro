@@ -25,6 +25,7 @@ type
     function AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;
     procedure FreeNode(var Node: TTreeNode);
     function AddFolder(ParentNode: TTreeNode; Text: string): TTreeNode;
+    procedure ClearData;
   public
     constructor Create(View: TTreeView; Logger: ILogger);
     destructor Destroy; override;
@@ -39,11 +40,13 @@ type
     procedure CollapseAll;
     procedure SaveToFile(FileName: string);
     procedure LoadTreeFile(filename: string);
+    procedure Clear;
 
     function SelectedIsItem(Node: TTreeNode): Boolean;
     function SelectedIsFolder(Node: TTreeNode): Boolean;
     function AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
     function CountNode: integer;
+    function IsEmpty: Boolean;
 
     property OnReturn: TReturnEvent read FOnReturn write FOnReturn;
   end;
@@ -59,14 +62,19 @@ begin
 end;
 
 destructor TTreeController.Destroy;
+begin
+  ClearData;
+
+  inherited;
+end;
+
+procedure TTreeController.ClearData;
 var
   i: Integer;
 begin
   for i := 0 to FTView.Items.Count - 1 do
     if Assigned(FTView.Items[i].Data) then
       TObject(FTView.Items[i].Data).Free;
-
-  inherited;
 end;
 
 function TTreeController.CountNode: integer;
@@ -167,9 +175,7 @@ begin
       if not Assigned(FTView.Items[i].Parent) then
         GenerateTreeData(FTView.Items[I], StrStream, EmptyStr)
       else
-      begin
         StrStream.WriteString(FTView.Items[i].Text + #13#10);
-      end;
     end;
     StrStream.SaveToFile(FileName);
   finally
@@ -177,7 +183,8 @@ begin
   end;
 end;
 
-procedure TTreeController.GenerateTreeData(ParentNode: TTreeNode; Stream: TStringStream; path: string);
+procedure TTreeController.GenerateTreeData(ParentNode: TTreeNode;
+  Stream: TStringStream; path: string);
 var
   I: Integer;
   Node: TTreeNode;
@@ -215,6 +222,11 @@ begin
   FLogger.AddInfo('Добавили в корень дерева эелемент: ' + Text);
 
   AddItem(nil, Text);
+end;
+
+function TTreeController.IsEmpty: Boolean;
+begin
+  Result := CountNode = 0;
 end;
 
 function TTreeController.AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;
@@ -308,7 +320,10 @@ end;
 
 function TTreeController.SelectedIsItem(Node: TTreeNode): Boolean;
 begin
-  Result := Assigned(Node) and Assigned(Node.Data) and (TObject(Node.Data).ClassName = 'TModelItem');
+  Result :=
+    Assigned(Node) and
+    Assigned(Node.Data) and
+    (TObject(Node.Data).ClassName = 'TModelItem');
 end;
 
 procedure TTreeController.SelectNode(Node: TTreeNode);
@@ -333,6 +348,13 @@ begin
   FTView.FullExpand;
   if FTView.Items.Count > 0 then
     FTView.Selected := FTView.Items[0];
+end;
+
+procedure TTreeController.Clear;
+begin
+  FLogger.AddInfo('Очистка дерева');
+  ClearData;
+  FTView.Items.Clear;
 end;
 
 function TTreeController.CloneItem(SourceNode, ParentNode: TTreeNode): TTreeNode;
