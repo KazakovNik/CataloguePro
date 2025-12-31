@@ -96,31 +96,18 @@
     BevelOuter = bvNone
     Caption = 'pnlHeap'
     TabOrder = 1
-    object lbHeap: TListBox
-      Left = 0
-      Top = 38
-      Width = 265
-      Height = 443
-      Style = lbOwnerDrawFixed
-      Align = alClient
-      DragMode = dmAutomatic
-      ItemHeight = 14
-      MultiSelect = True
-      TabOrder = 0
-      OnDragOver = lbHeapDragOver
-    end
     object tlb11: TToolBar
       AlignWithMargins = True
       Left = 3
       Top = 6
       Width = 259
-      Height = 29
+      Height = 31
       Margins.Top = 6
       ButtonHeight = 30
       ButtonWidth = 31
       Caption = 'tlb1'
       Images = ImageList
-      TabOrder = 1
+      TabOrder = 0
       object btnactCnPrefixWizard: TToolButton
         Left = 0
         Top = 0
@@ -130,6 +117,37 @@
         Left = 31
         Top = 0
         Action = actClearHeap
+      end
+    end
+    object grpHeap: TGroupBox
+      Left = 0
+      Top = 40
+      Width = 265
+      Height = 441
+      Align = alClient
+      Caption = #1053#1077#1086#1073#1088#1072#1073#1086#1090#1072#1085#1099#1077' '#1079#1072#1087#1080#1089#1080'('#1082#1091#1095#1072')'
+      TabOrder = 1
+      ExplicitLeft = 176
+      ExplicitTop = 184
+      ExplicitWidth = 185
+      ExplicitHeight = 105
+      object lbHeap: TListBox
+        AlignWithMargins = True
+        Left = 5
+        Top = 19
+        Width = 255
+        Height = 417
+        Style = lbOwnerDrawFixed
+        Align = alClient
+        DragMode = dmAutomatic
+        ItemHeight = 14
+        MultiSelect = True
+        TabOrder = 0
+        OnDragOver = lbHeapDragOver
+        ExplicitLeft = 0
+        ExplicitTop = 38
+        ExplicitWidth = 265
+        ExplicitHeight = 443
       end
     end
   end
@@ -142,33 +160,18 @@
     BevelOuter = bvNone
     Caption = 'pnlTree'
     TabOrder = 2
-    object TreeView: TTreeView
-      Left = 0
-      Top = 38
-      Width = 484
-      Height = 443
-      Align = alClient
-      DragMode = dmAutomatic
-      HideSelection = False
-      Images = ImageList
-      Indent = 27
-      PopupMenu = pmTree
-      TabOrder = 0
-      OnDragDrop = TreeViewDragDrop
-      OnDragOver = TreeViewDragOver
-    end
     object tlb1: TToolBar
       AlignWithMargins = True
       Left = 3
       Top = 6
       Width = 478
-      Height = 29
+      Height = 31
       Margins.Top = 6
       ButtonHeight = 30
       ButtonWidth = 31
       Caption = 'tlb1'
       Images = ImageList
-      TabOrder = 1
+      TabOrder = 0
       object btnAddNode1: TToolButton
         Left = 0
         Top = 0
@@ -242,6 +245,39 @@
         Left = 303
         Top = 0
         Action = actClearTree
+      end
+    end
+    object grpTree: TGroupBox
+      Left = 0
+      Top = 40
+      Width = 484
+      Height = 441
+      Align = alClient
+      Caption = #1057#1075#1088#1091#1087#1087#1080#1088#1086#1074#1072#1085#1099#1077' '#1079#1072#1087#1080#1089#1080'('#1076#1077#1088#1077#1074#1086')'
+      TabOrder = 1
+      ExplicitLeft = 248
+      ExplicitTop = 104
+      ExplicitWidth = 185
+      ExplicitHeight = 105
+      object TreeView: TTreeView
+        AlignWithMargins = True
+        Left = 5
+        Top = 19
+        Width = 474
+        Height = 417
+        Align = alClient
+        DragMode = dmAutomatic
+        HideSelection = False
+        Images = ImageList
+        Indent = 27
+        PopupMenu = pmTree
+        TabOrder = 0
+        OnDragDrop = TreeViewDragDrop
+        OnDragOver = TreeViewDragOver
+        ExplicitLeft = 0
+        ExplicitTop = 38
+        ExplicitWidth = 484
+        ExplicitHeight = 443
       end
     end
   end
@@ -1765,13 +1801,13 @@
   end
   object OpenDialog: TOpenDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
-    Left = 40
-    Top = 48
+    Left = 48
+    Top = 152
   end
   object dlgSaveTextFile: TSaveDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1081' '#1092#1072#1081#1083'|*.txt'
-    Left = 40
-    Top = 104
+    Left = 136
+    Top = 152
   end
   object pmTree: TPopupMenu
     Images = ImageList

@@ -96,6 +96,8 @@ type
     btnClearTree: TToolButton;
     actClearHeap: TAction;
     btnClearHeap: TToolButton;
+    grpHeap: TGroupBox;
+    grpTree: TGroupBox;
     procedure actLoadFileExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actAddNodeExecute(Sender: TObject);
