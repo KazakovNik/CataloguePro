@@ -17,6 +17,7 @@ type
     procedure Insert(FileName: string);
     procedure SetMaxCountFile(const Value: Integer);
     procedure LoadHistory(History: string);
+    procedure DeleteByName(FileName: string);
 
     property FileHistory: TStringList read FFileHistory;
   end;
@@ -56,6 +57,15 @@ constructor TRecentFilesModel.Create;
 begin
   FMaxCountFile := 10;
   FFileHistory := TStringList.Create;
+end;
+
+procedure TRecentFilesModel.DeleteByName(FileName: string);
+var
+  index: integer;
+begin
+  index := FFileHistory.IndexOf(FileName);
+  if index <> -1 then
+    FFileHistory.Delete(index);
 end;
 
 destructor TRecentFilesModel.Destroy;

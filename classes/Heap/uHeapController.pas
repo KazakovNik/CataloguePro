@@ -89,10 +89,7 @@ var
   sl: TStringList;
 begin
   if not FileExists(filename) then
-  begin
-    raise Exception.Create('Файл не найден:'#13#10 + filename);
-    FLogger.AddError('Файл не найден:' + filename);
-  end;
+    raise Exception.Create('Файл не найден: '#13#10 + filename);
 
   sl := TStringList.Create();
   try

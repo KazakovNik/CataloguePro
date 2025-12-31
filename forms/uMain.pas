@@ -130,7 +130,6 @@ type
     procedure actDeleteAllNodeExecute(Sender: TObject);
     procedure actRecentFilesUpdate(Sender: TObject);
     procedure N6Click(Sender: TObject);
-    procedure actRecentFilesExecute(Sender: TObject);
     procedure actLoadTreeExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure pmTreePopup(Sender: TObject);
@@ -141,6 +140,7 @@ type
     procedure actClearHeapExecute(Sender: TObject);
     procedure actClearTreeExecute(Sender: TObject);
     procedure actClearTreeUpdate(Sender: TObject);
+    procedure actRecentFilesExecute(Sender: TObject);
   private
     FFacade: TMainFacade;
   end;
@@ -288,7 +288,7 @@ end;
 
 procedure TFormMain.actRecentFilesExecute(Sender: TObject);
 begin
-  // заглушка для ActionManager
+// Заглушка для Action
 end;
 
 procedure TFormMain.actRecentFilesUpdate(Sender: TObject);

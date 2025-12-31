@@ -283,6 +283,15 @@ end;
 
 procedure TMainFacade.HeapLoadFile(filename: string);
 begin
+  if not FileExists(filename) then
+  begin
+    FLogger.AddError('Попытка открыть несуществующий файл: ' + filename);
+    if FDialogFacade.MessageInfoDialogOkCancel('Файл не найден, удалить его из истории?', 'Файл не найден') then
+      FRecentFilesController.DeleteByName(filename);
+
+    Exit;
+  end;
+
   FSettingsController.FileOpenDirectory := ExtractFilePath(filename);
   try
     FHeapController.LoadFile(filename);

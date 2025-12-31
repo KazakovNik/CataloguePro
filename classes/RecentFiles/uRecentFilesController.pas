@@ -25,6 +25,7 @@ type
     procedure SetMaxCountFile(const Value: Integer);
     function RecentFilesCount: Integer;
     function GetFileHistory(index: integer): string;
+    procedure DeleteByName(filename: string);
 
     property OnUpdate: TUpdateEvent read FOnUpdate write FOnUpdate;
   end;
@@ -41,6 +42,13 @@ begin
   FLogger := Logger;
   FModel := TRecentFilesModel.Create;
   SetMaxCountFile(10);
+end;
+
+procedure TRecentFilesController.DeleteByName(filename: string);
+begin
+  FLogger.AddInfo('Удаляем файл из истории: '#13#10 + filename);
+  FModel.DeleteByName(filename);
+  DoUpdate(FModel.FileHistory);
 end;
 
 destructor TRecentFilesController.Destroy;
