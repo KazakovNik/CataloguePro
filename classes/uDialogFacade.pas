@@ -14,6 +14,7 @@ type
     function MessageInfoDialogOkCancel(Msg: String; Title: String): Boolean;
     function CreateInputDialog(const ACaption, APrompt, ADefault: string;
       out Text: string): Boolean;
+    procedure MessageError(Msg: String);
   end;
 
 implementation
@@ -67,6 +68,11 @@ begin
       Free;
     end;
   end;
+end;
+
+procedure TDialogFacade.MessageError(Msg: String);
+begin
+  MessageDialog(Msg, 'Ошибка', TMsgDlgType.mtError, [mbOk], 0)
 end;
 
 function TDialogFacade.MessageInfoDialogOkCancel(Msg, Title: String): Boolean;

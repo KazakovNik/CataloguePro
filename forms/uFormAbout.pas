@@ -17,22 +17,15 @@ type
     Label3: TLabel;
     Label4: TLabel;
     procedure FormCreate(Sender: TObject);
-    procedure lblUrlClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
   end;
 
-var
-  FormAbout: TFormAbout;
-
 implementation
 
 {$R *.dfm}
-
-uses
-  ShellAPI;
 
 procedure TFormAbout.FormCreate(Sender: TObject);
 begin
@@ -42,17 +35,6 @@ begin
   lblVersion.Caption := 'Версия: 1.0';
   lblCopyright.Caption := 'Казаков Николай Вадимович';
   lblUrl.Caption := 'https://github.com/KazakovNik/CataloguePro';
-end;
-
-procedure OpenInDefaultBrowser(const AURL: string);
-begin
-  ShellExecute(Application.Handle, 'open', PChar(AURL), nil, nil, SW_SHOWNORMAL);
-end;
-
-procedure TFormAbout.lblUrlClick(Sender: TObject);
-begin
-  inherited;
-  OpenInDefaultBrowser(lblUrl.Caption);
 end;
 
 end.

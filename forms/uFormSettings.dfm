@@ -1,37 +1,51 @@
 inherited FormSettings: TFormSettings
   Caption = 'FormSettings'
   ClientHeight = 344
+  OnCreate = FormCreate
+  ExplicitWidth = 519
   ExplicitHeight = 375
   PixelsPerInch = 106
   TextHeight = 14
   inherited pnlBtnPanel: TPanel
     Top = 300
-    ExplicitTop = 303
+    ExplicitLeft = 3
+    ExplicitTop = 300
+    ExplicitWidth = 507
+    inherited btnOk: TButton
+      ExplicitLeft = 355
+      ExplicitTop = 6
+      ExplicitHeight = 29
+    end
+    inherited btnCancel: TButton
+      ExplicitLeft = 431
+      ExplicitTop = 6
+      ExplicitHeight = 29
+    end
   end
-  inline frmLastOpen: TFrame1
+  inline frmLastOpen: TFramePatch
     Left = 0
     Top = 0
     Width = 513
     Height = 76
     Align = alTop
     TabOrder = 1
-    ExplicitWidth = 515
-    inherited lblCurrentDirOpen: TLabel
+    ExplicitWidth = 513
+    inherited lblPatch: TLabel
       Width = 102
       Caption = #1050#1072#1090#1072#1083#1086#1075' '#1086#1090#1082#1088#1099#1090#1080#1103
       ExplicitWidth = 102
     end
     inherited edtPatch: TEdit
       Width = 413
-      ExplicitWidth = 415
+      ExplicitWidth = 413
     end
     inherited btnOpenDir: TButton
       Left = 429
       Caption = #1054#1090#1082#1088#1099#1090#1100
-      ExplicitLeft = 431
+      ExplicitLeft = 429
     end
   end
-  inline frmLastSave: TFrame1
+  inline frmLastSave: TFramePatch
     Left = 0
     Top = 76
     Width = 513
@@ -39,23 +53,23 @@ inherited FormSettings: TFormSettings
     Align = alTop
     TabOrder = 2
     ExplicitTop = 76
-    ExplicitWidth = 515
-    inherited lblCurrentDirOpen: TLabel
+    ExplicitWidth = 513
+    inherited lblPatch: TLabel
       Width = 115
       Caption = #1050#1072#1090#1072#1083#1086#1075' '#1089#1086#1093#1088#1072#1085#1077#1085#1080#1103
       ExplicitWidth = 115
     end
     inherited edtPatch: TEdit
       Width = 413
-      ExplicitWidth = 415
+      ExplicitWidth = 413
     end
     inherited btnOpenDir: TButton
       Left = 429
       Caption = #1054#1090#1082#1088#1099#1090#1100
-      ExplicitLeft = 431
+      ExplicitLeft = 429
     end
   end
-  inline frmLogFile: TFrame1
+  inline frmLogFile: TFramePatch
     Left = 0
     Top = 152
     Width = 513
@@ -63,20 +77,20 @@ inherited FormSettings: TFormSettings
     Align = alTop
     TabOrder = 3
     ExplicitTop = 152
-    ExplicitWidth = 515
-    inherited lblCurrentDirOpen: TLabel
+    ExplicitWidth = 513
+    inherited lblPatch: TLabel
       Width = 20
       Caption = #1051#1086#1075
       ExplicitWidth = 20
     end
     inherited edtPatch: TEdit
       Width = 413
-      ExplicitWidth = 415
+      ExplicitWidth = 413
     end
     inherited btnOpenDir: TButton
       Left = 429
       Caption = #1054#1090#1082#1088#1099#1090#1100
-      ExplicitLeft = 431
+      ExplicitLeft = 429
     end
   end
   object pnlMaxCountFileHistopy: TPanel
@@ -87,7 +101,6 @@ inherited FormSettings: TFormSettings
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 4
-    ExplicitWidth = 515
     object lblCurrentDirOpen: TLabel
       Left = 8
       Top = 8

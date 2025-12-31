@@ -1,4 +1,4 @@
-object Frame1: TFrame1
+object FramePatch: TFramePatch
   Left = 0
   Top = 0
   Width = 429
@@ -7,7 +7,7 @@ object Frame1: TFrame1
   DesignSize = (
     429
     76)
-  object lblCurrentDirOpen: TLabel
+  object lblPatch: TLabel
     Left = 8
     Top = 8
     Width = 97
@@ -22,7 +22,6 @@ object Frame1: TFrame1
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
     Text = 'edtPatch'
-    ExplicitWidth = 418
   end
   object btnOpenDir: TButton
     Left = 345
@@ -32,6 +31,5 @@ object Frame1: TFrame1
     Anchors = [akTop, akRight]
     Caption = 'btnOpenDir'
     TabOrder = 1
-    ExplicitLeft = 432
   end
 end

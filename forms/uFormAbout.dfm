@@ -41,7 +41,6 @@ inherited FormAbout: TFormAbout
     Font.Name = 'Tahoma'
     Font.Style = [fsUnderline]
     ParentFont = False
-    OnClick = lblUrlClick
   end
   object Label1: TLabel [4]
     Left = 32
@@ -77,7 +76,6 @@ inherited FormAbout: TFormAbout
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    OnClick = lblUrlClick
   end
   inherited pnlBtnPanel: TPanel
     Top = 118

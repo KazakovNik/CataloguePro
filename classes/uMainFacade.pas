@@ -3,7 +3,7 @@ unit uMainFacade;
 interface
 
 uses
-  Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls, System.Classes, Vcl.Menus,
+  Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Controls, System.Classes, Vcl.Menus, System.SysUtils,
   uHeapController, uSettingsController, uTreeController, uRecentFilesController,
   uLogger, uILogger, uUserInfo, uDialogFacade;
 
@@ -30,6 +30,8 @@ type
     procedure DoUpdateStatus;
     procedure OpenFileFromMenu(Sender: TObject);
     procedure MoveNode(TargetNode, SourceNode: TTreeNode);
+    procedure DoOpenPatch(Patch: string);
+    procedure DoException(Sender: TObject; E: Exception);
   public
     constructor Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
     destructor Destroy; override;
@@ -67,8 +69,8 @@ type
 implementation
 
 uses
-  Vcl.Dialogs, System.SysUtils, Vcl.Forms, System.UITypes,
-  uAboutFacade, uSettingsFacade;
+  Vcl.Dialogs, Vcl.Forms, System.UITypes,
+  uAboutFacade, uSettingsFacade, uObjectOpener;
 
 { TMainFacade }
 
@@ -126,6 +128,8 @@ constructor TMainFacade.Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStat
 var
   settingsFN: string;
 begin
+  Application.OnException := DoException;
+
   FTree := Tree;
   FHeap := Heap;
   FStatusBar := StatusBar;
@@ -147,9 +151,18 @@ begin
   FHeapController := THeapController.Create(FHeap, FLogger);
   FTreeController := TTreeController.Create(FTree, FLogger);
   FTreeController.OnReturn := DoReturn;
-
   DoUpdateStatus;
 end;
+
+procedure TMainFacade.DoException(Sender: TObject; E: Exception);
+begin
+  if Assigned(FLogger) then
+    FLogger.AddError(e.Message);
+
+  if Assigned(FDialogFacade) then
+    FDialogFacade.MessageError(e.Message);
+end;
+
 
 destructor TMainFacade.Destroy;
 begin
@@ -467,9 +480,24 @@ var
 begin
   Facade := TSettingsFacade.Create(FSettingsController);
   try
+    Facade.OnOpen := DoOpenPatch;
     Facade.ShowModal;
   finally
     Facade.Free;
+  end;
+end;
+
+procedure TMainFacade.DoOpenPatch(Patch: string);
+begin
+  if FileExists(Patch) then
+  begin
+    FLogger.AddInfo('Открываем файл: ' + patch);
+    TObjectOpener.OpenFile(Patch);
+  end
+  else
+  begin
+    FLogger.AddInfo('Открываем папку: ' + patch);
+    TObjectOpener.OpenFolder(Patch);
   end;
 end;
 

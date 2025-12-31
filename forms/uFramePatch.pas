@@ -7,14 +7,10 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.StdCtrls;
 
 type
-  TFrame1 = class(TFrame)
-    lblCurrentDirOpen: TLabel;
+  TFramePatch = class(TFrame)
+    lblPatch: TLabel;
     edtPatch: TEdit;
     btnOpenDir: TButton;
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 implementation
