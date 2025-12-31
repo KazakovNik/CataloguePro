@@ -13,7 +13,7 @@ type
   private
     { Private declarations }
   public
-    class function Show(const ACaption, APrompt, ADefault: string; out Text: string): boolean;
+    class function Show(const aCaption, aPrompt, aDefault: string; out aText: string): boolean;
   end;
 
 var
@@ -28,26 +28,26 @@ uses
 
 { TFormInputBox }
 
-class function TFormInputBox.Show(const ACaption, APrompt,
-  ADefault: string; out Text: string): boolean;
+class function TFormInputBox.Show(const aCaption, aPrompt,
+  aDefault: string; out aText: string): boolean;
 var
-  Form: TFormInputBox;
+  vForm: TFormInputBox;
 begin
   Result := False;
-  Text := ADefault;
-  Form := TFormInputBox.Create(nil);
+  aText := aDefault;
+  vForm := TFormInputBox.Create(nil);
   try
-    Form.Caption := ACaption;
-    Form.lblTextLabel.Caption := APrompt;
-    Form.edtText.Text := ADefault;
+    vForm.Caption := aCaption;
+    vForm.lblTextLabel.Caption := aPrompt;
+    vForm.edtText.Text := aDefault;
 
-    if Form.ShowModal = mrOk then
+    if vForm.ShowModal = mrOk then
     begin
-      Text := Form.edtText.Text;
+      aText := vForm.edtText.Text;
       Result := True;
     end;
   finally
-    Form.Free;
+    vForm.Free;
   end;
 end;
 

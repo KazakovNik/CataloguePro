@@ -13,7 +13,7 @@ type
   private
     FForm: TFormAbout;
   public
-    constructor Create();
+    constructor Create;
     destructor Destroy; override;
 
     procedure ShowModal;

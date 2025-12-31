@@ -1,4 +1,4 @@
-unit uMain;
+﻿unit uMain;
 
 interface
 
@@ -154,7 +154,7 @@ implementation
 
 procedure TFormMain.actAboutExecute(Sender: TObject);
 begin
-  FFacade.ShowmAbout;
+  FFacade.ShowmAbout();
 end;
 
 procedure TFormMain.actAddNodeExecute(Sender: TObject);
@@ -353,15 +353,8 @@ begin
 end;
 
 procedure TFormMain.pmTreePopup(Sender: TObject);
-var
-  MousePosition, TreePos: TPoint;
-  Node: TTreeNode;
 begin
-  GetCursorPos(MousePosition);
-  TreePos := TreeView.ScreenToClient(MousePosition);
-  Node := TreeView.GetNodeAt(TreePos.X, TreePos.Y);
-  if Assigned(Node) then
-    TreeView.Selected := Node;
+  FFacade.SelectNodeUnderMouse();
 end;
 
 procedure TFormMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);

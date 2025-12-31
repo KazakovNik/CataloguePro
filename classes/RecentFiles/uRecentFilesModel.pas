@@ -14,10 +14,10 @@ type
     constructor Create();
     destructor Destroy; override;
 
-    procedure Insert(FileName: string);
-    procedure SetMaxCountFile(const Value: Integer);
-    procedure LoadHistory(History: string);
-    procedure DeleteByName(FileName: string);
+    procedure Insert(aFileName: string);
+    procedure SetMaxCountFile(const aValue: Integer);
+    procedure LoadHistory(aHistory: string);
+    procedure DeleteByName(aFileName: string);
 
     property FileHistory: TStringList read FFileHistory;
   end;
@@ -26,30 +26,30 @@ implementation
 
 { TRecentFilesModel }
 
-procedure TRecentFilesModel.Insert(FileName: string);
+procedure TRecentFilesModel.Insert(aFileName: string);
 begin
-  if FFileHistory.IndexOf(FileName) = -1 then
-    FileHistory.Insert(0, Filename)
+  if FFileHistory.IndexOf(aFileName) = -1 then
+    FileHistory.Insert(0, aFileName)
   else
   begin
-    FileHistory.Delete(FileHistory.IndexOf(Filename));
-    FileHistory.Insert(0, Filename);
+    FileHistory.Delete(FileHistory.IndexOf(aFileName));
+    FileHistory.Insert(0, aFileName);
   end;
   SetMaxCountFile(FMaxCountFile);
 end;
 
-procedure TRecentFilesModel.LoadHistory(History: string);
+procedure TRecentFilesModel.LoadHistory(aHistory: string);
 begin
-  FFileHistory.Text := History;
+  FFileHistory.Text := aHistory;
   SetMaxCountFile(FMaxCountFile);
 end;
 
-procedure TRecentFilesModel.SetMaxCountFile(const Value: Integer);
+procedure TRecentFilesModel.SetMaxCountFile(const aValue: Integer);
 var
   i: integer;
 begin
-  FMaxCountFile := Value;
-  for i := FFileHistory.Count - 1 downto Value do
+  FMaxCountFile := aValue;
+  for i := FFileHistory.Count - 1 downto aValue do
     FFileHistory.Delete(i);
 end;
 
@@ -59,13 +59,13 @@ begin
   FFileHistory := TStringList.Create;
 end;
 
-procedure TRecentFilesModel.DeleteByName(FileName: string);
+procedure TRecentFilesModel.DeleteByName(aFileName: string);
 var
-  index: integer;
+  vIndex: integer;
 begin
-  index := FFileHistory.IndexOf(FileName);
-  if index <> -1 then
-    FFileHistory.Delete(index);
+  vIndex := FFileHistory.IndexOf(aFileName);
+  if vIndex <> -1 then
+    FFileHistory.Delete(vIndex);
 end;
 
 destructor TRecentFilesModel.Destroy;

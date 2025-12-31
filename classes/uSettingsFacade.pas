@@ -11,7 +11,7 @@ type
     FSettings: TSettingsController;
     FOnOpen: TOpenEvent;
   public
-    constructor Create(Settings: TSettingsController);
+    constructor Create(aSettings: TSettingsController);
     procedure ShowModal;
 
     property OnOpen: TOpenEvent read FOnOpen write FOnOpen;
@@ -24,9 +24,9 @@ uses
 
 { TSettingsFacade }
 
-constructor TSettingsFacade.Create(Settings: TSettingsController);
+constructor TSettingsFacade.Create(aSettings: TSettingsController);
 begin
-  FSettings := Settings;
+  FSettings := aSettings;
 end;
 
 procedure TSettingsFacade.ShowModal;

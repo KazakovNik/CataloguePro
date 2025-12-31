@@ -41,6 +41,8 @@ resourcestring
   resMainTreeSaveToFileReRecordTitle = 'Сохранение файла';
   resMainSettingsLoadFile = 'Открываем файл: ';
   resMainSettingsLoadFolder = 'Открываем папку: ';
+  resMainDeleteAllNodeLog = 'Удаляем все';
+  resMainDeleteCurrentNodeLog = 'Удаляем элемент';
 
   resRecentFilesDelFile = 'Удаляем файл из истории: ';
 

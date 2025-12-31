@@ -11,7 +11,6 @@ type
     procedure LoadFromFile;
   private
     FFilePath: string;
-
     FMainFormLeft: integer;
     FMainFormWidth: integer;
     FMainFormTop: integer;
@@ -23,7 +22,7 @@ type
     FMaxCountFileHistopy: Integer;
     FWindowState: Integer;
   public
-    constructor Create(const FilePath: string); overload;
+    constructor Create(const aFilePath: string); overload;
     procedure Save();
 
     property MainFormLeft: integer read FMainFormLeft write FMainFormLeft;
@@ -46,56 +45,56 @@ uses
 const
   cRoot = 'Settings';
 
-constructor TSettings.Create(const FilePath: string);
+constructor TSettings.Create(const aFilePath: string);
 begin
   inherited Create;
 
-  FFilePath := FilePath;
+  FFilePath := aFilePath;
   LoadFromFile();
 end;
 
 procedure TSettings.LoadFromFile;
 var
-  IniFile: TIniFile;
+  vIniFile: TIniFile;
 begin
   if not FileExists(FFilePath) then
     Exit;
 
-  IniFile := TIniFile.Create(FFilePath);
+  vIniFile := TIniFile.Create(FFilePath);
   try
-    MainFormLeft := IniFile.ReadInteger(cRoot, 'MainFormLeft', 0);
-    MainFormTop := IniFile.ReadInteger(cRoot, 'MainFormTop', 0);
-    MainFormHeight := IniFile.ReadInteger(cRoot, 'MainFormHeight', 300);
-    MainFormWidth := IniFile.ReadInteger(cRoot, 'MainFormWidth', 650);
-    HeapWidth := IniFile.ReadInteger(cRoot, 'HeapWidth', 300);
-    FileOpenDirectory := IniFile.ReadString(cRoot, 'FileOpenDirectory', EmptyStr);
-    FileSaveDirectory := IniFile.ReadString(cRoot, 'FileSaveDirectory', EmptyStr);
-    RecentFiles := IniFile.ReadString(cRoot, 'RecentFiles', EmptyStr);
-    MaxCountFileHistopy := IniFile.ReadInteger(cRoot, 'MaxCountFileHistopy', 10);
-    FWindowState := IniFile.ReadInteger(cRoot, 'FWindowState', 0);
+    MainFormLeft := vIniFile.ReadInteger(cRoot, 'MainFormLeft', 0);
+    MainFormTop := vIniFile.ReadInteger(cRoot, 'MainFormTop', 0);
+    MainFormHeight := vIniFile.ReadInteger(cRoot, 'MainFormHeight', 300);
+    MainFormWidth := vIniFile.ReadInteger(cRoot, 'MainFormWidth', 650);
+    HeapWidth := vIniFile.ReadInteger(cRoot, 'HeapWidth', 300);
+    FileOpenDirectory := vIniFile.ReadString(cRoot, 'FileOpenDirectory', EmptyStr);
+    FileSaveDirectory := vIniFile.ReadString(cRoot, 'FileSaveDirectory', EmptyStr);
+    RecentFiles := vIniFile.ReadString(cRoot, 'RecentFiles', EmptyStr);
+    MaxCountFileHistopy := vIniFile.ReadInteger(cRoot, 'MaxCountFileHistopy', 10);
+    FWindowState := vIniFile.ReadInteger(cRoot, 'FWindowState', 0);
   finally
-    FreeAndNil(IniFile);
+    FreeAndNil(vIniFile);
   end;
 end;
 
 procedure TSettings.Save;
 var
-  IniFile: TIniFile;
+  vIniFile: TIniFile;
 begin
-  IniFile := TIniFile.Create(FFilePath);
+  vIniFile := TIniFile.Create(FFilePath);
   try
-    IniFile.WriteInteger(cRoot, 'MainFormLeft', MainFormLeft);
-    IniFile.WriteInteger(cRoot, 'MainFormTop', MainFormTop);
-    IniFile.WriteInteger(cRoot, 'MainFormHeight', MainFormHeight);
-    IniFile.WriteInteger(cRoot, 'MainFormWidth', MainFormWidth);
-    IniFile.WriteInteger(cRoot, 'HeapWidth', HeapWidth);
-    IniFile.WriteString(cRoot, 'FileOpenDirectory', FileOpenDirectory);
-    IniFile.WriteString(cRoot, 'FileSaveDirectory', FileSaveDirectory);
-    IniFile.WriteString(cRoot, 'RecentFiles', RecentFiles);
-    IniFile.WriteInteger(cRoot, 'MaxCountFileHistopy', MaxCountFileHistopy);
-    IniFile.WriteInteger(cRoot, 'FWindowState', FWindowState);
+    vIniFile.WriteInteger(cRoot, 'MainFormLeft', MainFormLeft);
+    vIniFile.WriteInteger(cRoot, 'MainFormTop', MainFormTop);
+    vIniFile.WriteInteger(cRoot, 'MainFormHeight', MainFormHeight);
+    vIniFile.WriteInteger(cRoot, 'MainFormWidth', MainFormWidth);
+    vIniFile.WriteInteger(cRoot, 'HeapWidth', HeapWidth);
+    vIniFile.WriteString(cRoot, 'FileOpenDirectory', FileOpenDirectory);
+    vIniFile.WriteString(cRoot, 'FileSaveDirectory', FileSaveDirectory);
+    vIniFile.WriteString(cRoot, 'RecentFiles', RecentFiles);
+    vIniFile.WriteInteger(cRoot, 'MaxCountFileHistopy', MaxCountFileHistopy);
+    vIniFile.WriteInteger(cRoot, 'FWindowState', FWindowState);
   finally
-    FreeAndNil(IniFile);
+    FreeAndNil(vIniFile);
   end;
 end;
 

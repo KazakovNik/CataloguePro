@@ -21,18 +21,22 @@ type
 
 implementation
 
+const
+  cImageFolder = 14;
+  cImageFile = 13;
+
 { TModelDir }
 
 constructor TModelDir.Create;
 begin
-  FImageIndex := 14;
+  FImageIndex := cImageFolder;
 end;
 
 { TModelItem }
 
 constructor TModelItem.Create;
 begin
-  FImageIndex := 13;
+  FImageIndex := cImageFile;
 end;
 
 end.

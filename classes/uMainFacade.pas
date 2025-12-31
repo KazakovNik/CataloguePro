@@ -23,17 +23,17 @@ type
   private
     function GetFileOpenDirectory: string;
     function GetFileSaveDirectory: string;
-    procedure DoReturn(Text: string);
-    procedure DoLoadFile(FileName: string);
-    procedure DoUpdateRecentFiles(History: TStringList);
-    procedure DoUpdateSettings(Sender: TSettingsController);
+    procedure DoReturn(aText: string);
+    procedure DoLoadFile(aFileName: string);
+    procedure DoUpdateRecentFiles(aHistory: TStringList);
+    procedure DoUpdateSettings(aSender: TSettingsController);
     procedure DoUpdateStatus;
-    procedure OpenFileFromMenu(Sender: TObject);
-    procedure MoveNode(TargetNode, SourceNode: TTreeNode);
+    procedure OpenFileFromMenu(aSender: TObject);
+    procedure MoveNode(aTargetNode, aSourceNode: TTreeNode);
     procedure DoOpenPatch(Patch: string);
-    procedure DoException(Sender: TObject; E: Exception);
+    procedure DoException(aSender: TObject; E: Exception);
   public
-    constructor Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
+    constructor Create(aTree: TTreeView; aHeap: TListBox; aStatusBar: TStatusBar);
     destructor Destroy; override;
 
     procedure AddNode;
@@ -43,23 +43,24 @@ type
     procedure EditCurrentNode;
     procedure InsertCurrentItem;
     procedure InsertCurrentItemToRoot;
-    procedure HeapLoadFile(filename: string);
-    procedure LoadTreeFile(filename: string);
-    procedure TreeSaveToFile(filename: string);
+    procedure HeapLoadFile(aFileName: string);
+    procedure LoadTreeFile(aFileName: string);
+    procedure TreeSaveToFile(aFileName: string);
     procedure SaveSettings;
     procedure InitSettings;
-    procedure InsertTextIntoNode(Node: TTreeNode);
+    procedure InsertTextIntoNode(aNode: TTreeNode);
     procedure ShowmAbout;
     procedure ShowmSettings;
-    procedure TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure UpdateSubmenuRecentFiles(mmMain: TMainMenu; mniRecentFiles: TMenuItem);
+    procedure TreeDragDrop(aSender, aSource: TObject; X, Y: Integer);
+    procedure UpdateSubmenuRecentFiles(aMainMenu: TMainMenu; aHistoryMenu: TMenuItem);
     procedure ExpandAll;
     procedure CollapseAll;
+    procedure SelectNodeUnderMouse;
 
     function DeleteNodeEnabled: Boolean;
     function InsertCurrentItemEnabled: Boolean;
     function ReturnBackCurrentItemEnabled: Boolean;
-    function TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer): Boolean;
+    function TreeDragOverAccept(aSender, aSource: TObject; X, Y: Integer): Boolean;
     function RecentFilesEnabled: Boolean;
 
     function ClearTreeEnabled: Boolean;
@@ -74,38 +75,41 @@ type
 implementation
 
 uses
-  Vcl.Dialogs, Vcl.Forms, System.UITypes,
+  Vcl.Dialogs, Vcl.Forms, System.UITypes, System.Types, Winapi.Windows,
   uAboutFacade, uSettingsFacade, uObjectOpener, uRsControls;
+
+const
+  cImgFile = 13;
 
 { TMainFacade }
 
 procedure TMainFacade.AddNode;
 var
-  text: string;
+  vText: string;
 begin
   if FDialogFacade.CreateInputDialog(resMainAddNodeCaption, resMainAddNodeTitle,
-    Format(resMainAddNodeText, [FTreeController.CountNode]), text) then
+    Format(resMainAddNodeText, [FTreeController.CountNode]), vText) then
   begin
-    FTreeController.AddNode(FTree.Selected, text);
+    FTreeController.AddNode(FTree.Selected, vText);
     DoUpdateStatus;
   end;
 end;
 
 procedure TMainFacade.AddNodeRoot;
 var
-  text: string;
+  vText: string;
 begin
   if FDialogFacade.CreateInputDialog(resMainAddNodeCaption, resMainAddNodeTitle,
-    Format(resMainAddNodeText, [FTreeController.CountNode]), text) then
+    Format(resMainAddNodeText, [FTreeController.CountNode]), vText) then
   begin
-    FTreeController.AddNode(nil, text);
+    FTreeController.AddNode(nil, vText);
     DoUpdateStatus;
   end;
 end;
 
-procedure TMainFacade.DoUpdateSettings(Sender: TSettingsController);
+procedure TMainFacade.DoUpdateSettings(aSender: TSettingsController);
 begin
-  FRecentFilesController.SetMaxCountFile(Sender.MaxCountFileHistopy);
+  FRecentFilesController.SetMaxCountFile(aSender.MaxCountFileHistopy);
 end;
 
 procedure TMainFacade.DoUpdateStatus;
@@ -150,21 +154,21 @@ begin
   FTreeController.CollapseAll;
 end;
 
-constructor TMainFacade.Create(Tree: TTreeView; Heap: TListBox; StatusBar: TStatusBar);
+constructor TMainFacade.Create(aTree: TTreeView; aHeap: TListBox; aStatusBar: TStatusBar);
 var
-  settingsFN: string;
+  vSettingsFN: string;
 begin
   Application.OnException := DoException;
 
-  FTree := Tree;
-  FHeap := Heap;
-  FStatusBar := StatusBar;
+  FTree := aTree;
+  FHeap := aHeap;
+  FStatusBar := aStatusBar;
 
   FUserInfo := TUserInfo.Create;
   FDialogFacade := TDialogFacade.Create;
 
-  settingsFN := ExtractFilePath(Application.ExeName) + cSettingsFileName;
-  FSettingsController := TSettingsController.Create(settingsFN);
+  vSettingsFN := ExtractFilePath(Application.ExeName) + cSettingsFileName;
+  FSettingsController := TSettingsController.Create(vSettingsFN);
   FSettingsController.OnUpdate := DoUpdateSettings;
 
   FLogger := TLogger.Create(FSettingsController.LoggerFileName, FUserInfo);
@@ -180,7 +184,7 @@ begin
   DoUpdateStatus;
 end;
 
-procedure TMainFacade.DoException(Sender: TObject; E: Exception);
+procedure TMainFacade.DoException(aSender: TObject; E: Exception);
 begin
   if Assigned(FLogger) then
     FLogger.AddError(e.Message);
@@ -208,39 +212,33 @@ begin
   inherited;
 end;
 
-procedure TMainFacade.DoUpdateRecentFiles(History: TStringList);
+procedure TMainFacade.DoUpdateRecentFiles(aHistory: TStringList);
 begin
-  FSettingsController.RecentFiles := StringReplace(History.Text, #13#10, ';', [rfReplaceAll]);
+  FSettingsController.RecentFiles := StringReplace(aHistory.Text, #13#10, ';', [rfReplaceAll]);
 end;
 
-procedure TMainFacade.DoLoadFile(FileName: string);
+procedure TMainFacade.DoLoadFile(aFileName: string);
 begin
-  FRecentFilesController.OpenFile(FileName);
+  FRecentFilesController.OpenFile(aFileName);
   DoUpdateStatus;
 end;
 
-procedure TMainFacade.DoReturn(Text: string);
+procedure TMainFacade.DoReturn(aText: string);
 begin
-  FHeapController.Add(Text);
+  FHeapController.Add(aText);
   DoUpdateStatus;
 end;
 
 procedure TMainFacade.DeleteAllNode;
-var
-  I: Integer;
-  RootNode: TTreeNode;
 begin
-  for I := FTree.Items.Count - 1 downto 0 do
-  begin
-    RootNode := FTree.Items[I];
-    if not Assigned(RootNode.Parent) then
-      FTreeController.DeleteNode(RootNode);
-  end;
+  FLogger.AddInfo(resMainDeleteAllNodeLog);
+  FTreeController.DeleteAllNode();
   DoUpdateStatus;
 end;
 
 procedure TMainFacade.DeleteCurrentNode;
 begin
+  FLogger.AddInfo(resMainDeleteCurrentNodeLog);
   if Assigned(FTree.Selected) then
     FTreeController.DeleteNode(FTree.Selected);
   DoUpdateStatus;
@@ -253,15 +251,15 @@ end;
 
 procedure TMainFacade.EditCurrentNode;
 var
-  text: string;
+  vText: string;
 begin
   if not Assigned(FTree.Selected) then
     Exit;
 
   if FDialogFacade.CreateInputDialog(resMainEditCurrentnodeTitle, resMainEditCurrentnodeCaption,
-    FTree.Selected.Text, text) then
+    FTree.Selected.Text, vText) then
   begin
-    FTreeController.EditNode(FTree.Selected, text);
+    FTreeController.EditNode(FTree.Selected, vText);
     DoUpdateStatus;
   end;
 end;
@@ -281,21 +279,21 @@ begin
   Result := FSettingsController.FileSaveDirectory;
 end;
 
-procedure TMainFacade.HeapLoadFile(filename: string);
+procedure TMainFacade.HeapLoadFile(aFileName: string);
 begin
-  if not FileExists(filename) then
+  if not FileExists(aFileName) then
   begin
-    FLogger.AddError(resMainFailedLoadFile + filename);
+    FLogger.AddError(resMainFailedLoadFile + aFileName);
     if FDialogFacade.MessageInfoDialogOkCancel(resMainFileNotFoundDelete, resMainFileNotFoundDeleteTitle) then
-      FRecentFilesController.DeleteByName(filename);
+      FRecentFilesController.DeleteByName(aFileName);
 
     Exit;
   end;
 
-  FSettingsController.FileOpenDirectory := ExtractFilePath(filename);
+  FSettingsController.FileOpenDirectory := ExtractFilePath(aFileName);
   try
-    FHeapController.LoadFile(filename);
-    DoLoadFile(filename);
+    FHeapController.LoadFile(aFileName);
+    DoLoadFile(aFileName);
   except
     on E: Exception do
       ShowMessage(E.Message);
@@ -328,22 +326,22 @@ begin
   DoUpdateStatus;
 end;
 
-procedure TMainFacade.InsertTextIntoNode(Node: TTreeNode);
+procedure TMainFacade.InsertTextIntoNode(aNode: TTreeNode);
 begin
-  FLogger.AddInfo(resMainInserCurrentItemLog + Node.Text);
-  FTreeController.SelectNode(Node);
+  FLogger.AddInfo(resMainInserCurrentItemLog + aNode.Text);
+  FTreeController.SelectNode(aNode);
   FTreeController.InsertItem(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
   DoUpdateStatus;
 end;
 
-procedure TMainFacade.LoadTreeFile(filename: string);
+procedure TMainFacade.LoadTreeFile(aFileName: string);
 begin
-  FSettingsController.FileOpenDirectory := ExtractFilePath(filename);
+  FSettingsController.FileOpenDirectory := ExtractFilePath(aFileName);
   try
-    FTreeController.LoadTreeFile(filename);
+    FTreeController.LoadTreeFile(aFileName);
     FTreeController.ExpandAll();
-    DoLoadFile(filename);
+    DoLoadFile(aFileName);
   except
     on E: Exception do
       ShowMessage(E.Message);
@@ -366,46 +364,46 @@ begin
      FTree.Selected.HasChildren));
 end;
 
-procedure TMainFacade.TreeSaveToFile(filename: string);
+procedure TMainFacade.TreeSaveToFile(aFileName: string);
 var
-  fn: string;
+  vFileName: string;
 begin
-  FSettingsController.FileSaveDirectory := ExtractFilePath(filename);
-  fn := ChangeFileExt(filename, '.txt');
-  if FileExists(fn)
+  FSettingsController.FileSaveDirectory := ExtractFilePath(aFileName);
+  vFileName := ChangeFileExt(aFileName, '.txt');
+  if FileExists(vFileName)
     and (not FDialogFacade.MessageInfoDialogOkCancel(
         resMainTreeSaveToFileReRecord, resMainTreeSaveToFileReRecordTitle)) then
       Exit;
 
-  FTreeController.SaveToFile(fn);
+  FTreeController.SaveToFile(vFileName);
   DoUpdateStatus;
 end;
 
-procedure TMainFacade.UpdateSubmenuRecentFiles(mmMain: TMainMenu;
-  mniRecentFiles: TMenuItem);
+procedure TMainFacade.UpdateSubmenuRecentFiles(aMainMenu: TMainMenu;
+  aHistoryMenu: TMenuItem);
 var
   i: Integer;
-  item: TMenuItem;
+  vItem: TMenuItem;
 begin
-  mniRecentFiles.Clear;
+  aHistoryMenu.Clear;
   for i := 0 to FRecentFilesController.RecentFilesCount() - 1 do
   begin
-    item := TMenuItem.Create(Application.MainForm);
-    item.AutoHotkeys := TMenuItemAutoFlag.maManual;
-    item.ShortCut := 0;
-    item.Caption := FRecentFilesController.GetFileHistory(i);
-    item.Visible := True;
-    item.Tag := i;
-    item.OnClick := OpenFileFromMenu;
-    item.ImageIndex := 13;
+    vItem := TMenuItem.Create(Application.MainForm);
+    vItem.AutoHotkeys := TMenuItemAutoFlag.maManual;
+    vItem.ShortCut := 0;
+    vItem.Caption := FRecentFilesController.GetFileHistory(i);
+    vItem.Visible := True;
+    vItem.Tag := i;
+    vItem.OnClick := OpenFileFromMenu;
+    vItem.ImageIndex := cImgFile;
 
-    mniRecentFiles.Add(item);
+    aHistoryMenu.Add(vItem);
   end;
 end;
 
-procedure TMainFacade.OpenFileFromMenu(Sender: TObject);
+procedure TMainFacade.OpenFileFromMenu(aSender: TObject);
 begin
-  HeapLoadFile(FRecentFilesController.GetFileHistory(TMenuItem(Sender).Tag));
+  HeapLoadFile(FRecentFilesController.GetFileHistory(TMenuItem(aSender).Tag));
 end;
 
 procedure TMainFacade.InitSettings;
@@ -434,91 +432,100 @@ begin
   FSettingsController.Save;
 end;
 
-function TMainFacade.TreeDragOverAccept(Sender, Source: TObject; X, Y: Integer): Boolean;
+procedure TMainFacade.SelectNodeUnderMouse;
 var
-  tmpNode: TTreeNode;
+  vMousePosition, vTreePos: TPoint;
+  vNode: TTreeNode;
 begin
-  if (Source is TTreeView) then
-    Exit(True);
-
-  if not ((Source is TListBox) and (Sender is TTreeView)) then
-    Exit(False);
-  tmpNode := (Sender as TTreeView).GetNodeAt(X, Y);
-
-  Result := Assigned(tmpNode) and FTreeController.SelectedIsFolder(tmpNode);
+  GetCursorPos(vMousePosition);
+  vTreePos := FTree.ScreenToClient(vMousePosition);
+  vNode := FTree.GetNodeAt(vTreePos.X, vTreePos.Y);
+  FTreeController.SelectNode(vNode);
 end;
 
-procedure TMainFacade.MoveNode(TargetNode, SourceNode : TTreeNode);
+function TMainFacade.TreeDragOverAccept(aSender, aSource: TObject; X, Y: Integer): Boolean;
 var
-  nodeTmp : TTreeNode;
+  vNode: TTreeNode;
+begin
+  if (aSource is TTreeView) then
+    Exit(True);
+
+  if not ((aSource is TListBox) and (aSender is TTreeView)) then
+    Exit(False);
+  vNode := (aSender as TTreeView).GetNodeAt(X, Y);
+
+  Result := Assigned(vNode) and FTreeController.SelectedIsFolder(vNode);
+end;
+
+procedure TMainFacade.MoveNode(aTargetNode, aSourceNode : TTreeNode);
+var
+  vNode : TTreeNode;
   i : Integer;
 begin
   with FTree do
   begin
-    nodeTmp := FTreeController.CloneItem(SourceNode, TargetNode);
+    vNode := FTreeController.CloneItem(aSourceNode, aTargetNode);
 
-    for i := 0 to SourceNode.Count - 1 do
-      MoveNode(nodeTmp, SourceNode.Item[i]);
+    for i := 0 to aSourceNode.Count - 1 do
+      MoveNode(vNode, aSourceNode.Item[i]);
   end;
 end;
 
-procedure TMainFacade.TreeDragDrop(Sender, Source: TObject; X, Y: Integer);
+procedure TMainFacade.TreeDragDrop(aSender, aSource: TObject; X, Y: Integer);
 var
-  DstNode: TTreeNode;
-var
-  TargetNode, SourceNode : TTreeNode;
+  vTargetNode, vSourceNode : TTreeNode;
 begin
-  if (Source is TTreeView) then
+  if (aSource is TTreeView) then
   begin
     with FTree do
     begin
-      TargetNode := GetNodeAt(X, Y);
+      vTargetNode := GetNodeAt(X, Y);
 
-      if FTreeController.SelectedIsItem(TargetNode) then
+      if FTreeController.SelectedIsItem(vTargetNode) then
       begin
-        if TargetNode.Parent = nil then
-          TargetNode := nil
+        if vTargetNode.Parent = nil then
+          vTargetNode := nil
         else
-          TargetNode := TargetNode.Parent;
+          vTargetNode := vTargetNode.Parent;
       end;
 
-      SourceNode := Selected;
-      MoveNode(TargetNode, SourceNode);
-      SourceNode.Free;
+      vSourceNode := Selected;
+      MoveNode(vTargetNode, vSourceNode);
+      vSourceNode.Free;
     end;
     Exit;
   end;
 
-  if not ((Source is TListBox) or ((Sender as TTreeView).Items.Count > 0)) then
+  if not ((aSource is TListBox) or ((aSender as TTreeView).Items.Count > 0)) then
     Exit;
-  DstNode := (Sender as TTreeView).GetNodeAt(X, Y);
-  if Assigned(DstNode) then
-    InsertTextIntoNode(DstNode);
+  vTargetNode := (aSender as TTreeView).GetNodeAt(X, Y);
+  if Assigned(vTargetNode) then
+    InsertTextIntoNode(vTargetNode);
   DoUpdateStatus;
 end;
 
 procedure TMainFacade.ShowmAbout;
 var
-  Facade: TAboutFacade;
+  vFacade: TAboutFacade;
 begin
-  Facade := TAboutFacade.Create;
+  vFacade := TAboutFacade.Create;
   try
-    Facade.ShowModal;
+    vFacade.ShowModal;
   finally
-    Facade.Free;
+    vFacade.Free;
   end;
 end;
 
 procedure TMainFacade.ShowmSettings;
 var
-  Facade: TSettingsFacade;
+  vFacade: TSettingsFacade;
 begin
-  Facade := TSettingsFacade.Create(FSettingsController);
+  vFacade := TSettingsFacade.Create(FSettingsController);
   try
-    Facade.OnOpen := DoOpenPatch;
-    Facade.ShowModal;
+    vFacade.OnOpen := DoOpenPatch;
+    vFacade.ShowModal;
   finally
-    Facade.Free;
+    vFacade.Free;
   end;
 end;
 

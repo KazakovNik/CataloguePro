@@ -7,44 +7,45 @@ uses
   ComCtrls, uNodeModel, uILogger;
 
 type
-  TReturnEvent = procedure(Text: string) of object;
+  TReturnEvent = procedure(aText: string) of object;
 
   TTreeController = class(TObject)
   private
-    FTView: TTreeView;
+    FTree: TTreeView;
     FOnReturn: TReturnEvent;
     FLogger: ILogger;
   private
-    procedure GenerateTreeData(ParentNode: TTreeNode;
-      Stream: TStringStream; path: string);
-    procedure DoReturn(Text: string);
-    procedure ForceNode(nodeList: TStringList);
-    function GetNodeFromParentByName(Parent: TTreeNode;
-      const NameNode: string): TTreeNode;
-    procedure Expand(Node: TTreeNode);
-    function AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;
-    procedure FreeNode(var Node: TTreeNode);
-    function AddFolder(ParentNode: TTreeNode; Text: string): TTreeNode;
+    procedure GenerateTreeData(aParentNode: TTreeNode;
+      aStream: TStringStream; aPath: string);
+    procedure DoReturn(aText: string);
+    procedure ForceNode(aNodeList: TStringList);
+    function GetNodeFromParentByName(aParent: TTreeNode;
+      const aNameNode: string): TTreeNode;
+    procedure Expand(aNode: TTreeNode);
+    function AddItem(aParentNode: TTreeNode; aText: string): TTreeNode;
+    procedure FreeNode(var aNode: TTreeNode);
+    function AddFolder(aParentNode: TTreeNode; aText: string): TTreeNode;
     procedure ClearData;
   public
-    constructor Create(View: TTreeView; Logger: ILogger);
+    constructor Create(aView: TTreeView; aLogger: ILogger);
     destructor Destroy; override;
 
-    procedure InsertItem(Text: string);
-    function CloneItem(SourceNode, ParentNode: TTreeNode): TTreeNode;
-    procedure InsertItemToRoot(Text: string);
-    procedure DeleteNode(Node: TTreeNode);
-    procedure EditNode(Node: TTreeNode; NewText: string);
-    procedure SelectNode(Node: TTreeNode);
+    procedure InsertItem(aText: string);
+    function CloneItem(aSourceNode, aParentNode: TTreeNode): TTreeNode;
+    procedure InsertItemToRoot(aText: string);
+    procedure DeleteNode(aNode: TTreeNode);
+    procedure DeleteAllNode;
+    procedure EditNode(aNode: TTreeNode; aNewText: string);
+    procedure SelectNode(aNode: TTreeNode);
     procedure ExpandAll;
     procedure CollapseAll;
-    procedure SaveToFile(FileName: string);
-    procedure LoadTreeFile(filename: string);
+    procedure SaveToFile(aFileName: string);
+    procedure LoadTreeFile(aFileName: string);
     procedure Clear;
 
-    function SelectedIsItem(Node: TTreeNode): Boolean;
-    function SelectedIsFolder(Node: TTreeNode): Boolean;
-    function AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
+    function SelectedIsItem(aNode: TTreeNode): Boolean;
+    function SelectedIsFolder(aNode: TTreeNode): Boolean;
+    function AddNode(aParentNode: TTreeNode; aText: string): TTreeNode;
     function CountNode: integer;
     function IsEmpty: Boolean;
 
@@ -59,12 +60,12 @@ uses
 const
   cSeparatorTree = '\';
 
-constructor TTreeController.Create(View: TTreeView; Logger: ILogger);
+constructor TTreeController.Create(aView: TTreeView; aLogger: ILogger);
 begin
   inherited Create;
 
-  FTView := View;
-  FLogger := Logger;
+  FTree := aView;
+  FLogger := aLogger;
 end;
 
 destructor TTreeController.Destroy;
@@ -78,156 +79,156 @@ procedure TTreeController.ClearData;
 var
   i: Integer;
 begin
-  for i := 0 to FTView.Items.Count - 1 do
-    if Assigned(FTView.Items[i].Data) then
-      TObject(FTView.Items[i].Data).Free;
+  for i := 0 to FTree.Items.Count - 1 do
+    if Assigned(FTree.Items[i].Data) then
+      TObject(FTree.Items[i].Data).Free;
 end;
 
 function TTreeController.CountNode: integer;
 begin
-  Result := FTView.Items.Count;
+  Result := FTree.Items.Count;
 end;
 
-procedure TTreeController.DoReturn(Text: string);
+procedure TTreeController.DoReturn(aText: string);
 begin
   if Assigned(OnReturn) then
-    OnReturn(Text);
+    OnReturn(aText);
 end;
 
-procedure TTreeController.LoadTreeFile(filename: string);
+procedure TTreeController.LoadTreeFile(aFileName: string);
 var
-  sl: TStringList;
-  slt: TStringList;
+  vFile: TStringList;
+  vTempList: TStringList;
   i: Integer;
 begin
-  FLogger.AddInfo(resTreeLoadFile + filename);
-  if not FileExists(filename) then
+  FLogger.AddInfo(resTreeLoadFile + aFileName);
+  if not FileExists(aFileName) then
   begin
-    FLogger.AddError(resTreeFileNotFound + filename);
-    raise Exception.Create(resTreeFileNotFound + #13#10 + filename);
+    FLogger.AddError(resTreeFileNotFound + aFileName);
+    raise Exception.Create(resTreeFileNotFound + #13#10 + aFileName);
   end;
 
-  sl := TStringList.Create;
-  slt:= TStringList.Create;
+  vFile := TStringList.Create;
+  vTempList:= TStringList.Create;
   try
-    sl.LoadFromFile(filename);
+    vFile.LoadFromFile(aFileName);
 
-    for i := 0 to sl.Count - 1 do
+    for i := 0 to vFile.Count - 1 do
     begin
-      slt.Text := StringReplace(sl[i], cSeparatorTree, #13#10, [rfReplaceAll]);
-      ForceNode(slt);
+      vTempList.Text := StringReplace(vFile[i], cSeparatorTree, #13#10, [rfReplaceAll]);
+      ForceNode(vTempList);
     end;
   finally
-    sl.Free;
-    slt.Free;
+    vFile.Free;
+    vTempList.Free;
   end;
 end;
 
-function TTreeController.GetNodeFromParentByName(Parent: TTreeNode;
-  const NameNode: string): TTreeNode;
+function TTreeController.GetNodeFromParentByName(aParent: TTreeNode;
+  const aNameNode: string): TTreeNode;
 var
-  I: Integer;
+  i: Integer;
 begin
   Result := nil;
-  for I := 0 to FTView.Items.Count - 1 do
+  for i := 0 to FTree.Items.Count - 1 do
   begin
-    if FTView.Items[I].Parent = Parent then
+    if FTree.Items[i].Parent = aParent then
     begin
-      if SameText(FTView.Items[I].Text, NameNode) then
-        Exit(FTView.Items[I]);
+      if SameText(FTree.Items[i].Text, aNameNode) then
+        Exit(FTree.Items[i]);
     end;
   end;
 end;
 
-procedure TTreeController.ForceNode(nodeList: TStringList);
+procedure TTreeController.ForceNode(aNodeList: TStringList);
 var
   i: integer;
-  Node: TTreeNode;
-  ParentNode: TTreeNode;
+  vNode: TTreeNode;
+  vParentNode: TTreeNode;
 begin
-  Node := nil;
-  for i := 0 to nodeList.Count - 1 do
+  vNode := nil;
+  for i := 0 to aNodeList.Count - 1 do
   begin
-    ParentNode := Node;
-    if i = nodeList.Count - 1 then
+    vParentNode := vNode;
+    if i = aNodeList.Count - 1 then
       Break;
-    if not Assigned(ParentNode) then
+    if not Assigned(vParentNode) then
     begin
-      Node := GetNodeFromParentByName(nil, nodeList[i]);
-      if not Assigned(Node) then
-        Node := AddNode(nil, nodeList[i]);
+      vNode := GetNodeFromParentByName(nil, aNodeList[i]);
+      if not Assigned(vNode) then
+        vNode := AddNode(nil, aNodeList[i]);
     end
     else
     begin
-      Node := GetNodeFromParentByName(ParentNode, nodeList[i]);
-      if not Assigned(Node) then
-        Node := AddNode(ParentNode, nodeList[i]);
+      vNode := GetNodeFromParentByName(vParentNode, aNodeList[i]);
+      if not Assigned(vNode) then
+        vNode := AddNode(vParentNode, aNodeList[i]);
     end;
   end;
 
-  AddItem(Node, nodeList[nodeList.Count - 1]);
+  AddItem(vNode, aNodeList[aNodeList.Count - 1]);
 end;
 
-procedure TTreeController.SaveToFile(FileName: string);
+procedure TTreeController.SaveToFile(aFileName: string);
 var
-  StrStream: TStringStream;
+  vStrStream: TStringStream;
   i: Integer;
 begin
-  FLogger.AddInfo(resTreeSaveToFile + filename);
-  StrStream := TStringStream.Create(EmptyStr);
+  FLogger.AddInfo(resTreeSaveToFile + aFileName);
+  vStrStream := TStringStream.Create(EmptyStr);
   try
-    for i := 0 to FTView.Items.Count - 1 do
+    for i := 0 to FTree.Items.Count - 1 do
     begin
-      if not Assigned(FTView.Items[i].Parent) then
-        GenerateTreeData(FTView.Items[I], StrStream, EmptyStr)
+      if not Assigned(FTree.Items[i].Parent) then
+        GenerateTreeData(FTree.Items[I], vStrStream, EmptyStr)
       else
-        StrStream.WriteString(FTView.Items[i].Text + #13#10);
+        vStrStream.WriteString(FTree.Items[i].Text + #13#10);
     end;
-    StrStream.SaveToFile(FileName);
+    vStrStream.SaveToFile(aFileName);
   finally
-    StrStream.Free;
+    vStrStream.Free;
   end;
 end;
 
-procedure TTreeController.GenerateTreeData(ParentNode: TTreeNode;
-  Stream: TStringStream; path: string);
+procedure TTreeController.GenerateTreeData(aParentNode: TTreeNode;
+  aStream: TStringStream; aPath: string);
 var
-  I: Integer;
-  Node: TTreeNode;
+  i: Integer;
+  vNode: TTreeNode;
 begin
-  if path <> EmptyStr then
-    path := path + '\';
-  path := path + ParentNode.Text;
+  if aPath <> EmptyStr then
+    aPath := aPath + '\';
+  aPath := aPath + aParentNode.Text;
 
-  for I := 0 to ParentNode.Count - 1 do
+  for i := 0 to aParentNode.Count - 1 do
   begin
-    Node := ParentNode.Item[I];
+    vNode := aParentNode.Item[i];
 
-    if Node.HasChildren then
-      GenerateTreeData(Node, Stream, path + cSeparatorTree + Node.Text)
+    if vNode.HasChildren then
+      GenerateTreeData(vNode, aStream, aPath + cSeparatorTree + vNode.Text)
     else
-      Stream.WriteString(path + cSeparatorTree + Node.Text + #13#10);
+      aStream.WriteString(aPath + cSeparatorTree + vNode.Text + #13#10);
   end;
 end;
 
-procedure TTreeController.InsertItem(Text: string);
+procedure TTreeController.InsertItem(aText: string);
 var
-  ParentNode: TTreeNode;
+  vParentNode: TTreeNode;
 begin
-  ParentNode := FTView.Selected;
-  if Assigned(ParentNode) then
-    FLogger.AddInfo(resTreeAddItem + ParentNode.Text + '\' + Text)
+  vParentNode := FTree.Selected;
+  if Assigned(vParentNode) then
+    FLogger.AddInfo(resTreeAddItem + vParentNode.Text + '\' + aText)
   else
-    FLogger.AddInfo(resTreeAddItem + Text);
+    FLogger.AddInfo(resTreeAddItem + aText);
 
-  AddItem(ParentNode, Text);
+  AddItem(vParentNode, aText);
 end;
 
-procedure TTreeController.InsertItemToRoot(Text: string);
+procedure TTreeController.InsertItemToRoot(aText: string);
 begin
-  FLogger.AddInfo(resTreeAddItemRoot + Text);
+  FLogger.AddInfo(resTreeAddItemRoot + aText);
 
-  AddItem(nil, Text);
+  AddItem(nil, aText);
 end;
 
 function TTreeController.IsEmpty: Boolean;
@@ -235,150 +236,163 @@ begin
   Result := CountNode = 0;
 end;
 
-function TTreeController.AddItem(ParentNode: TTreeNode; Text: string): TTreeNode;
+function TTreeController.AddItem(aParentNode: TTreeNode; aText: string): TTreeNode;
 begin
-  Result := FTView.Items.AddChild(ParentNode, Text);
+  Result := FTree.Items.AddChild(aParentNode, aText);
   Result.Data := TModelItem.Create();
   Result.ImageIndex := TModelBase(Result.Data).ImageIndex;
   Result.SelectedIndex := Result.ImageIndex;
 
-  Expand(ParentNode);
+  Expand(aParentNode);
 end;
 
-function TTreeController.AddFolder(ParentNode: TTreeNode; Text: string): TTreeNode;
+function TTreeController.AddFolder(aParentNode: TTreeNode; aText: string): TTreeNode;
 begin
-  Result := FTView.Items.AddChild(ParentNode, Text);
+  Result := FTree.Items.AddChild(aParentNode, aText);
   Result.Data := TModelDir.Create();
   Result.ImageIndex := TModelBase(Result.Data).ImageIndex;
   Result.SelectedIndex := Result.ImageIndex;
 
-  Expand(ParentNode);
+  Expand(aParentNode);
 end;
 
-function TTreeController.AddNode(ParentNode: TTreeNode; Text: string): TTreeNode;
+function TTreeController.AddNode(aParentNode: TTreeNode; aText: string): TTreeNode;
 var
-  NewNode: TTreeNode;
+  vNewNode: TTreeNode;
 begin
-  if Assigned(ParentNode) then
-    FLogger.AddInfo(resTreeAddGroup + ParentNode.Text + '\' + Text)
+  if Assigned(aParentNode) then
+    FLogger.AddInfo(resTreeAddGroup + aParentNode.Text + '\' + aText)
   else
-    FLogger.AddInfo(resTreeAddGroup + Text);
+    FLogger.AddInfo(resTreeAddGroup + aText);
 
-  NewNode := AddFolder(ParentNode, Text);
-  FTView.Selected := NewNode;
-  Result := NewNode;
+  vNewNode := AddFolder(aParentNode, aText);
+  FTree.Selected := vNewNode;
+  Result := vNewNode;
 end;
 
-procedure TTreeController.FreeNode(var Node: TTreeNode);
+procedure TTreeController.FreeNode(var aNode: TTreeNode);
 begin
-  TObject(Node.Data).Free;
-  Node.Free;
+  TObject(aNode.Data).Free;
+  aNode.Free;
 end;
 
-procedure TTreeController.DeleteNode(Node: TTreeNode);
+procedure TTreeController.DeleteAllNode;
+var
+  I: Integer;
+  vRootNode: TTreeNode;
+begin
+  for I := FTree.Items.Count - 1 downto 0 do
+  begin
+    vRootNode := FTree.Items[I];
+    if not Assigned(vRootNode.Parent) then
+      DeleteNode(vRootNode);
+  end;
+end;
+
+procedure TTreeController.DeleteNode(aNode: TTreeNode);
 var
   i: integer;
 begin
-  if not Assigned(Node) then
+  if not Assigned(aNode) then
     Exit;
 
-  if SelectedIsFolder(Node) and (not Node.HasChildren)  then
+  if SelectedIsFolder(aNode) and (not aNode.HasChildren)  then
   begin
-    if Assigned(Node) then
-      FLogger.AddInfo(resTreeDelGroup + Node.Text);
-    FreeNode(Node);
+    if Assigned(aNode) then
+      FLogger.AddInfo(resTreeDelGroup + aNode.Text);
+    FreeNode(aNode);
     Exit;
   end;
 
-  if not Node.HasChildren then
+  if not aNode.HasChildren then
   begin
-    if Assigned(Node) then
-      FLogger.AddInfo(resTreeDelitem + Node.Text);
-    DoReturn(Node.Text);
-    FreeNode(Node);
+    if Assigned(aNode) then
+      FLogger.AddInfo(resTreeDelitem + aNode.Text);
+    DoReturn(aNode.Text);
+    FreeNode(aNode);
   end
   else
   begin
-    if Assigned(Node) then
-      FLogger.AddInfo(resTreeDelGroup + Node.Text);
-    for i := Node.Count - 1 downto 0 do
-      DeleteNode(Node.Item[i]);
-    FreeNode(Node);
+    if Assigned(aNode) then
+      FLogger.AddInfo(resTreeDelGroup + aNode.Text);
+    for i := aNode.Count - 1 downto 0 do
+      DeleteNode(aNode.Item[i]);
+    FreeNode(aNode);
   end;
 end;
 
-procedure TTreeController.EditNode(Node: TTreeNode; NewText: string);
+procedure TTreeController.EditNode(aNode: TTreeNode; aNewText: string);
 var
-  oldText: string;
+  vOldText: string;
 begin
-  if Assigned(Node) then
+  if Assigned(aNode) then
   begin
-    oldText := Node.Text;
-    Node.Text := NewText;
-    FLogger.AddInfo(Format(resTreeEdit, [oldText, Node.Text]));
+    vOldText := aNode.Text;
+    aNode.Text := aNewText;
+    FLogger.AddInfo(Format(resTreeEdit, [vOldText, aNode.Text]));
   end;
 end;
 
-function TTreeController.SelectedIsFolder(Node: TTreeNode): Boolean;
+function TTreeController.SelectedIsFolder(aNode: TTreeNode): Boolean;
 begin
-  Result := not SelectedIsItem(Node);
+  Result := not SelectedIsItem(aNode);
 end;
 
-function TTreeController.SelectedIsItem(Node: TTreeNode): Boolean;
+function TTreeController.SelectedIsItem(aNode: TTreeNode): Boolean;
 begin
   Result :=
-    Assigned(Node) and
-    Assigned(Node.Data) and
-    (TObject(Node.Data).ClassName = TModelItem.ClassName);
+    Assigned(aNode) and
+    Assigned(aNode.Data) and
+    (TObject(aNode.Data).ClassName = TModelItem.ClassName);
 end;
 
-procedure TTreeController.SelectNode(Node: TTreeNode);
+procedure TTreeController.SelectNode(aNode: TTreeNode);
 begin
-  FTView.Selected := Node;
+  FTree.Selected := aNode;
 end;
 
-procedure TTreeController.Expand(Node: TTreeNode);
+procedure TTreeController.Expand(aNode: TTreeNode);
 var
-  I: integer;
+  i: integer;
 begin
-  if (not Assigned(Node)) or (not Assigned(Node.GetFirstChild())) then
+  if (not Assigned(aNode)) or (not Assigned(aNode.GetFirstChild())) then
     Exit;
 
-  for I := 0 to Node.Count - 1 do
-    Expand(Node.Item[I]);
-  Node.Expanded := True;
+  for i := 0 to aNode.Count - 1 do
+    Expand(aNode.Item[i]);
+  aNode.Expanded := True;
 end;
 
 procedure TTreeController.ExpandAll;
 begin
-  FTView.FullExpand;
-  if FTView.Items.Count > 0 then
-    FTView.Selected := FTView.Items[0];
+  FTree.FullExpand;
+  if FTree.Items.Count > 0 then
+    FTree.Selected := FTree.Items[0];
 end;
 
 procedure TTreeController.Clear;
 begin
   FLogger.AddInfo(resTreeClear);
   ClearData;
-  FTView.Items.Clear;
+  FTree.Items.Clear;
 end;
 
-function TTreeController.CloneItem(SourceNode, ParentNode: TTreeNode): TTreeNode;
+function TTreeController.CloneItem(aSourceNode, aParentNode: TTreeNode): TTreeNode;
 begin
-  with FTView do
+  with FTree do
   begin
-    Result := Items.AddChild(ParentNode, SourceNode.Text);
-    Result.Data := SourceNode.Data;
+    Result := Items.AddChild(aParentNode, aSourceNode.Text);
+    Result.Data := aSourceNode.Data;
     Result.ImageIndex := TModelBase(Result.Data).ImageIndex;
     Result.SelectedIndex := Result.ImageIndex;
 
-    Expand(ParentNode);
+    Expand(aParentNode);
   end;
 end;
 
 procedure TTreeController.CollapseAll;
 begin
-  FTView.FullCollapse;
+  FTree.FullCollapse;
 end;
 
 end.

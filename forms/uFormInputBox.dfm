@@ -17,11 +17,15 @@ inherited FormInputBox: TFormInputBox
     Top = 58
     Width = 470
     ParentBackground = False
+    ExplicitTop = 58
+    ExplicitWidth = 470
     inherited btnOk: TButton
       Left = 318
+      ExplicitLeft = 318
     end
     inherited btnCancel: TButton
       Left = 394
+      ExplicitLeft = 394
     end
   end
   object edtText: TEdit

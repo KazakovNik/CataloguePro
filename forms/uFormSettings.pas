@@ -7,7 +7,7 @@ uses
   Vcl.ExtCtrls, uFormDialogBase, uFramePatch;
 
 type
-  TOpenEvent = procedure(Patch: string) of object;
+  TOpenEvent = procedure(aPatch: string) of object;
 
   TFormSettings = class(TFormDialogBase)
     frmLastOpen: TFramePatch;

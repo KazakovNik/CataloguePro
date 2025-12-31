@@ -5,9 +5,9 @@ interface
 type
   TObjectOpener = class
   public
-    class procedure OpenFile(filename: string);
-    class procedure OpenFolder(patch: string);
-    class procedure OpenUrl(url: string);
+    class procedure OpenFile(aFileName: string);
+    class procedure OpenFolder(aPath: string);
+    class procedure OpenUrl(aUrl: string);
   end;
 
 implementation
@@ -17,19 +17,19 @@ uses
 
 { TObjectOpener }
 
-class procedure TObjectOpener.OpenFile(filename: string);
+class procedure TObjectOpener.OpenFile(aFileName: string);
 begin
-  ShellExecute(0, 'open', PChar(filename), nil, nil, SW_SHOWNORMAL);
+  ShellExecute(0, 'open', PChar(aFileName), nil, nil, SW_SHOWNORMAL);
 end;
 
-class procedure TObjectOpener.OpenFolder(patch: string);
+class procedure TObjectOpener.OpenFolder(aPath: string);
 begin
-  ShellExecute(0, 'explore', PChar(patch), nil, nil, SW_SHOWNORMAL)
+  ShellExecute(0, 'explore', PChar(aPath), nil, nil, SW_SHOWNORMAL)
 end;
 
-class procedure TObjectOpener.OpenUrl(url: string);
+class procedure TObjectOpener.OpenUrl(aUrl: string);
 begin
-  ShellExecute(0, 'open', PChar(url), nil, nil, SW_SHOWNORMAL);
+  ShellExecute(0, 'open', PChar(aUrl), nil, nil, SW_SHOWNORMAL);
 end;
 
 end.

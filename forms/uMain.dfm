@@ -127,10 +127,6 @@
       Align = alClient
       Caption = #1053#1077#1086#1073#1088#1072#1073#1086#1090#1072#1085#1099#1077' '#1079#1072#1087#1080#1089#1080'('#1082#1091#1095#1072')'
       TabOrder = 1
-      ExplicitLeft = 176
-      ExplicitTop = 184
-      ExplicitWidth = 185
-      ExplicitHeight = 105
       object lbHeap: TListBox
         AlignWithMargins = True
         Left = 5
@@ -144,10 +140,6 @@
         MultiSelect = True
         TabOrder = 0
         OnDragOver = lbHeapDragOver
-        ExplicitLeft = 0
-        ExplicitTop = 38
-        ExplicitWidth = 265
-        ExplicitHeight = 443
       end
     end
   end
@@ -255,10 +247,6 @@
       Align = alClient
       Caption = #1057#1075#1088#1091#1087#1087#1080#1088#1086#1074#1072#1085#1099#1077' '#1079#1072#1087#1080#1089#1080'('#1076#1077#1088#1077#1074#1086')'
       TabOrder = 1
-      ExplicitLeft = 248
-      ExplicitTop = 104
-      ExplicitWidth = 185
-      ExplicitHeight = 105
       object TreeView: TTreeView
         AlignWithMargins = True
         Left = 5
@@ -274,10 +262,6 @@
         TabOrder = 0
         OnDragDrop = TreeViewDragDrop
         OnDragOver = TreeViewDragOver
-        ExplicitLeft = 0
-        ExplicitTop = 38
-        ExplicitWidth = 484
-        ExplicitHeight = 443
       end
     end
   end
@@ -307,7 +291,7 @@
     Left = 152
     Top = 240
     Bitmap = {
-      494C010113009000D00018001800FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010113009000D40018001800FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000006000000078000000010020000000000000B4
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

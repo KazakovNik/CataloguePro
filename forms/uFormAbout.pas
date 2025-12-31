@@ -33,7 +33,9 @@ uses
 procedure TFormAbout.FormCreate(Sender: TObject);
 begin
   inherited;
+
   Caption := resAboutCaption;
+
   lblProgramName.Caption := Application.MainForm.Caption;
   lblVersion.Caption := resAboutVersion + ': 1.0';
   lblCopyright.Caption := resAboutCopyright;

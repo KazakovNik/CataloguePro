@@ -19,26 +19,26 @@ type
     function GetMainFormLeft: integer;
     function GetMainFormTop: integer;
     function GetMainFormWidth: integer;
-    procedure SetMainFormHeight(const Value: integer);
-    procedure SetMainFormLeft(const Value: integer);
-    procedure SetMainFormTop(const Value: integer);
-    procedure SetMainFormWidth(const Value: integer);
+    procedure SetMainFormHeight(const aValue: integer);
+    procedure SetMainFormLeft(const aValue: integer);
+    procedure SetMainFormTop(const aValue: integer);
+    procedure SetMainFormWidth(const aValue: integer);
     function GetHeapWidth: integer;
-    procedure SetHeapWidth(const Value: integer);
+    procedure SetHeapWidth(const aValue: integer);
     function GetFileOpenDirectory: string;
-    procedure SetFileOpenDirectory(const Value: string);
+    procedure SetFileOpenDirectory(const aValue: string);
     function GetFileSaveDirectory: string;
-    procedure SetFileSaveDirectory(const Value: string);
+    procedure SetFileSaveDirectory(const aValue: string);
     function GetRecentFiles: string;
-    procedure SetRecentFiles(const Value: string);
-    procedure SetMaxCountFileHistopy(const Value: integer);
+    procedure SetRecentFiles(const aValue: string);
+    procedure SetMaxCountFileHistopy(const aValue: integer);
     function GetMaxCountFileHistopy: integer;
     procedure DoUpdate;
     function GetLoggerFileName: string;
     function GetWindowState: integer;
-    procedure SetWindowState(const Value: integer);
+    procedure SetWindowState(const aValue: integer);
   public
-    constructor Create(const AFilePath: string);
+    constructor Create(const aAFilePath: string);
     destructor Destroy; override;
 
     procedure Save;
@@ -67,9 +67,9 @@ const
   cDateTimeFormat = 'yyyymmdd';
   cLogName = 'log_%s.txt';
 
-constructor TSettingsController.Create(const AFilePath: string);
+constructor TSettingsController.Create(const aAFilePath: string);
 begin
-  FFilePath := AFilePath;
+  FFilePath := aAFilePath;
   FModel := TSettings.Create(FFilePath);
   if not FileExists(FFilePath) then
   begin
@@ -156,55 +156,55 @@ begin
   Result := FModel.WindowState;
 end;
 
-procedure TSettingsController.SetFileOpenDirectory(const Value: string);
+procedure TSettingsController.SetFileOpenDirectory(const aValue: string);
 begin
-  FModel.FileOpenDirectory := Value;
+  FModel.FileOpenDirectory := aValue;
 end;
 
-procedure TSettingsController.SetFileSaveDirectory(const Value: string);
+procedure TSettingsController.SetFileSaveDirectory(const aValue: string);
 begin
-  FModel.FileSaveDirectory := Value;
+  FModel.FileSaveDirectory := aValue;
 end;
 
-procedure TSettingsController.SetHeapWidth(const Value: integer);
+procedure TSettingsController.SetHeapWidth(const aValue: integer);
 begin
-  FModel.HeapWidth := Value;
+  FModel.HeapWidth := aValue;
 end;
 
-procedure TSettingsController.SetMainFormHeight(const Value: integer);
+procedure TSettingsController.SetMainFormHeight(const aValue: integer);
 begin
-  FModel.MainFormHeight := Value;
+  FModel.MainFormHeight := aValue;
 end;
 
-procedure TSettingsController.SetMainFormLeft(const Value: integer);
+procedure TSettingsController.SetMainFormLeft(const aValue: integer);
 begin
-  FModel.MainFormLeft := Value;
+  FModel.MainFormLeft := aValue;
 end;
 
-procedure TSettingsController.SetMainFormTop(const Value: integer);
+procedure TSettingsController.SetMainFormTop(const aValue: integer);
 begin
-  FModel.MainFormTop := Value;
+  FModel.MainFormTop := aValue;
 end;
 
-procedure TSettingsController.SetMainFormWidth(const Value: integer);
+procedure TSettingsController.SetMainFormWidth(const aValue: integer);
 begin
-  FModel.MainFormWidth := Value;
+  FModel.MainFormWidth := aValue;
 end;
 
-procedure TSettingsController.SetMaxCountFileHistopy(const Value: integer);
+procedure TSettingsController.SetMaxCountFileHistopy(const aValue: integer);
 begin
-  FModel.MaxCountFileHistopy := Value;
+  FModel.MaxCountFileHistopy := aValue;
   DoUpdate;
 end;
 
-procedure TSettingsController.SetRecentFiles(const Value: string);
+procedure TSettingsController.SetRecentFiles(const aValue: string);
 begin
-  FModel.RecentFiles := Value;
+  FModel.RecentFiles := aValue;
 end;
 
-procedure TSettingsController.SetWindowState(const Value: integer);
+procedure TSettingsController.SetWindowState(const aValue: integer);
 begin
-  FModel.WindowState := Value;
+  FModel.WindowState := aValue;
 end;
 
 procedure TSettingsController.Save;

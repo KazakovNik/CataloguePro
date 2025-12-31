@@ -11,12 +11,12 @@ type
     FListBox: TListBox;
     FLogger: ILogger;
   public
-    constructor Create(ListBox: TListBox; Logger: ILogger);
+    constructor Create(aListBox: TListBox; aLogger: ILogger);
     destructor Destroy(); override;
 
-    procedure LoadFile(filename: string);
-    procedure Delete(itemIndex: integer);
-    procedure Add(text: string);
+    procedure LoadFile(aFileName: string);
+    procedure Delete(aItemIndex: integer);
+    procedure Add(aText: string);
     procedure DeleteCurrent;
     procedure Clear;
 
@@ -29,10 +29,10 @@ implementation
 uses
   System.SysUtils, System.Classes, uRsControls;
 
-procedure THeapController.Add(text: string);
+procedure THeapController.Add(aText: string);
 begin
-  FListBox.Items.Add(Text);
-  FLogger.AddInfo(resHeapAdd + text);
+  FListBox.Items.Add(aText);
+  FLogger.AddInfo(resHeapAdd + aText);
 end;
 
 procedure THeapController.Clear;
@@ -42,26 +42,26 @@ begin
   FListBox.Items.Clear;
 end;
 
-constructor THeapController.Create(ListBox: TListBox; Logger: ILogger);
+constructor THeapController.Create(aListBox: TListBox; aLogger: ILogger);
 begin
   inherited Create();
-  FLogger := Logger;
-  FListBox := ListBox;
+  FLogger := aLogger;
+  FListBox := aListBox;
 end;
 
-procedure THeapController.Delete(itemIndex: integer);
+procedure THeapController.Delete(aItemIndex: integer);
 var
-  index: integer;
-  oldText: string;
+  vIndex: integer;
+  vOldText: string;
 begin
-  index := itemIndex;
-  oldText := FListBox.Items[index];
-  FListBox.Items.Delete(index);
-  if index > 0 then
-    index := index - 1;
-  if index <= FListBox.Count - 1 then
-    FListBox.ItemIndex := index;
-  FLogger.AddInfo(resHeapDelete + oldText);
+  vIndex := aItemIndex;
+  vOldText := FListBox.Items[vIndex];
+  FListBox.Items.Delete(vIndex);
+  if vIndex > 0 then
+    vIndex := vIndex - 1;
+  if vIndex <= FListBox.Count - 1 then
+    FListBox.ItemIndex := vIndex;
+  FLogger.AddInfo(resHeapDelete + vOldText);
 end;
 
 procedure THeapController.DeleteCurrent;
@@ -84,30 +84,30 @@ begin
   Result := FListBox.Items.Count = 0;
 end;
 
-procedure THeapController.LoadFile(filename: string);
+procedure THeapController.LoadFile(aFileName: string);
 var
-  sl: TStringList;
+  vFile: TStringList;
 begin
-  if not FileExists(filename) then
-    raise Exception.Create(resHeapFileNotFound + #13#10 + filename);
+  if not FileExists(aFileName) then
+    raise Exception.Create(resHeapFileNotFound + #13#10 + aFileName);
 
-  sl := TStringList.Create();
+  vFile := TStringList.Create();
   try
-    sl.LoadFromFile(filename);
+    vFile.LoadFromFile(aFileName);
 
     FListBox.Items.BeginUpdate;
     try
       FListBox.Items.Clear;
-      FListBox.Items.Text := sl.Text;
+      FListBox.Items.Text := vFile.Text;
     finally
       FListBox.Items.EndUpdate;
     end;
     if FListBox.Count > 0 then
       FListBox.ItemIndex := 0;
   finally
-    sl.Free;
+    vFile.Free;
   end;
-  FLogger.AddInfo(resHeapLoadFile + filename);
+  FLogger.AddInfo(resHeapLoadFile + aFileName);
 end;
 
 end.

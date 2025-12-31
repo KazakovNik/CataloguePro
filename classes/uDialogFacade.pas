@@ -8,13 +8,13 @@ uses
 type
   TDialogFacade = class
   private
-    function MessageDialog(Msg: String; Title: String; DlgType: TMsgDlgType;
-      Buttons: TMsgDlgButtons; Cod_Ajuda: Integer) : TModalResult;
+    function MessageDialog(aMsg: String; aTitle: String; aDlgType: TMsgDlgType;
+      aButtons: TMsgDlgButtons; aCodAjuda: Integer) : TModalResult;
   public
-    function MessageInfoDialogOkCancel(Msg: String; Title: String): Boolean;
-    function CreateInputDialog(const ACaption, APrompt, ADefault: string;
-      out Text: string): Boolean;
-    procedure MessageError(Msg: String);
+    function MessageInfoDialogOkCancel(aMsg: String; aTitle: String): Boolean;
+    function CreateInputDialog(const aCaption, aPrompt, aDefault: string;
+      out aText: string): Boolean;
+    procedure MessageError(aMsg: String);
   end;
 
 implementation
@@ -24,22 +24,22 @@ uses
 
 { TDialogFacade }
 
-function TDialogFacade.CreateInputDialog(const ACaption, APrompt, ADefault: string;
-  out Text: string): Boolean;
+function TDialogFacade.CreateInputDialog(const aCaption, aPrompt, aDefault: string;
+  out aText: string): Boolean;
 begin
-  Result := TFormInputBox.Show(ACaption, APrompt, ADefault, Text);
+  Result := TFormInputBox.Show(aCaption, aPrompt, aDefault, aText);
 end;
 
-function TDialogFacade.MessageDialog(Msg, Title: String; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; Cod_Ajuda: Integer): TModalResult;
+function TDialogFacade.MessageDialog(aMsg, aTitle: String; aDlgType: TMsgDlgType;
+  aButtons: TMsgDlgButtons; aCodAjuda: Integer): TModalResult;
 var
   i: Integer;
 begin
-  with CreateMessageDialog(Msg, DlgType, Buttons) Do
+  with CreateMessageDialog(aMsg, aDlgType, aButtons) Do
   begin
     try
-      Caption := Title;
-      HelpContext := Cod_Ajuda;
+      Caption := aTitle;
+      HelpContext := aCodAjuda;
       Left:= Screen.ActiveForm.Left + (Screen.ActiveForm.Width - Width) div 2;
       Top := Screen.ActiveForm.Top + (Screen.ActiveForm.Height - Height) div 2;
 
@@ -70,15 +70,15 @@ begin
   end;
 end;
 
-procedure TDialogFacade.MessageError(Msg: String);
+procedure TDialogFacade.MessageError(aMsg: String);
 begin
-  MessageDialog(Msg, resDialogErrorTitle, TMsgDlgType.mtError, [mbOk], 0)
+  MessageDialog(aMsg, resDialogErrorTitle, TMsgDlgType.mtError, [mbOk], 0)
 end;
 
-function TDialogFacade.MessageInfoDialogOkCancel(Msg, Title: String): Boolean;
+function TDialogFacade.MessageInfoDialogOkCancel(aMsg, aTitle: String): Boolean;
 begin
   Result :=
-    MessageDialog(Msg, Title, TMsgDlgType.mtInformation, [mbOk, mbCancel], 0) = mrOk;
+    MessageDialog(aMsg, aTitle, TMsgDlgType.mtInformation, [mbOk, mbCancel], 0) = mrOk;
 end;
 
 end.

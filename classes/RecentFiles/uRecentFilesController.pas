@@ -6,7 +6,7 @@ uses
   System.Classes, uRecentFilesModel, uILogger;
 
 type
-  TUpdateEvent = procedure(History: TStringList) of object;
+  TUpdateEvent = procedure(aHistory: TStringList) of object;
 
   TRecentFilesController = class
   private
@@ -14,18 +14,17 @@ type
     FOnUpdate: TUpdateEvent;
     FLogger: ILogger;
   private
-    procedure DoUpdate(History: TStringList);
-
+    procedure DoUpdate(aHistory: TStringList);
   public
-    constructor Create(Logger: ILogger);
+    constructor Create(aLogger: ILogger);
     destructor Destroy; override;
 
-    procedure LoadHistory(History: string);
-    procedure OpenFile(FileName: string);
-    procedure SetMaxCountFile(const Value: Integer);
+    procedure LoadHistory(aHistory: string);
+    procedure OpenFile(aFileName: string);
+    procedure SetMaxCountFile(const aValue: Integer);
     function RecentFilesCount: Integer;
-    function GetFileHistory(index: integer): string;
-    procedure DeleteByName(filename: string);
+    function GetFileHistory(aIndex: integer): string;
+    procedure DeleteByName(aFileName: string);
 
     property OnUpdate: TUpdateEvent read FOnUpdate write FOnUpdate;
   end;
@@ -37,17 +36,17 @@ uses
 
 { TRecentFilesController }
 
-constructor TRecentFilesController.Create(Logger: ILogger);
+constructor TRecentFilesController.Create(aLogger: ILogger);
 begin
-  FLogger := Logger;
+  FLogger := aLogger;
   FModel := TRecentFilesModel.Create;
   SetMaxCountFile(10);
 end;
 
-procedure TRecentFilesController.DeleteByName(filename: string);
+procedure TRecentFilesController.DeleteByName(aFileName: string);
 begin
-  FLogger.AddInfo(resRecentFilesDelFile + #13#10 + filename);
-  FModel.DeleteByName(filename);
+  FLogger.AddInfo(resRecentFilesDelFile + #13#10 + aFileName);
+  FModel.DeleteByName(aFileName);
   DoUpdate(FModel.FileHistory);
 end;
 
@@ -57,27 +56,27 @@ begin
   inherited;
 end;
 
-procedure TRecentFilesController.DoUpdate(History: TStringList);
+procedure TRecentFilesController.DoUpdate(aHistory: TStringList);
 begin
   if Assigned(OnUpdate) then
-    OnUpdate(History);
+    OnUpdate(aHistory);
 end;
 
-function TRecentFilesController.GetFileHistory(index: integer): string;
+function TRecentFilesController.GetFileHistory(aIndex: integer): string;
 begin
   Result := EmptyStr;
-  if (index >= 0) and (index < FModel.FileHistory.Count) then
-    Result := FModel.FileHistory[index];
+  if (aIndex >= 0) and (aIndex < FModel.FileHistory.Count) then
+    Result := FModel.FileHistory[aIndex];
 end;
 
-procedure TRecentFilesController.LoadHistory(History: string);
+procedure TRecentFilesController.LoadHistory(aHistory: string);
 begin
-  FModel.LoadHistory(StringReplace(History, ';', #13#10, [rfReplaceAll]));
+  FModel.LoadHistory(StringReplace(aHistory, ';', #13#10, [rfReplaceAll]));
 end;
 
-procedure TRecentFilesController.OpenFile(FileName: string);
+procedure TRecentFilesController.OpenFile(aFileName: string);
 begin
-  FModel.Insert(FileName);
+  FModel.Insert(aFileName);
   DoUpdate(FModel.FileHistory);
 end;
 
@@ -86,9 +85,9 @@ begin
   Result := FModel.FileHistory.Count;
 end;
 
-procedure TRecentFilesController.SetMaxCountFile(const Value: Integer);
+procedure TRecentFilesController.SetMaxCountFile(const aValue: Integer);
 begin
-  FModel.SetMaxCountFile(Value);
+  FModel.SetMaxCountFile(aValue);
 end;
 
 end.

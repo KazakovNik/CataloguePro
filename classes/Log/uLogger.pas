@@ -12,51 +12,51 @@ type
     FFileName: string;
     FUserInfo: TUserInfo;
   private
-    procedure WriteLog(typeMsg, Msg: string);
+    procedure WriteLog(aTypeMsg, aMsg: string);
   public
-    constructor Create(const AFileName: string; UserInfo: TUserInfo);
+    constructor Create(const aFileName: string; aUserInfo: TUserInfo);
 
-    procedure AddError(const Msg: string);
-    procedure AddInfo(const Msg: string);
-    procedure AddAction(const Msg: string);
+    procedure AddError(const aMsg: string);
+    procedure AddInfo(const aMsg: string);
+    procedure AddAction(const aMsg: string);
   end;
 
 implementation
 
-procedure TLogger.AddAction(const Msg: string);
+procedure TLogger.AddAction(const aMsg: string);
 begin
-  WriteLog('ACTION', Msg);
+  WriteLog('ACTION', aMsg);
 end;
 
-procedure TLogger.AddError(const Msg: string);
+procedure TLogger.AddError(const aMsg: string);
 begin
-  WriteLog('ERROR', Msg);
+  WriteLog('ERROR', aMsg);
 end;
 
-procedure TLogger.AddInfo(const Msg: string);
+procedure TLogger.AddInfo(const aMsg: string);
 begin
-  WriteLog('INFO', Msg);
+  WriteLog('INFO', aMsg);
 end;
 
-constructor TLogger.Create(const AFileName: string; UserInfo: TUserInfo);
+constructor TLogger.Create(const aFileName: string; aUserInfo: TUserInfo);
 begin
   inherited Create;
-  FFileName := AFileName;
-  FUserInfo := UserInfo;
+  FFileName := aFileName;
+  FUserInfo := aUserInfo;
 end;
 
-procedure TLogger.WriteLog(typeMsg, Msg: string);
+procedure TLogger.WriteLog(aTypeMsg, aMsg: string);
 var
-  text: string;
+  vMsg: string;
 begin
-  text :=
+  vMsg :=
     FormatDateTime('yyyy-mm-dd hh:mm:ss', Now()) + #$9
     + FUserInfo.UserName + #$9
     + FUserInfo.ComputerName + #$9
-    + typeMsg + #$9
-    + Msg + #13#10;
+    + aTypeMsg + #$9
+    + aMsg + #13#10;
 
-  TFile.AppendAllText(FFileName, text);
+  TFile.AppendAllText(FFileName, vMsg);
 end;
 
 end.
