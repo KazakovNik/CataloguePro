@@ -23,7 +23,8 @@ uses
   uFramePatch in 'forms\uFramePatch.pas' {FramePatch: TFrame},
   uFormInputBox in 'forms\uFormInputBox.pas' {FormInputBox},
   uDialogFacade in 'classes\uDialogFacade.pas',
-  uObjectOpener in 'classes\uObjectOpener.pas';
+  uObjectOpener in 'classes\uObjectOpener.pas',
+  uRsControls in 'classes\uRsControls.pas';
 
 {$R *.res}
 

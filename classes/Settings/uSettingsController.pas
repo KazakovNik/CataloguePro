@@ -58,7 +58,14 @@ type
     property WindowState: integer read GetWindowState write SetWindowState;
   end;
 
+const
+  cSettingsFileName = 'settings.ini';
+
 implementation
+
+const
+  cDateTimeFormat = 'yyyymmdd';
+  cLogName = 'log_%s.txt';
 
 constructor TSettingsController.Create(const AFilePath: string);
 begin
@@ -111,7 +118,7 @@ function TSettingsController.GetLoggerFileName: string;
 begin
   Result :=
     ExtractFilePath(Application.ExeName)
-     + Format('log_%s.txt', [FormatDateTime('yyyymmdd', Now())]);
+     + Format(cLogName, [FormatDateTime(cDateTimeFormat, Now())]);
 end;
 
 function TSettingsController.GetMainFormHeight: integer;

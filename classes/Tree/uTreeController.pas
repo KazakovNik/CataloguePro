@@ -53,6 +53,12 @@ type
 
 implementation
 
+uses
+  uRsControls;
+
+const
+  cSeparatorTree = '\';
+
 constructor TTreeController.Create(View: TTreeView; Logger: ILogger);
 begin
   inherited Create;
@@ -94,11 +100,11 @@ var
   slt: TStringList;
   i: Integer;
 begin
-  FLogger.AddInfo('Загружаем файл дерева: ' + filename);
+  FLogger.AddInfo(resTreeLoadFile + filename);
   if not FileExists(filename) then
   begin
-    FLogger.AddError('Файл не найден:' + filename);
-    raise Exception.Create('Файл не найден:'#13#10 + filename);
+    FLogger.AddError(resTreeFileNotFound + filename);
+    raise Exception.Create(resTreeFileNotFound + #13#10 + filename);
   end;
 
   sl := TStringList.Create;
@@ -108,7 +114,7 @@ begin
 
     for i := 0 to sl.Count - 1 do
     begin
-      slt.Text := StringReplace(sl[i], '\', #13#10, [rfReplaceAll]);
+      slt.Text := StringReplace(sl[i], cSeparatorTree, #13#10, [rfReplaceAll]);
       ForceNode(slt);
     end;
   finally
@@ -167,8 +173,8 @@ var
   StrStream: TStringStream;
   i: Integer;
 begin
-  FLogger.AddInfo('Сохраняем дерево в файл: ' + filename);
-  StrStream := TStringStream.Create('');
+  FLogger.AddInfo(resTreeSaveToFile + filename);
+  StrStream := TStringStream.Create(EmptyStr);
   try
     for i := 0 to FTView.Items.Count - 1 do
     begin
@@ -198,9 +204,9 @@ begin
     Node := ParentNode.Item[I];
 
     if Node.HasChildren then
-      GenerateTreeData(Node, Stream, path + '\' + Node.Text)
+      GenerateTreeData(Node, Stream, path + cSeparatorTree + Node.Text)
     else
-      Stream.WriteString(path + '\' + Node.Text + #13#10);
+      Stream.WriteString(path + cSeparatorTree + Node.Text + #13#10);
   end;
 end;
 
@@ -210,16 +216,16 @@ var
 begin
   ParentNode := FTView.Selected;
   if Assigned(ParentNode) then
-    FLogger.AddInfo('Добавили в дерево эелемент: ' + ParentNode.Text + '\' + Text)
+    FLogger.AddInfo(resTreeAddItem + ParentNode.Text + '\' + Text)
   else
-    FLogger.AddInfo('Добавили в дерево эелемент: ' + Text);
+    FLogger.AddInfo(resTreeAddItem + Text);
 
   AddItem(ParentNode, Text);
 end;
 
 procedure TTreeController.InsertItemToRoot(Text: string);
 begin
-  FLogger.AddInfo('Добавили в корень дерева эелемент: ' + Text);
+  FLogger.AddInfo(resTreeAddItemRoot + Text);
 
   AddItem(nil, Text);
 end;
@@ -254,9 +260,9 @@ var
   NewNode: TTreeNode;
 begin
   if Assigned(ParentNode) then
-    FLogger.AddInfo('Добавили в дерево группу: ' + ParentNode.Text + '\' + Text)
+    FLogger.AddInfo(resTreeAddGroup + ParentNode.Text + '\' + Text)
   else
-    FLogger.AddInfo('Добавили в дерево группу: ' + Text);
+    FLogger.AddInfo(resTreeAddGroup + Text);
 
   NewNode := AddFolder(ParentNode, Text);
   FTView.Selected := NewNode;
@@ -279,7 +285,7 @@ begin
   if SelectedIsFolder(Node) and (not Node.HasChildren)  then
   begin
     if Assigned(Node) then
-      FLogger.AddInfo('Удалили каталог: ' + Node.Text);
+      FLogger.AddInfo(resTreeDelGroup + Node.Text);
     FreeNode(Node);
     Exit;
   end;
@@ -287,14 +293,14 @@ begin
   if not Node.HasChildren then
   begin
     if Assigned(Node) then
-      FLogger.AddInfo('Удалили элемент: ' + Node.Text);
+      FLogger.AddInfo(resTreeDelitem + Node.Text);
     DoReturn(Node.Text);
     FreeNode(Node);
   end
   else
   begin
     if Assigned(Node) then
-      FLogger.AddInfo('Удалили каталог: ' + Node.Text);
+      FLogger.AddInfo(resTreeDelGroup + Node.Text);
     for i := Node.Count - 1 downto 0 do
       DeleteNode(Node.Item[i]);
     FreeNode(Node);
@@ -309,7 +315,7 @@ begin
   begin
     oldText := Node.Text;
     Node.Text := NewText;
-    FLogger.AddInfo(Format('Изменили текст элемента. Было: %s. Cтало: %s', [oldText, Node.Text]));
+    FLogger.AddInfo(Format(resTreeEdit, [oldText, Node.Text]));
   end;
 end;
 
@@ -323,7 +329,7 @@ begin
   Result :=
     Assigned(Node) and
     Assigned(Node.Data) and
-    (TObject(Node.Data).ClassName = 'TModelItem');
+    (TObject(Node.Data).ClassName = TModelItem.ClassName);
 end;
 
 procedure TTreeController.SelectNode(Node: TTreeNode);
@@ -352,7 +358,7 @@ end;
 
 procedure TTreeController.Clear;
 begin
-  FLogger.AddInfo('Очистка дерева');
+  FLogger.AddInfo(resTreeClear);
   ClearData;
   FTView.Items.Clear;
 end;

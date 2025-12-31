@@ -27,17 +27,17 @@ type
 implementation
 
 uses
-  System.SysUtils, System.Classes;
+  System.SysUtils, System.Classes, uRsControls;
 
 procedure THeapController.Add(text: string);
 begin
   FListBox.Items.Add(Text);
-  FLogger.AddInfo('Добавили запись в кучу: ' + text);
+  FLogger.AddInfo(resHeapAdd + text);
 end;
 
 procedure THeapController.Clear;
 begin
-  FLogger.AddInfo('Очистка кучи');
+  FLogger.AddInfo(resHeapClear);
 
   FListBox.Items.Clear;
 end;
@@ -61,7 +61,7 @@ begin
     index := index - 1;
   if index <= FListBox.Count - 1 then
     FListBox.ItemIndex := index;
-  FLogger.AddInfo('Удалили запись из кучи: ' + oldText);
+  FLogger.AddInfo(resHeapDelete + oldText);
 end;
 
 procedure THeapController.DeleteCurrent;
@@ -89,7 +89,7 @@ var
   sl: TStringList;
 begin
   if not FileExists(filename) then
-    raise Exception.Create('Файл не найден: '#13#10 + filename);
+    raise Exception.Create(resHeapFileNotFound + #13#10 + filename);
 
   sl := TStringList.Create();
   try
@@ -107,7 +107,7 @@ begin
   finally
     sl.Free;
   end;
-  FLogger.AddInfo('Загрузили файл: ' + filename);
+  FLogger.AddInfo(resHeapLoadFile + filename);
 end;
 
 end.

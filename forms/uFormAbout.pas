@@ -1,4 +1,4 @@
-unit uFormAbout;
+п»їunit uFormAbout;
 
 interface
 
@@ -27,13 +27,16 @@ implementation
 
 {$R *.dfm}
 
+uses
+  uRsControls;
+
 procedure TFormAbout.FormCreate(Sender: TObject);
 begin
   inherited;
-  Caption := 'О программе';
+  Caption := resAboutCaption;
   lblProgramName.Caption := Application.MainForm.Caption;
-  lblVersion.Caption := 'Версия: 1.0';
-  lblCopyright.Caption := 'Казаков Николай Вадимович';
+  lblVersion.Caption := resAboutVersion + ': 1.0';
+  lblCopyright.Caption := resAboutCopyright;
   lblUrl.Caption := 'https://github.com/KazakovNik/CataloguePro';
 end;
 

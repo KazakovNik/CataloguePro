@@ -1,4 +1,4 @@
-unit uMainFacade;
+п»їunit uMainFacade;
 
 interface
 
@@ -75,7 +75,7 @@ implementation
 
 uses
   Vcl.Dialogs, Vcl.Forms, System.UITypes,
-  uAboutFacade, uSettingsFacade, uObjectOpener;
+  uAboutFacade, uSettingsFacade, uObjectOpener, uRsControls;
 
 { TMainFacade }
 
@@ -83,8 +83,8 @@ procedure TMainFacade.AddNode;
 var
   text: string;
 begin
-  if FDialogFacade.CreateInputDialog('Новый элемент', 'Название:',
-    Format('Новая элемент (%d)', [FTreeController.CountNode]), text) then
+  if FDialogFacade.CreateInputDialog(resMainAddNodeCaption, resMainAddNodeTitle,
+    Format(resMainAddNodeText, [FTreeController.CountNode]), text) then
   begin
     FTreeController.AddNode(FTree.Selected, text);
     DoUpdateStatus;
@@ -95,8 +95,8 @@ procedure TMainFacade.AddNodeRoot;
 var
   text: string;
 begin
-  if FDialogFacade.CreateInputDialog('Новый элемент', 'Название:',
-    Format('Новая элемент (%d)', [FTreeController.CountNode]), text) then
+  if FDialogFacade.CreateInputDialog(resMainAddNodeCaption, resMainAddNodeTitle,
+    Format(resMainAddNodeText, [FTreeController.CountNode]), text) then
   begin
     FTreeController.AddNode(nil, text);
     DoUpdateStatus;
@@ -114,13 +114,13 @@ begin
   FStatusBar.Panels[1].Text := FUserInfo.ComputerName;
   if (FHeap.Items.Count = 0) and (FTreeController.CountNode = 0) then
   begin
-    FStatusBar.Panels[2].Text := '';
-    FStatusBar.Panels[3].Text := '';
+    FStatusBar.Panels[2].Text := EmptyStr;
+    FStatusBar.Panels[3].Text := EmptyStr;
   end
   else
   begin
-    FStatusBar.Panels[2].Text := 'Строк в куче: ' + IntToStr(FHeap.Items.Count);
-    FStatusBar.Panels[3].Text := 'Записей в дереве: ' + IntToStr(FTreeController.CountNode);
+    FStatusBar.Panels[2].Text := resMainStatusHeap + IntToStr(FHeap.Items.Count);
+    FStatusBar.Panels[3].Text := resMainStatusTree + IntToStr(FTreeController.CountNode);
   end;
 end;
 
@@ -131,7 +131,7 @@ end;
 
 procedure TMainFacade.ClearTree;
 begin
-  if FDialogFacade.MessageInfoDialogOkCancel('Вы уверены что хотите цдалить все записи без переноса в кучу?', 'Очистить дерево') then
+  if FDialogFacade.MessageInfoDialogOkCancel(resMainClearTreeCaption, resMainClearTreeTitle) then
     FTreeController.Clear;
 end;
 
@@ -163,12 +163,12 @@ begin
   FUserInfo := TUserInfo.Create;
   FDialogFacade := TDialogFacade.Create;
 
-  settingsFN := ExtractFilePath(Application.ExeName) + 'settings.ini';
+  settingsFN := ExtractFilePath(Application.ExeName) + cSettingsFileName;
   FSettingsController := TSettingsController.Create(settingsFN);
   FSettingsController.OnUpdate := DoUpdateSettings;
 
   FLogger := TLogger.Create(FSettingsController.LoggerFileName, FUserInfo);
-  FLogger.AddInfo('Открытие программы');
+  FLogger.AddInfo(resMainOpenApp);
 
   FRecentFilesController := TRecentFilesController.Create(FLogger);
   FRecentFilesController.OnUpdate := DoUpdateRecentFiles;
@@ -201,7 +201,7 @@ begin
   FTreeController.Free;
   FRecentFilesController.Free;
 
-  FLogger.AddInfo('Закрытие программы');
+  FLogger.AddInfo(resMainCloseApp);
   FUserInfo.Free;
   FDialogFacade.Free;
 
@@ -258,7 +258,7 @@ begin
   if not Assigned(FTree.Selected) then
     Exit;
 
-  if FDialogFacade.CreateInputDialog('Редактирование', 'Измените название:',
+  if FDialogFacade.CreateInputDialog(resMainEditCurrentnodeTitle, resMainEditCurrentnodeCaption,
     FTree.Selected.Text, text) then
   begin
     FTreeController.EditNode(FTree.Selected, text);
@@ -285,8 +285,8 @@ procedure TMainFacade.HeapLoadFile(filename: string);
 begin
   if not FileExists(filename) then
   begin
-    FLogger.AddError('Попытка открыть несуществующий файл: ' + filename);
-    if FDialogFacade.MessageInfoDialogOkCancel('Файл не найден, удалить его из истории?', 'Файл не найден') then
+    FLogger.AddError(resMainFailedLoadFile + filename);
+    if FDialogFacade.MessageInfoDialogOkCancel(resMainFileNotFoundDelete, resMainFileNotFoundDeleteTitle) then
       FRecentFilesController.DeleteByName(filename);
 
     Exit;
@@ -305,7 +305,7 @@ end;
 
 procedure TMainFacade.InsertCurrentItem;
 begin
-  FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
+  FLogger.AddInfo(resMainInserCurrentItem);
   FTreeController.InsertItem(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
   DoUpdateStatus;
@@ -322,7 +322,7 @@ end;
 
 procedure TMainFacade.InsertCurrentItemToRoot;
 begin
-  FLogger.AddInfo('Переносим в дерево текущюю запись из кучи');
+  FLogger.AddInfo(resMainInserCurrentItemRoot);
   FTreeController.InsertItemToRoot(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
   DoUpdateStatus;
@@ -330,7 +330,7 @@ end;
 
 procedure TMainFacade.InsertTextIntoNode(Node: TTreeNode);
 begin
-  FLogger.AddInfo('Переносим в дерево запись из кучи: ' + Node.Text);
+  FLogger.AddInfo(resMainInserCurrentItemLog + Node.Text);
   FTreeController.SelectNode(Node);
   FTreeController.InsertItem(FHeapController.GetCurrentItem());
   FHeapController.DeleteCurrent;
@@ -374,7 +374,7 @@ begin
   fn := ChangeFileExt(filename, '.txt');
   if FileExists(fn)
     and (not FDialogFacade.MessageInfoDialogOkCancel(
-        'Вы действительно хотите перезаписать файл?', 'Сохранение файла')) then
+        resMainTreeSaveToFileReRecord, resMainTreeSaveToFileReRecordTitle)) then
       Exit;
 
   FTreeController.SaveToFile(fn);
@@ -526,12 +526,12 @@ procedure TMainFacade.DoOpenPatch(Patch: string);
 begin
   if FileExists(Patch) then
   begin
-    FLogger.AddInfo('Открываем файл: ' + patch);
+    FLogger.AddInfo(resMainSettingsloadFile + patch);
     TObjectOpener.OpenFile(Patch);
   end
   else
   begin
-    FLogger.AddInfo('Открываем папку: ' + patch);
+    FLogger.AddInfo(resMainSettingsLoadFolder + patch);
     TObjectOpener.OpenFolder(Patch);
   end;
 end;

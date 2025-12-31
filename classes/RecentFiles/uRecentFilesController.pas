@@ -1,4 +1,4 @@
-unit uRecentFilesController;
+п»їunit uRecentFilesController;
 
 interface
 
@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  System.AnsiStrings, System.SysUtils;
+  System.AnsiStrings, System.SysUtils, uRsControls;
 
 { TRecentFilesController }
 
@@ -46,7 +46,7 @@ end;
 
 procedure TRecentFilesController.DeleteByName(filename: string);
 begin
-  FLogger.AddInfo('Удаляем файл из истории: '#13#10 + filename);
+  FLogger.AddInfo(resRecentFilesDelFile + #13#10 + filename);
   FModel.DeleteByName(filename);
   DoUpdate(FModel.FileHistory);
 end;

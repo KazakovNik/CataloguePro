@@ -1,4 +1,4 @@
-unit uDialogFacade;
+п»їunit uDialogFacade;
 
 interface
 
@@ -20,7 +20,7 @@ type
 implementation
 
 uses
-  Vcl.Dialogs, Vcl.StdCtrls, Vcl.Forms, uFormInputBox;
+  Vcl.Dialogs, Vcl.StdCtrls, Vcl.Forms, uFormInputBox, uRsControls;
 
 { TDialogFacade }
 
@@ -49,17 +49,17 @@ begin
           Continue;
 
         case (Components[i] As TButton).ModalResult of
-          mrNone: (Components[i] As TButton).Caption := '&Help';
-          mrAbort: (Components[i] As TButton).Caption := 'Прервать';
-          mrAll: (Components[i] As TButton).Caption := '&Все';
-          mrCancel: (Components[i] As TButton).Caption := '&Отмена';
-          mrIgnore: (Components[i] As TButton).Caption := '&Игнорировать';
-          mrNo: (Components[i] As TButton).Caption := '&Нет';
-          mrNoToAll: (Components[i] As TButton).Caption := 'Нет всему';
-          mrOk: (Components[i] As TButton).Caption := '&Ok';
-          mrRetry: (Components[i] As TButton).Caption := '&Повторить попытку';
-          mrYes: (Components[i] As TButton).Caption := '&Да';
-          mrYesToAll: (Components[i] As TButton).Caption := 'Да всем';
+          mrNone: (Components[i] As TButton).Caption := resDialogNone;
+          mrAbort: (Components[i] As TButton).Caption := resDialogAbort;
+          mrAll: (Components[i] As TButton).Caption := resDialogAll;
+          mrCancel: (Components[i] As TButton).Caption := resDialogCancel;
+          mrIgnore: (Components[i] As TButton).Caption := resDialogIgnore;
+          mrNo: (Components[i] As TButton).Caption := resDialogNo;
+          mrNoToAll: (Components[i] As TButton).Caption := resDialogNoToAll;
+          mrOk: (Components[i] As TButton).Caption := resDialogOk;
+          mrRetry: (Components[i] As TButton).Caption := resDialogRetry;
+          mrYes: (Components[i] As TButton).Caption := resDialogYes;
+          mrYesToAll: (Components[i] As TButton).Caption := resDialogYesToAll;
         end;
       end;
 
@@ -72,7 +72,7 @@ end;
 
 procedure TDialogFacade.MessageError(Msg: String);
 begin
-  MessageDialog(Msg, 'Ошибка', TMsgDlgType.mtError, [mbOk], 0)
+  MessageDialog(Msg, resDialogErrorTitle, TMsgDlgType.mtError, [mbOk], 0)
 end;
 
 function TDialogFacade.MessageInfoDialogOkCancel(Msg, Title: String): Boolean;

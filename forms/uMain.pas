@@ -21,8 +21,8 @@ type
     mniEditNode: TMenuItem;
     mniSaveTreeToFile: TMenuItem;
     N1: TMenuItem;
-    pnl—enter: TPanel;
-    pnl—enterBtn: TPanel;
+    pnl–°enter: TPanel;
+    pnl–°enterBtn: TPanel;
     N2: TMenuItem;
     mniCollapseAll: TMenuItem;
     mniExpandAll: TMenuItem;
@@ -288,7 +288,7 @@ end;
 
 procedure TFormMain.actRecentFilesExecute(Sender: TObject);
 begin
-// «‡„ÎÛ¯Í‡ ‰Îˇ Action
+// –ó–∞–≥–ª—É—à–∫–∞ –¥–ª—è Action
 end;
 
 procedure TFormMain.actRecentFilesUpdate(Sender: TObject);
@@ -330,7 +330,7 @@ end;
 
 procedure TFormMain.FormResize(Sender: TObject);
 begin
-  pnl—enterBtn.Top := (pnl—enter.Height - pnl—enterBtn.Height) div 2;
+  pnl–°enterBtn.Top := (pnl–°enter.Height - pnl–°enterBtn.Height) div 2;
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);

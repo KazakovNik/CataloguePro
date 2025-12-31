@@ -43,6 +43,9 @@ implementation
 uses
   System.IniFiles;
 
+const
+  cRoot = 'Settings';
+
 constructor TSettings.Create(const FilePath: string);
 begin
   inherited Create;
@@ -60,16 +63,16 @@ begin
 
   IniFile := TIniFile.Create(FFilePath);
   try
-    MainFormLeft := IniFile.ReadInteger('Settings', 'MainFormLeft', 0);
-    MainFormTop := IniFile.ReadInteger('Settings', 'MainFormTop', 0);
-    MainFormHeight := IniFile.ReadInteger('Settings', 'MainFormHeight', 300);
-    MainFormWidth := IniFile.ReadInteger('Settings', 'MainFormWidth', 650);
-    HeapWidth := IniFile.ReadInteger('Settings', 'HeapWidth', 300);
-    FileOpenDirectory := IniFile.ReadString('Settings', 'FileOpenDirectory', EmptyStr);
-    FileSaveDirectory := IniFile.ReadString('Settings', 'FileSaveDirectory', EmptyStr);
-    RecentFiles := IniFile.ReadString('Settings', 'RecentFiles', EmptyStr);
-    MaxCountFileHistopy := IniFile.ReadInteger('Settings', 'MaxCountFileHistopy', 10);
-    FWindowState := IniFile.ReadInteger('Settings', 'FWindowState', 0);
+    MainFormLeft := IniFile.ReadInteger(cRoot, 'MainFormLeft', 0);
+    MainFormTop := IniFile.ReadInteger(cRoot, 'MainFormTop', 0);
+    MainFormHeight := IniFile.ReadInteger(cRoot, 'MainFormHeight', 300);
+    MainFormWidth := IniFile.ReadInteger(cRoot, 'MainFormWidth', 650);
+    HeapWidth := IniFile.ReadInteger(cRoot, 'HeapWidth', 300);
+    FileOpenDirectory := IniFile.ReadString(cRoot, 'FileOpenDirectory', EmptyStr);
+    FileSaveDirectory := IniFile.ReadString(cRoot, 'FileSaveDirectory', EmptyStr);
+    RecentFiles := IniFile.ReadString(cRoot, 'RecentFiles', EmptyStr);
+    MaxCountFileHistopy := IniFile.ReadInteger(cRoot, 'MaxCountFileHistopy', 10);
+    FWindowState := IniFile.ReadInteger(cRoot, 'FWindowState', 0);
   finally
     FreeAndNil(IniFile);
   end;
@@ -81,16 +84,16 @@ var
 begin
   IniFile := TIniFile.Create(FFilePath);
   try
-    IniFile.WriteInteger('Settings', 'MainFormLeft', MainFormLeft);
-    IniFile.WriteInteger('Settings', 'MainFormTop', MainFormTop);
-    IniFile.WriteInteger('Settings', 'MainFormHeight', MainFormHeight);
-    IniFile.WriteInteger('Settings', 'MainFormWidth', MainFormWidth);
-    IniFile.WriteInteger('Settings', 'HeapWidth', HeapWidth);
-    IniFile.WriteString('Settings', 'FileOpenDirectory', FileOpenDirectory);
-    IniFile.WriteString('Settings', 'FileSaveDirectory', FileSaveDirectory);
-    IniFile.WriteString('Settings', 'RecentFiles', RecentFiles);
-    IniFile.WriteInteger('Settings', 'MaxCountFileHistopy', MaxCountFileHistopy);
-    IniFile.WriteInteger('Settings', 'FWindowState', FWindowState);
+    IniFile.WriteInteger(cRoot, 'MainFormLeft', MainFormLeft);
+    IniFile.WriteInteger(cRoot, 'MainFormTop', MainFormTop);
+    IniFile.WriteInteger(cRoot, 'MainFormHeight', MainFormHeight);
+    IniFile.WriteInteger(cRoot, 'MainFormWidth', MainFormWidth);
+    IniFile.WriteInteger(cRoot, 'HeapWidth', HeapWidth);
+    IniFile.WriteString(cRoot, 'FileOpenDirectory', FileOpenDirectory);
+    IniFile.WriteString(cRoot, 'FileSaveDirectory', FileSaveDirectory);
+    IniFile.WriteString(cRoot, 'RecentFiles', RecentFiles);
+    IniFile.WriteInteger(cRoot, 'MaxCountFileHistopy', MaxCountFileHistopy);
+    IniFile.WriteInteger(cRoot, 'FWindowState', FWindowState);
   finally
     FreeAndNil(IniFile);
   end;

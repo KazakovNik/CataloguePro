@@ -138,6 +138,7 @@
 			</DCCReference>
 			<DCCReference Include="classes\uDialogFacade.pas"/>
 			<DCCReference Include="classes\uObjectOpener.pas"/>
+			<DCCReference Include="classes\uRsControls.pas"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
